@@ -7,6 +7,11 @@
 <title>e-Portal Digital | Puskesmas Panjatan I</title>
 
 <meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="e-Portal Digital">
 
 <style>
 
@@ -271,6 +276,80 @@ font-size:40px;
 }
 
 }
+/* Running Text */
+
+.notice{
+margin:20px;
+padding:12px;
+border-radius:15px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(10px);
+overflow:hidden;
+}
+
+.notice span{
+display:inline-block;
+white-space:nowrap;
+animation:marquee 20s linear infinite;
+}
+
+@keyframes marquee{
+0%{transform:translateX(100%)}
+100%{transform:translateX(-100%)}
+}
+
+/* Install App */
+
+.install-btn{
+position:fixed;
+right:20px;
+bottom:20px;
+z-index:9999;
+
+padding:12px 18px;
+
+border:none;
+border-radius:14px;
+
+font-weight:700;
+cursor:pointer;
+
+background:white;
+color:#2563eb;
+
+display:none;
+
+box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+/* WhatsApp */
+
+.wa-btn{
+position:fixed;
+
+right:20px;
+bottom:85px;
+
+width:55px;
+height:55px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+text-decoration:none;
+
+font-size:28px;
+
+background:#25D366;
+color:white;
+
+box-shadow:0 10px 25px rgba(0,0,0,.25);
+
+z-index:9999;
+}
 
 </style>
 </head>
@@ -323,6 +402,11 @@ Puskesmas Panjatan I
 <div>Versi</div>
 </div>
 
+</div>
+<div class="notice">
+<span>
+📢 Selamat Datang di e-Portal Digital Puskesmas Panjatan I • Satu Portal • Semua Layanan • Terintegrasi Digital • Versi 2026
+</span>
 </div>
 
 <div class="apps">
@@ -478,8 +562,58 @@ modal.style.display='none';
 }
 
 }
+let deferredPrompt;
+
+window.addEventListener(
+'beforeinstallprompt',
+(e)=>{
+
+e.preventDefault();
+
+deferredPrompt=e;
+
+document
+.getElementById('installBtn')
+.style.display='block';
+
+});
+
+document
+.getElementById('installBtn')
+.addEventListener(
+'click',
+async()=>{
+
+if(!deferredPrompt) return;
+
+deferredPrompt.prompt();
+
+await deferredPrompt.userChoice;
+
+});
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker
+.register('./sw.js')
+.catch(console.error);
+
+}
 
 </script>
+
+<a
+class="wa-btn"
+href="https://wa.me/6281234567890"
+target="_blank">
+💬
+</a>
+
+<button
+id="installBtn"
+class="install-btn">
+📲 Install App
+</button>
 
 </body>
 </html>

@@ -2,55 +2,436 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal Digital Puskesmas Panjatan I</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>e-Portal Digital Puskesmas Panjatan I</title>
+
+<meta name="theme-color" content="#2563eb">
 
 <style>
-body{
+
+:root{
+--primary:#2563eb;
+--secondary:#0ea5e9;
+--glass:rgba(255,255,255,.15);
+--border:rgba(255,255,255,.25);
+--text:#ffffff;
+}
+
+*{
 margin:0;
-font-family:Segoe UI,sans-serif;
-background:#f4f8fb;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);
+overflow-x:hidden;
+color:white;
+}
+
+/* BACKGROUND */
+
+.bg{
+position:fixed;
+inset:0;
+overflow:hidden;
+z-index:-1;
+}
+
+.circle{
+position:absolute;
+border-radius:50%;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+animation:float 10s infinite ease-in-out;
+}
+
+.c1{
+width:250px;
+height:250px;
+top:-50px;
+left:-50px;
+}
+
+.c2{
+width:180px;
+height:180px;
+bottom:50px;
+right:30px;
+animation-delay:2s;
+}
+
+.c3{
+width:120px;
+height:120px;
+top:50%;
+left:70%;
+animation-delay:4s;
+}
+
+@keyframes float{
+50%{
+transform:translateY(-20px);
+}
+}
+
+/* HEADER */
+
+header{
+padding:40px 20px;
 text-align:center;
 }
 
-.card{
-background:white;
-padding:40px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-max-width:500px;
+.logo{
+width:100px;
+height:100px;
+margin:auto;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:50px;
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.2);
 }
 
 h1{
-color:#2563eb;
+margin-top:20px;
+font-size:2rem;
+}
+
+.subtitle{
+margin-top:10px;
+opacity:.9;
+}
+
+.clock{
+margin-top:15px;
+font-size:1rem;
+font-weight:600;
+}
+
+/* STATS */
+
+.stats{
+max-width:1100px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:20px;
+}
+
+.stat{
+background:var(--glass);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+padding:20px;
+border-radius:20px;
+text-align:center;
+}
+
+.stat h2{
+font-size:2rem;
+}
+
+/* APPS */
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:25px;
+font-size:1.3rem;
+font-weight:700;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.card{
+background:var(--glass);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+border-radius:25px;
+padding:25px;
+text-decoration:none;
+color:white;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.icon{
+font-size:45px;
+margin-bottom:15px;
+}
+
+.title{
+font-size:1.2rem;
+font-weight:700;
 margin-bottom:10px;
 }
 
-p{
-color:#64748b;
+.desc{
+font-size:.9rem;
+line-height:1.6;
+opacity:.9;
 }
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:40px 20px;
+opacity:.8;
+}
+
+/* INSTALL BUTTON */
+
+.install{
+position:fixed;
+bottom:20px;
+right:20px;
+padding:12px 18px;
+border:none;
+border-radius:15px;
+background:white;
+color:#2563eb;
+font-weight:700;
+cursor:pointer;
+display:none;
+box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+@media(max-width:768px){
+
+h1{
+font-size:1.5rem;
+}
+
+.logo{
+width:80px;
+height:80px;
+font-size:40px;
+}
+
+}
+
 </style>
 </head>
-
 <body>
 
-<div class="card">
+<div class="bg">
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+<div class="circle c3"></div>
+</div>
 
-<h1>🏥 Portal Digital Puskesmas Panjatan I</h1>
+<header>
 
-<p>
-Portal sedang dalam proses pengembangan.
-</p>
+<div class="logo">🏥</div>
 
-<p>
-GitHub Pages berhasil berjalan.
-</p>
+<h1>e-Portal Digital</h1>
+
+<div class="subtitle">
+Puskesmas Panjatan I
+<br>
+Satu Portal • Semua Layanan • Terintegrasi Digital
+</div>
+
+<div class="clock" id="clock"></div>
+
+</header>
+
+<section class="stats">
+
+<div class="stat">
+<h2>44</h2>
+<div>Pegawai</div>
+</div>
+
+<div class="stat">
+<h2>9</h2>
+<div>Aplikasi</div>
+</div>
+
+<div class="stat">
+<h2>24/7</h2>
+<div>Online</div>
+</div>
+
+<div class="stat">
+<h2>2026</h2>
+<div>Versi</div>
+</div>
+
+</section>
+
+<div class="container">
+
+<div class="section-title">
+Aplikasi Digital
+</div>
+
+<div class="grid">
+
+<a class="card"
+href="https://script.google.com/a/~/macros/s/AKfycbyq2VJNosxfGQ6CEkYVCL8gZ11pPfvhJAnCqhlpXk8h7BvqDVh-SmzcYKErj_Osgtui_Q/exec"
+target="_blank">
+
+<div class="icon">🌐</div>
+<div class="title">e-Portal Digital</div>
+<div class="desc">
+Portal utama layanan digital Puskesmas Panjatan I.
+</div>
+
+</a>
+
+<a class="card"
+href="https://script.google.com/a/~/macros/s/AKfycbxMslHJzbFSpyqL9CQVP5_3yEI4iAuxlVwoLDhrIQlJYlAnw3BYTnApwQSLMLcHjhDy/exec"
+target="_blank">
+
+<div class="icon">📍</div>
+<div class="title">SIGAP</div>
+<div class="desc">
+Sistem Informasi Presensi Pegawai.
+</div>
+
+</a>
+
+<a class="card" href="#">
+<div class="icon">👥</div>
+<div class="title">PAMAN PANJI</div>
+<div class="desc">
+Manajemen Pegawai dan Administrasi.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">📅</div>
+<div class="title">e-Cuti</div>
+<div class="desc">
+Pengajuan dan Approval Cuti.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">🩺</div>
+<div class="title">PKG</div>
+<div class="desc">
+Pemeriksaan Kesehatan Gratis.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">📊</div>
+<div class="title">Dashboard</div>
+<div class="desc">
+Monitoring dan Evaluasi Program.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">💰</div>
+<div class="title">Keuangan</div>
+<div class="desc">
+Monitoring Pendapatan dan Belanja.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">📄</div>
+<div class="title">Surat Menyurat</div>
+<div class="desc">
+Administrasi Persuratan Digital.
+</div>
+</a>
+
+<a class="card" href="#">
+<div class="icon">📆</div>
+<div class="title">Jadwal Pegawai</div>
+<div class="desc">
+Jadwal Dinas dan Shift Pegawai.
+</div>
+</a>
 
 </div>
+
+</div>
+
+<footer>
+
+© 2026 Puskesmas Panjatan I
+<br>
+Dinas Kesehatan Kabupaten Kulon Progo
+
+</footer>
+
+<button class="install" id="installBtn">
+📲 Install App
+</button>
+
+<script>
+
+function updateClock(){
+
+const now = new Date();
+
+document.getElementById("clock").innerHTML =
+now.toLocaleDateString('id-ID',{
+weekday:'long',
+year:'numeric',
+month:'long',
+day:'numeric'
+})
++
+" • " +
+now.toLocaleTimeString('id-ID');
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+
+e.preventDefault();
+deferredPrompt=e;
+
+document.getElementById('installBtn').style.display='block';
+
+});
+
+document.getElementById('installBtn')
+.addEventListener('click',async()=>{
+
+if(!deferredPrompt) return;
+
+deferredPrompt.prompt();
+
+await deferredPrompt.userChoice;
+
+deferredPrompt=null;
+
+});
+
+</script>
 
 </body>
 </html>

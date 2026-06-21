@@ -1,1 +1,419 @@
-<h1>e Portal Digital</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+
+<title>
+e-Portal Digital | Puskesmas Panjatan I
+</title>
+
+<meta name="theme-color" content="#2563eb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="e-Portal Digital">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="preconnect" href="https://script.google.com">
+<link rel="dns-prefetch" href="//script.google.com">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',sans-serif;
+background:#fff;
+}
+
+body{
+position:fixed;
+inset:0;
+}
+
+.iframe-container{
+position:fixed;
+inset:0;
+width:100vw;
+height:100dvh;
+background:#fff;
+overflow:hidden;
+}
+
+iframe{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+border:none;
+background:#fff;
+display:block;
+}
+
+/* SPLASH */
+
+.loader-screen{
+position:fixed;
+inset:0;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:
+linear-gradient(
+135deg,
+#0c1445,
+#1d4ed8,
+#0ea5e9
+);
+
+z-index:9999;
+
+transition:
+opacity .4s ease,
+visibility .4s ease;
+}
+
+.loader-card{
+
+width:90%;
+max-width:380px;
+
+padding:34px 24px;
+
+border-radius:28px;
+
+text-align:center;
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(16px);
+
+border:
+1px solid rgba(255,255,255,.12);
+
+box-shadow:
+0 15px 40px rgba(0,0,0,.25);
+}
+
+/* PORTAL ANIMATION */
+
+.portal-loader{
+position:relative;
+width:120px;
+height:120px;
+margin:auto;
+margin-bottom:20px;
+}
+
+.ring{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+border-radius:50%;
+border:2px solid rgba(125,211,252,.35);
+}
+
+.ring1{
+width:50px;
+height:50px;
+animation:pulse 2s infinite;
+}
+
+.ring2{
+width:80px;
+height:80px;
+animation:pulse 2s infinite .5s;
+}
+
+.ring3{
+width:110px;
+height:110px;
+animation:pulse 2s infinite 1s;
+}
+
+.core{
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+transform:translate(-50%,-50%);
+
+width:60px;
+height:60px;
+
+border-radius:50%;
+
+background:
+linear-gradient(
+135deg,
+#38bdf8,
+#2563eb
+);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:26px;
+font-weight:700;
+
+color:#fff;
+
+box-shadow:
+0 0 25px rgba(59,130,246,.8);
+}
+
+@keyframes pulse{
+
+0%{
+opacity:1;
+}
+
+100%{
+
+transform:
+translate(-50%,-50%)
+scale(1.7);
+
+opacity:0;
+}
+
+}
+
+.app-title{
+
+font-size:1.9rem;
+font-weight:700;
+
+color:#fff;
+}
+
+.app-subtitle{
+
+margin-top:10px;
+
+font-size:.95rem;
+
+line-height:1.7;
+
+color:#dbeafe;
+}
+
+.app-location{
+
+margin-top:10px;
+
+font-size:.8rem;
+
+font-weight:600;
+
+letter-spacing:1px;
+
+text-transform:uppercase;
+
+color:#bfdbfe;
+}
+
+.tagline{
+
+margin-top:12px;
+
+font-size:.82rem;
+
+font-style:italic;
+
+color:#e0f2fe;
+}
+
+/* PROGRESS */
+
+.progress{
+
+margin-top:24px;
+
+height:6px;
+
+border-radius:99px;
+
+overflow:hidden;
+
+background:
+rgba(255,255,255,.15);
+}
+
+.progress-bar{
+
+width:100%;
+height:100%;
+
+background:
+linear-gradient(
+90deg,
+#38bdf8,
+#60a5fa,
+#38bdf8
+);
+
+background-size:200% 100%;
+
+animation:move 1.2s linear infinite;
+}
+
+@keyframes move{
+
+0%{
+background-position:0% 50%;
+}
+
+100%{
+background-position:200% 50%;
+}
+
+}
+
+.loading-text{
+
+margin-top:14px;
+
+font-size:.85rem;
+
+color:#e2e8f0;
+}
+
+.fade-out{
+opacity:0;
+visibility:hidden;
+pointer-events:none;
+}
+
+@media(max-width:600px){
+
+.loader-card{
+max-width:320px;
+padding:24px 18px;
+}
+
+.app-title{
+font-size:1.6rem;
+}
+
+.app-subtitle{
+font-size:.85rem;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="iframe-container">
+
+<div class="loader-screen" id="loader">
+
+<div class="loader-card">
+
+<div class="portal-loader">
+
+<div class="ring ring1"></div>
+<div class="ring ring2"></div>
+<div class="ring ring3"></div>
+
+<div class="core">
+⌘
+</div>
+
+</div>
+
+<div class="app-title">
+e-PORTAL DIGITAL
+</div>
+
+<div class="app-subtitle">
+Portal Terintegrasi Layanan Digital<br>
+Puskesmas Panjatan I
+</div>
+
+<div class="app-location">
+PUSKESMAS PANJATAN I
+</div>
+
+<div class="tagline">
+Satu Portal • Semua Layanan • Terintegrasi Digital
+</div>
+
+<div class="progress">
+<div class="progress-bar"></div>
+</div>
+
+<div class="loading-text">
+Memuat layanan digital Puskesmas Panjatan I...
+</div>
+
+</div>
+
+</div>
+
+<iframe
+id="appFrame"
+src="https://script.google.com/a/~/macros/s/AKfycbyq2VJNosxfGQ6CEkYVCL8gZ11pPfvhJAnCqhlpXk8h7BvqDVh-SmzcYKErj_Osgtui_Q/exec"
+allow="geolocation *; camera *; microphone *"
+sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-downloads"
+loading="eager"
+referrerpolicy="no-referrer"
+allowfullscreen
+onload="hideLoader()">
+</iframe>
+
+</div>
+
+<script>
+
+function hideLoader(){
+
+setTimeout(() => {
+
+document
+.getElementById('loader')
+.classList.add('fade-out');
+
+},300);
+
+}
+
+if ('serviceWorker' in navigator) {
+
+window.addEventListener('load', () => {
+
+navigator.serviceWorker
+.register('/sw.js')
+.catch(err => console.log(err));
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

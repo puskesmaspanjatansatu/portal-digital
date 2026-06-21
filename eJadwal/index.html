@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e Jadwal Panjatan Satu</title>
+  <link rel="icon" href="https://i1.wp.com/www.freepnglogos.com/uploads/logo-puskesmas-png/logo-puskesmas-terbaru-sesuai-permenkes-tahun-1.png" type="image/png">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.2rem;
+      color: #666;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="iframe-container">
+    <div class="loader" id="loader">Loading app...</div>
+    <iframe 
+      src="https://script.google.com/macros/s/AKfycbynJALTCAqtmgpAJYAOWbjJYosoc7V9mkjEQ9m8p3KR7yLsUiomaRnIB5i3nvn6lTAYuA/exec" 
+      title="PJT1 Web App"
+      onload="document.getElementById('loader').style.display='none';"
+      allowfullscreen>
+    </iframe>
+  </div>
+</body>
+</html>

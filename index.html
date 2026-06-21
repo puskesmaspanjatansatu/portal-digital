@@ -178,7 +178,10 @@ cursor:pointer;
 }
 
 .card:hover{
-transform:translateY(-8px);
+transform:translateY(-8px) scale(1.02);
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.25);
 }
 
 .icon{
@@ -365,8 +368,11 @@ z-index:9999;
 <div class="header">
 
 <div class="logo">
-<img src="logo.png"
-style="width:70px;height:70px;object-fit:contain;">
+<img
+src="logo.png"
+alt="Logo"
+style="width:70px;height:70px;object-fit:contain"
+onerror="this.style.display='none';this.parentNode.innerHTML='🏥';">
 </div>
 
 <div class="title">
@@ -500,6 +506,8 @@ Jadwal Dinas dan Shift Pegawai
 Dinas Kesehatan Kabupaten Kulon Progo
 <br><br>
 Portal Digital v2.0
+<br>
+🟢 Sistem Online
 </footer>
 
 <!-- Modal -->
@@ -604,6 +612,9 @@ navigator.serviceWorker
 .catch(console.error);
 
 }
+
+</script>
+
 <a
 class="wa-btn"
 href="https://wa.me/6285113268066"
@@ -616,8 +627,6 @@ id="installBtn"
 class="install-btn">
 📲 Install App
 </button>
-
-</script>
 
 
 

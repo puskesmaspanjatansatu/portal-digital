@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>e-Portal Digital | Puskesmas Panjatan I</title>
+<title>e-Portal Digital</title>
 
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#0ea5e9">
+
+<link rel="manifest" href="manifest.json">
 
 <style>
 
@@ -18,139 +20,124 @@ font-family:'Segoe UI',sans-serif;
 }
 
 body{
-background:
-linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);
-min-height:100vh;
+background:linear-gradient(135deg,#020617,#0f172a,#0ea5e9);
 color:#fff;
-overflow-x:hidden;
+min-height:100vh;
+overflow:hidden;
 }
 
+/* HEADER */
 .header{
-padding:40px 20px;
+padding:25px;
 text-align:center;
-}
-
-.logo{
-width:100px;
-height:100px;
-margin:auto;
-border-radius:50%;
-background:rgba(255,255,255,.15);
-backdrop-filter:blur(20px);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:48px;
-border:1px solid rgba(255,255,255,.2);
-}
-
-.title{
-font-size:2rem;
-font-weight:700;
-margin-top:20px;
-}
-
-.subtitle{
-margin-top:10px;
-color:#dbeafe;
-line-height:1.6;
-}
-
-.clock{
-margin-top:15px;
-font-weight:600;
-}
-
-.stats{
-max-width:1200px;
-margin:auto;
-padding:20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-}
-
-.stat{
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(20px);
-border-radius:20px;
-padding:20px;
-text-align:center;
-border:1px solid rgba(255,255,255,.15);
-}
-
-.stat h2{
-font-size:2rem;
-}
-
-.apps{
-max-width:1200px;
-margin:auto;
-padding:20px;
-}
-
-.apps h3{
-text-align:center;
-margin-bottom:20px;
-font-size:1.3rem;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
-}
-
-.card{
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(20px);
-border-radius:25px;
-padding:24px;
-text-decoration:none;
-color:white;
-transition:.3s;
-border:1px solid rgba(255,255,255,.15);
-}
-
-.card:hover{
-transform:translateY(-8px);
-}
-
-.icon{
-font-size:42px;
-margin-bottom:15px;
-}
-
-.name{
-font-size:1.1rem;
-font-weight:700;
-margin-bottom:10px;
-}
-
-.desc{
-font-size:.9rem;
-line-height:1.6;
-color:#dbeafe;
-}
-
-footer{
-padding:40px 20px;
-text-align:center;
-color:#dbeafe;
-}
-
-@media(max-width:768px){
-
-.title{
-font-size:1.6rem;
+transition:.4s;
 }
 
 .logo{
 width:80px;
 height:80px;
-font-size:40px;
+margin:auto;
+border-radius:50%;
+background:rgba(255,255,255,.1);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:36px;
+backdrop-filter:blur(20px);
 }
 
+.title{
+font-size:1.6rem;
+font-weight:700;
+margin-top:15px;
+}
+
+.clock{
+margin-top:10px;
+font-size:.9rem;
+opacity:.8;
+}
+
+/* GRID */
+.container{
+padding:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:15px;
+}
+
+.card{
+background:rgba(255,255,255,.08);
+padding:18px;
+border-radius:20px;
+text-align:center;
+cursor:pointer;
+transition:.3s;
+backdrop-filter:blur(20px);
+}
+
+.card:hover{
+transform:translateY(-6px) scale(1.02);
+background:rgba(255,255,255,.15);
+}
+
+.icon{
+font-size:28px;
+margin-bottom:8px;
+}
+
+.name{
+font-size:.9rem;
+font-weight:600;
+}
+
+/* APP VIEW */
+#appView{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:none;
+flex-direction:column;
+z-index:999;
+}
+
+.topbar{
+background:#020617;
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.backBtn{
+background:#0ea5e9;
+border:none;
+color:#fff;
+padding:8px 14px;
+border-radius:10px;
+cursor:pointer;
+}
+
+iframe{
+flex:1;
+width:100%;
+border:none;
+}
+
+/* ANIMATION */
+.fadeIn{
+animation:fade .4s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:scale(.98)}
+to{opacity:1; transform:scale(1)}
 }
 
 </style>
@@ -159,138 +146,101 @@ font-size:40px;
 <body>
 
 <div class="header">
-
 <div class="logo">🏥</div>
-
-<div class="title">
-e-Portal Digital
-</div>
-
-<div class="subtitle">
-Portal Terintegrasi Layanan Digital
-<br>
-Puskesmas Panjatan I
-</div>
-
+<div class="title">e-Portal Digital</div>
 <div class="clock" id="clock"></div>
-
 </div>
 
-<div class="stats">
-
-<div class="stat">
-<h2>44</h2>
-<div>Pegawai</div>
-</div>
-
-<div class="stat">
-<h2>9</h2>
-<div>Aplikasi</div>
-</div>
-
-<div class="stat">
-<h2>24/7</h2>
-<div>Online</div>
-</div>
-
-<div class="stat">
-<h2>2026</h2>
-<div>Versi</div>
-</div>
-
-</div>
-
-<div class="apps">
-
-<h3>Aplikasi Digital</h3>
-
+<div class="container">
 <div class="grid">
 
-<a class="card" href="./ePortalDigital/">
+<div class="card" onclick="openApp('./ePortalDigital/')">
 <div class="icon">🌐</div>
-<div class="name">e-Portal Digital</div>
-<div class="desc">
-Portal Terintegrasi Layanan Digital Puskesmas Panjatan I
+<div class="name">Portal</div>
 </div>
-</a>
-<a class="card" href="./sigap/">
+
+<div class="card" onclick="openApp('./sigap/')">
 <div class="icon">📍</div>
 <div class="name">SIGAP</div>
-<div class="desc">Sistem Informasi Presensi Pegawai</div>
-</a>
+</div>
 
-<a class="card" href="./pamanpanji/">
+<div class="card" onclick="openApp('./pamanpanji/')">
 <div class="icon">👥</div>
-<div class="name">PAMAN PANJI</div>
-<div class="desc">Manajemen Pegawai dan Administrasi</div>
-</a>
+<div class="name">PAMAN</div>
+</div>
 
-<a class="card" href="./ecuti/">
+<div class="card" onclick="openApp('./ecuti/')">
 <div class="icon">📅</div>
 <div class="name">e-Cuti</div>
-<div class="desc">Pengajuan dan Approval Cuti</div>
-</a>
+</div>
 
-<a class="card" href="./pkg/">
+<div class="card" onclick="openApp('./pkg/')">
 <div class="icon">🩺</div>
 <div class="name">PKG</div>
-<div class="desc">Pemeriksaan Kesehatan Gratis</div>
-</a>
+</div>
 
-<a class="card" href="./dashboard/">
+<div class="card" onclick="openApp('./dashboard/')">
 <div class="icon">📊</div>
 <div class="name">Dashboard</div>
-<div class="desc">Monitoring dan Evaluasi Program</div>
-</a>
+</div>
 
-<a class="card" href="./keuangan/">
+<div class="card" onclick="openApp('./keuangan/')">
 <div class="icon">💰</div>
 <div class="name">Keuangan</div>
-<div class="desc">Pendapatan dan Belanja BLUD</div>
-</a>
+</div>
 
-<a class="card" href="./surat/">
+<div class="card" onclick="openApp('./surat/')">
 <div class="icon">📄</div>
-<div class="name">Surat Menyurat</div>
-<div class="desc">Administrasi Persuratan Digital</div>
-</a>
+<div class="name">Surat</div>
+</div>
 
-<a class="card" href="./jadwal/">
+<div class="card" onclick="openApp('./jadwal/')">
 <div class="icon">📆</div>
-<div class="name">Jadwal Pegawai</div>
-<div class="desc">Jadwal Dinas dan Shift Pegawai</div>
-</a>
-
+<div class="name">Jadwal</div>
 </div>
 
 </div>
+</div>
 
-<footer>
-© 2026 Puskesmas Panjatan I
-<br>
-Dinas Kesehatan Kabupaten Kulon Progo
-</footer>
+<!-- APP VIEW -->
+<div id="appView">
+<div class="topbar">
+<button class="backBtn" onclick="closeApp()">⬅️ Kembali</button>
+<div id="appTitle"></div>
+</div>
+<iframe id="frame"></iframe>
+</div>
 
 <script>
 
+// JAM
 function updateClock(){
-
 const now=new Date();
-
-document.getElementById('clock').innerHTML=
-now.toLocaleDateString('id-ID',{
-weekday:'long',
-day:'numeric',
-month:'long',
-year:'numeric'
-})
+document.getElementById('clock').innerHTML =
+now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})
 +' • '+
 now.toLocaleTimeString('id-ID');
-
 }
-
 setInterval(updateClock,1000);
 updateClock();
+
+// OPEN APP
+function openApp(url){
+document.getElementById('appView').style.display='flex';
+document.getElementById('frame').src=url;
+document.getElementById('appView').classList.add('fadeIn');
+}
+
+// CLOSE APP
+function closeApp(){
+document.getElementById('appView').style.display='none';
+document.getElementById('frame').src='';
+}
+
+// PWA REGISTER
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js');
+}
 
 </script>
 

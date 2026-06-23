@@ -7,30 +7,18 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
 
-
 <title>
 e-PAMAN PANJI | Planning Management
 </title>
 
-
-<!-- PWA -->
-
 <meta name="theme-color" content="#10b981">
-
 <meta name="mobile-web-app-capable" content="yes">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 
 <link rel="manifest" href="manifest.json">
-
-
-
 <link rel="preconnect" href="https://script.google.com">
 
-
-
 <style>
-
 
 *{
 margin:0;
@@ -38,65 +26,33 @@ padding:0;
 box-sizing:border-box;
 }
 
-
-
 html,body{
-
 width:100%;
 height:100%;
-
 overflow:hidden;
-
 font-family:'Segoe UI',sans-serif;
-
 background:#020617;
-
 }
-
-
-
 
 iframe{
-
 position:fixed;
-
 inset:0;
-
 width:100%;
-
 height:100%;
-
 border:0;
-
 }
-
-
-
-
 
 /* SPLASH */
 
-
 #loader{
-
-
 position:fixed;
-
 inset:0;
-
 z-index:9999;
-
-
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
-
-
 background:
-
 radial-gradient(
 circle at top,
 #059669,
@@ -104,543 +60,243 @@ circle at top,
 #020617
 );
 
-
-
 transition:.4s;
-
-
 }
-
-
 
 .hide{
-
 opacity:0;
-
 visibility:hidden;
-
 }
-
-
-
 
 .card{
-
-
 width:90%;
-
 max-width:380px;
-
-
 padding:35px 25px;
-
-
 text-align:center;
-
-
 border-radius:30px;
 
+background:rgba(255,255,255,.10);
+backdrop-filter:blur(20px);
 
+border:1px solid #ffffff22;
 
-background:
-
-rgba(255,255,255,.10);
-
-
-
-backdrop-filter:
-
-blur(20px);
-
-
-
-
-border:
-
-1px solid #ffffff22;
-
-
-
-
-box-shadow:
-
-0 20px 60px #0008;
-
-
-
+box-shadow:0 20px 60px #0008;
 color:white;
-
-
 }
-
-
-
-
-
 
 /* ICON */
 
 .icon{
-
-
 width:95px;
-
 height:95px;
-
-
-
 margin:auto;
-
-
-
 border-radius:30px;
 
-
-
-
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
+background:linear-gradient(135deg,#34d399,#06b6d4);
+box-shadow:0 0 45px #10b98188;
 
+animation:float 3s infinite;
+}
 
+.icon svg{
+width:58px;
+fill:white;
+}
 
-background:
+@keyframes float{
+50%{ transform:translateY(-8px); }
+}
 
-linear-gradient(
+h1{
+margin-top:20px;
+font-size:28px;
+font-weight:800;
+}
+
+p{
+margin-top:12px;
+color:#d1fae5;
+line-height:1.7;
+}
+
+.location{
+margin-top:15px;
+font-size:13px;
+letter-spacing:2px;
+font-weight:600;
+color:#67e8f9;
+}
+
+.tag{
+margin-top:10px;
+font-size:12px;
+color:#a7f3d0;
+font-style:italic;
+}
+
+.progress{
+margin-top:25px;
+height:7px;
+background:#ffffff33;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+width:40%;
+background:white;
+animation:load 1.2s infinite;
+}
+
+@keyframes load{
+0%{ transform:translateX(-120%); }
+100%{ transform:translateX(300%); }
+}
+
+/* ========================= */
+/* BACK HOME BUTTON */
+/* ========================= */
+
+.back-home{
+
+position:fixed;
+
+right:20px;
+bottom:20px;
+
+width:58px;
+height:58px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:50%;
+
+background:linear-gradient(
 135deg,
-#34d399,
+#10b981,
 #06b6d4
 );
 
+color:white;
+text-decoration:none;
 
+font-size:26px;
 
-box-shadow:
+z-index:99999;
 
-0 0 45px #10b98188;
+box-shadow:0 12px 30px rgba(0,0,0,.35);
 
-
-
-
-animation:
-
-float 3s infinite;
-
+transition:.3s;
 
 }
 
-
-
-.icon svg{
-
-
-width:58px;
-
-fill:white;
-
-
+.back-home:hover{
+transform:translateY(-6px) scale(1.1);
+box-shadow:0 15px 35px rgba(0,0,0,.5);
 }
 
+/* MOBILE */
 
+@media(max-width:600px){
 
-@keyframes float{
-
-
-50%{
-
-transform:translateY(-8px);
-
+.back-home{
+right:15px;
+bottom:15px;
+width:52px;
+height:52px;
+font-size:22px;
 }
 
-
 }
-
-
-
-
-
-h1{
-
-
-margin-top:20px;
-
-
-font-size:28px;
-
-
-font-weight:800;
-
-
-}
-
-
-
-p{
-
-
-margin-top:12px;
-
-
-color:#d1fae5;
-
-
-line-height:1.7;
-
-
-}
-
-
-
-
-
-.location{
-
-
-margin-top:15px;
-
-
-font-size:13px;
-
-
-letter-spacing:2px;
-
-
-
-font-weight:600;
-
-
-
-color:#67e8f9;
-
-
-}
-
-
-
-
-
-
-.tag{
-
-
-margin-top:10px;
-
-
-font-size:12px;
-
-
-color:#a7f3d0;
-
-
-font-style:italic;
-
-
-}
-
-
-
-
-
-.progress{
-
-
-margin-top:25px;
-
-
-height:7px;
-
-
-background:#ffffff33;
-
-
-border-radius:20px;
-
-
-overflow:hidden;
-
-
-}
-
-
-
-
-.bar{
-
-
-height:100%;
-
-
-width:40%;
-
-
-
-background:white;
-
-
-
-animation:
-
-load 1.2s infinite;
-
-
-}
-
-
-
-
-@keyframes load{
-
-
-0%{
-
-transform:translateX(-120%);
-
-}
-
-
-100%{
-
-transform:translateX(300%);
-
-}
-
-
-}
-
-
-
 
 </style>
 
-
-
 </head>
-
 
 <body>
 
-
-
-
-
 <iframe
-
-
 id="app"
-
-
-
 src="https://script.google.com/a/~/macros/s/AKfycbwcDQ1HOB4hhZSFECOUVVcBtm4ShpQDL835EtN-Vmnyu_ybXusOjURQGk96LU0551Ingg/exec"
-
-
-
 allow="geolocation *;camera *;microphone *"
-
-
-
 loading="eager">
-
-
 </iframe>
-
-
-
-
-
 
 <div id="loader">
 
-
-
 <div class="card">
 
-
-
-
-
 <div class="icon">
-
-
-
-<!-- FUTURE MANAGEMENT ICON -->
-
-
 <svg viewBox="0 0 24 24">
-
-
-<path d="
-
-M3 3h18v18H3V3zm4 12h2V8H7v7zm4 0h2V5h-2v10zm4 0h2v-4h-2v4z
-
-"/>
-
-
+<path d="M3 3h18v18H3V3zm4 12h2V8H7v7zm4 0h2V5h-2v10zm4 0h2v-4h-2v4z"/>
 </svg>
-
-
-
 </div>
 
-
-
-
-
-
-
-<h1>
-
-e-PAMAN PANJI
-
-</h1>
-
-
-
-
+<h1>e-PAMAN PANJI</h1>
 
 <p>
-
-
 Sistem PerencanaAn & MANajemen<br>
-
 Puskesmas PANJatan I
-
-
 </p>
-
-
-
-
 
 <div class="location">
-
-
 DIGITAL MANAGEMENT CENTER
-
-
 </div>
-
-
-
-
 
 <div class="tag">
-
-
 Planning • Monitoring • Evaluation • Performance
-
-
 </div>
-
-
-
-
-
 
 <div class="progress">
-
-
 <div class="bar"></div>
-
-
 </div>
 
-
-
-
-
-<p>
-
-
-Menyiapkan sistem manajemen...
-
-
-</p>
-
-
-
+<p>Menyiapkan sistem manajemen...</p>
 
 </div>
-
-
 </div>
-
-
-
-
-
-
-
-
 
 <script>
 
+const loader = document.getElementById("loader");
 
-
-const loader =
-document.getElementById("loader");
-
-
-
-
-document
-
-.getElementById("app")
-
-.onload=function(){
-
-
+document.getElementById("app").onload=function(){
 setTimeout(()=>{
-
-
 loader.classList.add("hide");
-
-
 },300);
-
-
-
 };
 
-
-
-
-
 // anti loading abadi
-
-
 setTimeout(()=>{
-
-
 loader.classList.add("hide");
-
-
 },6000);
 
-
-
-
-
-
 // PWA
-
-
 if("serviceWorker" in navigator){
-
-
 navigator.serviceWorker.register("sw.js");
-
-
 }
-
-
 
 </script>
 
+<!-- ========================= -->
+<!-- BACK HOME BUTTON -->
+<!-- ========================= -->
 
+<a 
+href="https://puskesmaspanjatansatu.github.io/portal-digital/"
+class="back-home"
+title="Kembali ke Portal Digital">
 
+🏠
+
+</a>
 
 </body>
-
 </html>

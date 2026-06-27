@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+
+<title>e-Cuti PUSPANSA</title>
+
+<meta name="theme-color" content="#0f766e">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',sans-serif;
+background:#020617;
+}
+
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+}
+
+/* LOADER */
+
+#loader{
+position:fixed;
+inset:0;
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:radial-gradient(circle at top,#0f766e,#020617 70%);
+transition:.5s;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+.card{
+width:90%;
+max-width:360px;
+padding:35px 25px;
+text-align:center;
+border-radius:30px;
+
+background:rgba(20,184,166,.08);
+backdrop-filter:blur(20px);
+border:1px solid #14b8a633;
+
+color:#ecfeff;
+box-shadow:0 20px 60px #0008;
+}
+
+/* =====================
+   CUTI ANIMATION
+===================== */
+
+.icon{
+width:120px;
+height:120px;
+margin:auto;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* kalender */
+
+.calendar{
+width:90px;
+height:90px;
+background:#0f766e;
+border-radius:10px;
+position:relative;
+box-shadow:0 10px 30px #0008;
+animation:float 2s ease-in-out infinite;
+}
+
+/* header kalender */
+
+.calendar::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:25px;
+background:#14b8a6;
+border-radius:10px 10px 0 0;
+}
+
+/* titik tanggal */
+
+.calendar::after{
+content:"● ● ●\A ● ● ●\A ● ● ●";
+white-space:pre;
+position:absolute;
+top:35px;
+left:18px;
+color:#ccfbf1;
+font-size:10px;
+line-height:12px;
+}
+
+/* badge approval */
+
+.approved{
+position:absolute;
+bottom:-10px;
+right:-10px;
+background:#22c55e;
+color:#fff;
+font-size:12px;
+padding:6px 8px;
+border-radius:20px;
+box-shadow:0 0 15px #22c55e88;
+animation:pop 1.5s infinite;
+}
+
+/* animasi */
+
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+}
+
+@keyframes pop{
+0%{transform:scale(0);opacity:0;}
+50%{transform:scale(1.2);opacity:1;}
+100%{transform:scale(1);opacity:1;}
+}
+
+/* TEXT */
+
+h1{
+margin-top:20px;
+font-size:28px;
+letter-spacing:2px;
+color:#5eead4;
+}
+
+p{
+margin-top:12px;
+color:#ccfbf1;
+line-height:1.6;
+}
+
+.location{
+margin-top:18px;
+font-size:13px;
+letter-spacing:3px;
+color:#2dd4bf;
+}
+
+/* PROGRESS */
+
+.progress{
+margin-top:25px;
+height:7px;
+border-radius:20px;
+background:#134e4a;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+width:40%;
+background:#14b8a6;
+animation:load 1.2s infinite;
+}
+
+@keyframes load{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(300%)}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- IFRAME -->
+
+<iframe
+id="app"
+src="https://script.google.com/macros/s/AKfycbwTENw1edMRLAPWIRck5ZfCnResjeq3jYjKXkiVRJoVPHqOVYmOtROxF1anUoD8m0tm/exec"
+allow="geolocation *;camera *;microphone *"
+loading="eager">
+</iframe>
+
+<!-- LOADING -->
+
+<div id="loader">
+
+<div class="card">
+
+<div class="icon">
+
+<div class="calendar"></div>
+<div class="approved">✓</div>
+
+</div>
+
+<h1>e-CUTI</h1>
+
+<p>
+PUSPANSA<br>
+Manajemen Cuti Pegawai
+</p>
+
+<div class="location">
+PUSKESMAS PANJATAN I
+</div>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+<p>
+Memuat sistem cuti...
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+const loader = document.getElementById("loader");
+
+document.getElementById("app").onload=function(){
+setTimeout(()=>{
+loader.classList.add("hide");
+},300);
+};
+
+// fallback
+setTimeout(()=>{
+loader.classList.add("hide");
+},6000);
+
+</script>
+
+</body>
+</html>

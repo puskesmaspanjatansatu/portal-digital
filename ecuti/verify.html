@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Verifikasi e-Cuti | Puskesmas Panjatan I</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:       #0a0f1e;
+      --ink-soft:  #64748b;
+      --surface:   #f8fafc;
+      --jade:      #005930;
+      --jade-lite: #dcfce7;
+      --cobalt:    #003f8a;
+      --cobalt-lite:#dbeafe;
+      --rose-lite: #ffe4e6;
+      --white:     #ffffff;
+      --border:    rgba(0,0,0,0.07);
+      --r-card:    20px;
+      --r-btn:     14px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f4f8; color: var(--ink); -webkit-font-smoothing: antialiased; }
+    body {
+      min-height: 100dvh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px 16px;
+      position: relative; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(0,63,138,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0,89,48,0.07) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .shell { position: relative; z-index: 1; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
+    .badge-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; opacity: 0; animation: fadeUp .5s .05s ease forwards; }
+    .badge-logo { width: 40px; height: 40px; background: var(--cobalt); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(0,63,138,.25); flex-shrink: 0; }
+    .badge-text { text-align: left; }
+    .badge-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -.2px; }
+    .badge-text span { font-size: 11px; color: var(--ink-soft); font-weight: 500; }
+    .card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.07); overflow: hidden; opacity: 0; animation: fadeUp .5s .15s ease forwards; }
+    .card-stripe { height: 3px; background: linear-gradient(90deg, var(--cobalt) 0%, var(--jade) 100%); }
+
+    /* States */
+    .state { display: none; }
+    .state.active { display: block; }
+
+    .state-wrap { padding: 40px 28px; text-align: center; }
+
+    /* Loading */
+    .spinner-ring { width: 48px; height: 48px; border: 3px solid #e2e8f0; border-top-color: var(--cobalt); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 16px; }
+    .loader-text { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+
+    /* Error */
+    .icon-wrap { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; }
+    .icon-wrap.error { background: var(--rose-lite); }
+    .icon-wrap.success { background: var(--jade-lite); }
+    .state-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+    .state-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 20px; }
+
+    /* Debug box */
+    .debug-box { background: #1e293b; color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 10px; border-radius: 10px; padding: 12px 14px; text-align: left; margin-bottom: 16px; line-height: 1.8; word-break: break-all; }
+    .debug-box .ok { color: #4ade80; }
+    .debug-box .err { color: #f87171; }
+
+    /* Redirect */
+    .progress-track { width: 100%; height: 3px; background: #e2e8f0; border-radius: 99px; margin-top: 20px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--cobalt), var(--jade)); border-radius: 99px; animation: prog 1.3s cubic-bezier(.4,0,.2,1) forwards; }
+
+    /* Footer */
+    .footer-card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; opacity: 0; animation: fadeUp .5s .25s ease forwards; }
+    .footer-left { font-size: 11px; color: var(--ink-soft); font-weight: 500; line-height: 1.4; }
+    .footer-left strong { display: block; color: var(--ink); font-weight: 700; font-size: 12px; }
+    .secure-chip { display: flex; align-items: center; gap: 5px; background: var(--jade-lite); color: var(--jade); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 8px; white-space: nowrap; flex-shrink: 0; }
+
+    .btn-back { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--ink-soft); border: 1px solid #e2e8f0; border-radius: var(--r-btn); padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes prog { from { width: 0; } to { width: 100%; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } .shell, .card, .footer-card { opacity: 1 !important; } }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="badge-row">
+    <div class="badge-logo">🏥</div>
+    <div class="badge-text">
+      <strong>Puskesmas Panjatan I</strong>
+      <span>Sistem e-Cuti Digital · Kulon Progo</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-stripe"></div>
+
+    <!-- Loading -->
+    <div id="stateLoading" class="state active">
+      <div class="state-wrap">
+        <div class="spinner-ring"></div>
+        <p class="loader-text">Memverifikasi tautan…</p>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="stateError" class="state">
+      <div class="state-wrap">
+        <div class="icon-wrap error">⚠️</div>
+        <p class="state-title">Tautan Tidak Valid</p>
+        <p class="state-desc" id="errMsg">Link tidak ditemukan atau sudah kadaluwarsa.</p>
+        <!-- DEBUG BOX: hapus setelah masalah terselesaikan -->
+        <div class="debug-box" id="debugBox"></div>
+        <a class="btn-back" href="https://puskesmaspanjatansatu.github.io/portal-digital/">← Kembali ke Portal</a>
+      </div>
+    </div>
+
+    <!-- Redirect -->
+    <div id="stateRedirect" class="state">
+      <div class="state-wrap">
+        <div class="icon-wrap success">✅</div>
+        <p class="state-title">Tautan Terverifikasi</p>
+        <p class="state-desc">Mengarahkan ke halaman verifikasi…</p>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-card">
+    <div class="footer-left">
+      <strong>e-Cuti Puskesmas Panjatan I</strong>
+      Sistem Manajemen Cuti Kepegawaian
+    </div>
+    <div class="secure-chip">🔒 Terenkripsi</div>
+  </div>
+
+</div>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwTENw1edMRLAPWIRck5ZfCnResjeq3jYjKXkiVRJoVPHqOVYmOtROxF1anUoD8m0tm/exec';
+
+  function show(id) {
+    ['stateLoading','stateError','stateRedirect'].forEach(s =>
+      document.getElementById(s).classList.remove('active')
+    );
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showError(msg, debugInfo) {
+    show('stateError');
+    document.getElementById('errMsg').innerHTML = msg;
+    if (debugInfo) {
+      document.getElementById('debugBox').innerHTML = debugInfo;
+    }
+  }
+
+  (function init() {
+    // Baca parameter dari berbagai sumber
+    var fullUrl   = window.location.href;
+    var search    = window.location.search;
+    var hash      = window.location.hash;
+
+    // Coba parse dari search string normal
+    var p     = new URLSearchParams(search);
+    var role  = p.get('role');
+    var token = p.get('token');
+
+    // Fallback: kalau search kosong, coba parse dari hash (#?role=PJ&token=xxx)
+    if ((!role || !token) && hash && hash.includes('role=')) {
+      var hashParams = new URLSearchParams(hash.replace(/^#\??/, ''));
+      role  = hashParams.get('role')  || role;
+      token = hashParams.get('token') || token;
+    }
+
+    // Fallback: regex langsung dari full URL
+    if (!role) {
+      var rm = fullUrl.match(/[?&#]role=([^&#]+)/);
+      if (rm) role = decodeURIComponent(rm[1]);
+    }
+    if (!token) {
+      var tm = fullUrl.match(/[?&#]token=([^&#]+)/);
+      if (tm) token = decodeURIComponent(tm[1]);
+    }
+
+    var debugInfo =
+      '<span>URL:</span> <span class="ok">' + fullUrl + '</span><br>' +
+      '<span>search:</span> ' + (search || '<span class="err">(kosong)</span>') + '<br>' +
+      '<span>hash:</span> '   + (hash   || '<span class="err">(kosong)</span>') + '<br>' +
+      '<span>role:</span> '   + (role   ? '<span class="ok">' + role  + '</span>' : '<span class="err">tidak ditemukan</span>') + '<br>' +
+      '<span>token:</span> '  + (token  ? '<span class="ok">' + token + '</span>' : '<span class="err">tidak ditemukan</span>');
+
+    if (!role || !token) {
+      showError('Parameter tidak terbaca dari URL.<br>Lihat detail di bawah:', debugInfo);
+      return;
+    }
+
+    if (!['DLG','PJ'].includes(role)) {
+      showError('Role tidak dikenali: <b>' + role + '</b>', debugInfo);
+      return;
+    }
+
+    // Valid — redirect
+    show('stateRedirect');
+
+    var dest = GAS_URL
+      + '?action=verify'
+      + '&role='  + encodeURIComponent(role)
+      + '&token=' + encodeURIComponent(token);
+
+    setTimeout(function() { window.location.href = dest; }, 1300);
+  })();
+</script>
+</body>
+</html>

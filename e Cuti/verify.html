@@ -5,212 +5,294 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Verifikasi e-Cuti | Puskesmas Panjatan I</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --ink:       #0a0f1e;
-      --ink-soft:  #64748b;
-      --surface:   #f8fafc;
-      --jade:      #005930;
-      --jade-lite: #dcfce7;
-      --cobalt:    #003f8a;
-      --cobalt-lite:#dbeafe;
-      --rose-lite: #ffe4e6;
-      --white:     #ffffff;
-      --border:    rgba(0,0,0,0.07);
-      --r-card:    20px;
-      --r-btn:     14px;
+      --slate-50:  #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+      --slate-500: #64748b; --slate-600: #475569; --slate-800: #1e293b; --slate-900: #0f172a;
+      --emerald-500: #10b981; --emerald-600: #059669; --emerald-50:  #ecfdf5;
+      --rose-500: #f43f5e; --rose-600: #e11d48; --rose-50:  #fff1f2;
+      --blue-500: #3b82f6; --blue-50:  #eff6ff;
+      --radius-lg: 24px; --radius-md: 16px; --radius-sm: 12px;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f4f8; color: var(--ink); -webkit-font-smoothing: antialiased; }
+    html, body {
+      height: 100%; font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--slate-50); color: var(--slate-900);
+      -webkit-font-smoothing: antialiased;
+    }
     body {
       min-height: 100dvh; display: flex; flex-direction: column;
       align-items: center; justify-content: center; padding: 24px 16px;
       position: relative; overflow-x: hidden;
     }
     body::before {
-      content: ''; position: fixed; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(0,63,138,0.08) 0%, transparent 60%),
-                  radial-gradient(ellipse 60% 50% at 80% 100%, rgba(0,89,48,0.07) 0%, transparent 60%);
+      content: ''; position: fixed; top: -10%; left: -10%; width: 120%; height: 120%;
+      background: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.04), transparent 50%),
+                  radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.04), transparent 50%);
       pointer-events: none; z-index: 0;
     }
-    .shell { position: relative; z-index: 1; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
-    .badge-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; opacity: 0; animation: fadeUp .5s .05s ease forwards; }
-    .badge-logo { width: 40px; height: 40px; background: var(--cobalt); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(0,63,138,.25); flex-shrink: 0; }
-    .badge-text { text-align: left; }
-    .badge-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -.2px; }
-    .badge-text span { font-size: 11px; color: var(--ink-soft); font-weight: 500; }
-    .card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.07); overflow: hidden; opacity: 0; animation: fadeUp .5s .15s ease forwards; }
-    .card-stripe { height: 3px; background: linear-gradient(90deg, var(--cobalt) 0%, var(--jade) 100%); }
+    
+    .container { position: relative; z-index: 1; width: 100%; max-width: 440px; animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    /* Header Brand */
+    .header-brand { text-align: center; margin-bottom: 24px; }
+    .header-brand .logo-icon { font-size: 28px; margin-bottom: 8px; }
+    .header-brand h1 { font-size: 15px; font-weight: 700; color: var(--slate-900); letter-spacing: -0.3px; }
+    .header-brand p { font-size: 13px; color: var(--slate-500); font-weight: 500; }
 
-    /* States */
-    .state { display: none; }
-    .state.active { display: block; }
+    /* Card Layout */
+    .card {
+      background: #ffffff; border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+      overflow: hidden; position: relative;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--blue-500), var(--emerald-500));
+    }
+    .card-content { padding: 32px 28px; }
+    
+    .profile-section { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px dashed var(--slate-200); }
+    .avatar { width: 56px; height: 56px; border-radius: var(--radius-md); background: var(--blue-50); color: var(--blue-500); font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .user-info h2 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; line-height: 1.2; text-transform: uppercase; }
+    .nip-badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--slate-500); background: var(--slate-50); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--slate-200); }
+    
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .info-item { display: flex; flex-direction: column; gap: 6px; }
+    .info-item.full { grid-column: 1 / -1; }
+    .info-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate-500); }
+    .info-value { font-size: 14px; font-weight: 600; color: var(--slate-900); line-height: 1.5; }
+    
+    .tag { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; width: fit-content; }
+    .tag-blue { background: var(--blue-50); color: var(--blue-500); }
+    .tag-emerald { background: var(--emerald-50); color: var(--emerald-600); }
+    .reason-box { background: var(--slate-50); border: 1px solid var(--slate-200); padding: 14px 16px; border-radius: var(--radius-sm); font-size: 13px; color: var(--slate-800); font-style: italic; line-height: 1.6; }
 
-    .state-wrap { padding: 40px 28px; text-align: center; }
+    /* Buttons */
+    .actions { display: flex; gap: 12px; }
+    .btn { flex: 1; display: flex; align-items: center; justify-content: center; padding: 14px; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; }
+    .btn-reject { background: var(--rose-50); color: var(--rose-600); }
+    .btn-reject:hover { background: #ffe4e6; transform: translateY(-1px); }
+    .btn-approve { background: var(--emerald-500); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+    .btn-approve:hover { background: var(--emerald-600); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
 
-    /* Loading */
-    .spinner-ring { width: 48px; height: 48px; border: 3px solid #e2e8f0; border-top-color: var(--cobalt); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 16px; }
-    .loader-text { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+    .state-screen { display: none; padding: 40px 20px; text-align: center; }
+    .spinner { width: 44px; height: 44px; border: 3px solid var(--slate-100); border-top-color: var(--blue-500); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    
+    .result-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .icon-success { background: var(--emerald-50); color: var(--emerald-600); }
+    .icon-error { background: var(--rose-50); color: var(--rose-600); }
+    .result-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--slate-900); }
+    .result-desc { font-size: 14px; color: var(--slate-500); line-height: 1.6; margin-bottom: 32px; }
+    
+    .btn-close { background: var(--slate-900); color: white; width: 100%; padding: 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s; }
+    .btn-close:hover { background: var(--slate-800); }
+    .btn-close:disabled { opacity: 0.7; cursor: not-allowed; }
+    
+    .close-hint { display: none; margin-top: 16px; padding: 12px 14px; background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); font-size: 12px; color: var(--slate-600); font-weight: 500; line-height: 1.5; text-align: left; animation: fadeIn 0.4s ease; }
 
-    /* Error */
-    .icon-wrap { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; }
-    .icon-wrap.error { background: var(--rose-lite); }
-    .icon-wrap.success { background: var(--jade-lite); }
-    .state-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
-    .state-desc { font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 20px; }
-
-    /* Debug box */
-    .debug-box { background: #1e293b; color: #94a3b8; font-family: 'JetBrains Mono', monospace; font-size: 10px; border-radius: 10px; padding: 12px 14px; text-align: left; margin-bottom: 16px; line-height: 1.8; word-break: break-all; }
-    .debug-box .ok { color: #4ade80; }
-    .debug-box .err { color: #f87171; }
-
-    /* Redirect */
-    .progress-track { width: 100%; height: 3px; background: #e2e8f0; border-radius: 99px; margin-top: 20px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--cobalt), var(--jade)); border-radius: 99px; animation: prog 1.3s cubic-bezier(.4,0,.2,1) forwards; }
-
-    /* Footer */
-    .footer-card { background: var(--white); border-radius: var(--r-card); border: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; opacity: 0; animation: fadeUp .5s .25s ease forwards; }
-    .footer-left { font-size: 11px; color: var(--ink-soft); font-weight: 500; line-height: 1.4; }
-    .footer-left strong { display: block; color: var(--ink); font-weight: 700; font-size: 12px; }
-    .secure-chip { display: flex; align-items: center; gap: 5px; background: var(--jade-lite); color: var(--jade); font-size: 10px; font-weight: 700; padding: 5px 10px; border-radius: 8px; white-space: nowrap; flex-shrink: 0; }
-
-    .btn-back { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; color: var(--ink-soft); border: 1px solid #e2e8f0; border-radius: var(--r-btn); padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes prog { from { width: 0; } to { width: 100%; } }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } .shell, .card, .footer-card { opacity: 1 !important; } }
   </style>
 </head>
 <body>
-<div class="shell">
 
-  <div class="badge-row">
-    <div class="badge-logo">🏥</div>
-    <div class="badge-text">
-      <strong>Puskesmas Panjatan I</strong>
-      <span>Sistem e-Cuti Digital · Kulon Progo</span>
-    </div>
+<div class="container">
+  
+  <div class="header-brand">
+    <div class="logo-icon">🏥</div>
+    <h1>Puskesmas Panjatan I</h1>
+    <p>Sistem Persetujuan e-Cuti</p>
   </div>
 
   <div class="card">
-    <div class="card-stripe"></div>
+    <!-- Loading Screen (Initial Load) -->
+    <div class="state-screen" id="loadingState" style="display: block;">
+      <div class="spinner"></div>
+      <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 6px;">Menarik Data</h3>
+      <p style="font-size: 13px; color: var(--slate-500);">Menghubungkan ke server dengan aman...</p>
+    </div>
 
-    <!-- Loading -->
-    <div id="stateLoading" class="state active">
-      <div class="state-wrap">
-        <div class="spinner-ring"></div>
-        <p class="loader-text">Memverifikasi tautan…</p>
+    <!-- Main Content UI -->
+    <div class="card-content" id="mainUI" style="display: none;">
+      <div class="profile-section">
+        <div class="avatar" id="val_avatar">-</div>
+        <div class="user-info">
+          <h2 id="val_nama">Memuat...</h2>
+          <div class="nip-badge">NIP. <span id="val_nip">...</span></div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Kapasitas Anda</span>
+          <span class="tag tag-blue" id="val_role">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Durasi Cuti</span>
+          <span class="tag tag-emerald"><span id="val_durasi">-</span> Hari</span>
+        </div>
+        <div class="info-item full">
+          <span class="info-label">Jenis Cuti</span>
+          <span class="info-value" id="val_jenis">-</span>
+        </div>
+        <div class="info-item full">
+          <span class="info-label">Tanggal Pelaksanaan</span>
+          <span class="info-value" id="val_tanggal" style="color: var(--blue-500); font-weight: 700;">-</span>
+        </div>
+        <div class="info-item full">
+          <span class="info-label">Keterangan / Alasan</span>
+          <div class="reason-box" id="val_alasan">"..."</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-reject" onclick="submitDecision('reject')">Tolak</button>
+        <button class="btn btn-approve" onclick="submitDecision('approve')">Setujui Permohonan</button>
       </div>
     </div>
 
-    <!-- Error -->
-    <div id="stateError" class="state">
-      <div class="state-wrap">
-        <div class="icon-wrap error">⚠️</div>
-        <p class="state-title">Tautan Tidak Valid</p>
-        <p class="state-desc" id="errMsg">Link tidak ditemukan atau sudah kadaluwarsa.</p>
-        <!-- DEBUG BOX: hapus setelah masalah terselesaikan -->
-        <div class="debug-box" id="debugBox"></div>
-        <a class="btn-back" href="https://puskesmaspanjatansatu.github.io/portal-digital/">← Kembali ke Portal</a>
-      </div>
+    <!-- Processing Submition Screen -->
+    <div class="state-screen" id="processingState">
+      <div class="spinner"></div>
+      <h3 style="font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 6px;">Memproses Data</h3>
+      <p style="font-size: 13px; color: var(--slate-500);">Mohon tunggu sebentar, persetujuan Anda sedang dikirim...</p>
     </div>
 
-    <!-- Redirect -->
-    <div id="stateRedirect" class="state">
-      <div class="state-wrap">
-        <div class="icon-wrap success">✅</div>
-        <p class="state-title">Tautan Terverifikasi</p>
-        <p class="state-desc">Mengarahkan ke halaman verifikasi…</p>
-        <div class="progress-track"><div class="progress-fill"></div></div>
+    <!-- Result Screen -->
+    <div class="state-screen" id="resultState">
+      <div class="result-icon icon-success" id="resIcon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <div class="result-title" id="resTitle">Disetujui</div>
+      <div class="result-desc" id="resDesc">Permohonan cuti telah berhasil disetujui.<br>Anda dapat menutup halaman ini sekarang.</div>
+      
+      <button class="btn-close" id="btnClose" onclick="closeWindow()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        Tutup Halaman
+      </button>
+      <div class="close-hint" id="closeHint">
+        <span style="font-size: 14px; margin-right: 4px;">💡</span> <b>Info:</b> Halaman ini dijalankan di dalam browser aplikasi (seperti WhatsApp) yang memblokir perintah tutup otomatis. <b>Silakan tekan ikon "X" atau tombol kembali (back) pada HP Anda secara manual.</b>
       </div>
     </div>
 
   </div>
-
-  <div class="footer-card">
-    <div class="footer-left">
-      <strong>e-Cuti Puskesmas Panjatan I</strong>
-      Sistem Manajemen Cuti Kepegawaian
-    </div>
-    <div class="secure-chip">🔒 Terenkripsi</div>
-  </div>
-
 </div>
 
 <script>
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwTENw1edMRLAPWIRck5ZfCnResjeq3jYjKXkiVRJoVPHqOVYmOtROxF1anUoD8m0tm/exec';
+  // ====================================================================================
+  // 🔴 PENTING: GANTI DENGAN URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA YANG TERBARU
+  const GAS_URL = 'URL_WEBAPP_GAS_ANDA_DISINI';
+  // ====================================================================================
 
-  function show(id) {
-    ['stateLoading','stateError','stateRedirect'].forEach(s =>
-      document.getElementById(s).classList.remove('active')
-    );
-    document.getElementById(id).classList.add('active');
-  }
+  const p = new URLSearchParams(window.location.search);
+  const role = p.get('role');
+  const token = p.get('token');
 
-  function showError(msg, debugInfo) {
-    show('stateError');
-    document.getElementById('errMsg').innerHTML = msg;
-    if (debugInfo) {
-      document.getElementById('debugBox').innerHTML = debugInfo;
-    }
-  }
-
-  (function init() {
-    // Baca parameter dari berbagai sumber
-    var fullUrl   = window.location.href;
-    var search    = window.location.search;
-    var hash      = window.location.hash;
-
-    // Coba parse dari search string normal
-    var p     = new URLSearchParams(search);
-    var role  = p.get('role');
-    var token = p.get('token');
-
-    // Fallback: kalau search kosong, coba parse dari hash (#?role=PJ&token=xxx)
-    if ((!role || !token) && hash && hash.includes('role=')) {
-      var hashParams = new URLSearchParams(hash.replace(/^#\??/, ''));
-      role  = hashParams.get('role')  || role;
-      token = hashParams.get('token') || token;
-    }
-
-    // Fallback: regex langsung dari full URL
-    if (!role) {
-      var rm = fullUrl.match(/[?&#]role=([^&#]+)/);
-      if (rm) role = decodeURIComponent(rm[1]);
-    }
-    if (!token) {
-      var tm = fullUrl.match(/[?&#]token=([^&#]+)/);
-      if (tm) token = decodeURIComponent(tm[1]);
-    }
-
-    var debugInfo =
-      '<span>URL:</span> <span class="ok">' + fullUrl + '</span><br>' +
-      '<span>search:</span> ' + (search || '<span class="err">(kosong)</span>') + '<br>' +
-      '<span>hash:</span> '   + (hash   || '<span class="err">(kosong)</span>') + '<br>' +
-      '<span>role:</span> '   + (role   ? '<span class="ok">' + role  + '</span>' : '<span class="err">tidak ditemukan</span>') + '<br>' +
-      '<span>token:</span> '  + (token  ? '<span class="ok">' + token + '</span>' : '<span class="err">tidak ditemukan</span>');
-
+  async function loadData() {
     if (!role || !token) {
-      showError('Parameter tidak terbaca dari URL.<br>Lihat detail di bawah:', debugInfo);
-      return;
+      return showError('Parameter link tidak lengkap atau salah. Pastikan Anda membuka link dari WhatsApp.');
     }
 
-    if (!['DLG','PJ'].includes(role)) {
-      showError('Role tidak dikenali: <b>' + role + '</b>', debugInfo);
-      return;
+    try {
+      const response = await fetch(`${GAS_URL}?action=api_verify&role=${role}&token=${token}&t=${Date.now()}`);
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById('val_avatar').innerText = data.pemohon.charAt(0).toUpperCase();
+        document.getElementById('val_nama').innerText = data.pemohon;
+        document.getElementById('val_nip').innerText = data.nip;
+        document.getElementById('val_role').innerText = data.role === 'PJ' ? 'PJ Unit / Atasan' : 'Delegasi Tugas';
+        document.getElementById('val_durasi').innerText = data.durasi;
+        document.getElementById('val_jenis').innerText = data.jenis;
+        document.getElementById('val_tanggal').innerText = data.tanggal;
+        document.getElementById('val_alasan').innerText = `"${data.alasan}"`;
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('mainUI').style.display = 'block';
+      } else {
+        showError(data.message);
+      }
+    } catch (e) {
+      showError('Gagal terhubung ke server. Pastikan koneksi internet Anda stabil.');
     }
+  }
 
-    // Valid — redirect
-    show('stateRedirect');
+  async function submitDecision(action) {
+    document.getElementById('mainUI').style.display = 'none';
+    document.getElementById('processingState').style.display = 'block';
 
-    var dest = GAS_URL
-      + '?action=verify'
-      + '&role='  + encodeURIComponent(role)
-      + '&token=' + encodeURIComponent(token);
+    try {
+      const response = await fetch(`${GAS_URL}?action=api_decide&role=${role}&token=${token}&decision=${action}&t=${Date.now()}`);
+      const data = await response.json();
+      
+      document.getElementById('processingState').style.display = 'none';
+      document.getElementById('resultState').style.display = 'block';
+      const iconEl = document.getElementById('resIcon');
 
-    setTimeout(function() { window.location.href = dest; }, 1300);
-  })();
+      if(data.success) {
+        // Berhasil
+        iconEl.innerHTML = action === 'approve' 
+          ? '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' 
+          : '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+        iconEl.className = action === 'approve' ? 'result-icon icon-success' : 'result-icon icon-error';
+        
+        document.getElementById('resTitle').innerHTML = action === 'approve' ? 'Disetujui' : 'Ditolak';
+        document.getElementById('resDesc').innerHTML = action === 'approve' 
+          ? "Permohonan cuti telah berhasil disetujui.<br>Anda dapat menutup halaman ini sekarang."
+          : "Permohonan cuti telah ditolak.<br>Anda dapat menutup halaman ini sekarang.";
+      } else {
+        // Server Validation Failed
+        showResultError('Gagal Diproses', data.message);
+      }
+    } catch (e) {
+      // System Failed
+      showResultError('Terjadi Kesalahan', 'Koneksi terputus saat memproses data.');
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('loadingState').style.display = 'none';
+    showResultError('Akses Ditolak', msg);
+    document.getElementById('resultState').style.display = 'block';
+    document.getElementById('btnClose').style.display = 'none';
+  }
+
+  function showResultError(title, msg) {
+    document.getElementById('processingState').style.display = 'none';
+    document.getElementById('resultState').style.display = 'block';
+    const iconEl = document.getElementById('resIcon');
+    iconEl.innerHTML = '<span style="font-weight:900;font-size:32px;">!</span>';
+    iconEl.className = 'result-icon icon-error';
+    iconEl.style.background = '#fef3c7'; iconEl.style.color = '#b45309'; 
+    document.getElementById('resTitle').innerHTML = title;
+    document.getElementById('resDesc').innerHTML = msg;
+  }
+
+  function closeWindow() {
+    const btn = document.getElementById('btnClose');
+    const originalContent = btn.innerHTML;
+    
+    // Ubah tampilan tombol jadi loading
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg> Menutup...';
+    btn.disabled = true;
+
+    try {
+      window.open('', '_self').close();
+      window.close();
+    } catch (e) {}
+
+    setTimeout(() => {
+      btn.innerHTML = originalContent;
+      btn.disabled = false;
+      document.getElementById('closeHint').style.display = 'block';
+    }, 800);
+  }
+
+  // Mulai memuat data seketika halaman dibuka
+  window.onload = loadData;
 </script>
 </body>
 </html>

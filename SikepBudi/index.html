@@ -4,23 +4,13 @@
 
 <meta charset="UTF-8">
 <meta name="viewport"
-content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
 
-<title>
-Sistem Informasi Keuangan BLUD | Puskesmas Panjatan I
-</title>
+<title>Sistem Keuangan BLUD</title>
 
-<meta name="theme-color" content="#16a34a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<link rel="manifest" href="manifest.json">
-
-<link rel="preconnect" href="https://script.google.com">
+<meta name="theme-color" content="#1e293b">
 
 <style>
-
-/* RESET */
 
 *{
 margin:0;
@@ -36,46 +26,26 @@ font-family:'Segoe UI',sans-serif;
 background:#020617;
 }
 
-body{
-position:fixed;
-inset:0;
-}
-
-/* IFRAME */
-
 iframe{
 position:fixed;
 inset:0;
 width:100%;
 height:100%;
-border:none;
+border:0;
 }
 
-/* ========================= */
-/* SPLASH SCREEN */
-/* ========================= */
+/* LOADER */
 
 #loader{
-
 position:fixed;
 inset:0;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-background:
-linear-gradient(
-135deg,
-#052e16,
-#065f46,
-#16a34a
-);
-
 z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
 
+background:radial-gradient(circle at top,#1e293b,#020617 70%);
 transition:.5s;
-
 }
 
 .hide{
@@ -83,84 +53,107 @@ opacity:0;
 visibility:hidden;
 }
 
-/* CARD */
-
 .card{
-
 width:90%;
-max-width:380px;
-
+max-width:360px;
 padding:35px 25px;
-
 text-align:center;
-
 border-radius:30px;
 
-background:rgba(255,255,255,.12);
-
+background:rgba(148,163,184,.08);
 backdrop-filter:blur(20px);
+border:1px solid #94a3b833;
 
-border:1px solid #ffffff22;
-
-box-shadow:0 20px 60px rgba(0,0,0,.3);
-
-color:white;
-
+color:#f1f5f9;
+box-shadow:0 20px 60px #0008;
 }
 
-/* ICON MONEY */
+/* =====================
+   KEUANGAN ANIMATION
+===================== */
 
 .icon{
-
-width:95px;
-height:95px;
-
+width:120px;
+height:120px;
 margin:auto;
-
-border-radius:30px;
-
+position:relative;
 display:flex;
 align-items:center;
 justify-content:center;
-
-background:
-linear-gradient(135deg,#22c55e,#4ade80);
-
-box-shadow:0 0 40px #22c55e88;
-
-animation:float 3s infinite;
-
-font-size:40px;
-
 }
 
-/* FLOAT */
+/* grafik batang */
+
+.chart{
+display:flex;
+gap:6px;
+align-items:flex-end;
+height:60px;
+}
+
+.bar{
+width:12px;
+background:#facc15;
+border-radius:4px;
+animation:grow 1.5s infinite ease-in-out;
+}
+
+.bar:nth-child(2){height:40px;animation-delay:.2s;}
+.bar:nth-child(3){height:55px;animation-delay:.4s;}
+.bar:nth-child(4){height:70px;animation-delay:.6s;}
+
+/* koin */
+
+.coin{
+position:absolute;
+top:-10px;
+right:10px;
+width:35px;
+height:35px;
+border-radius:50%;
+background:#facc15;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:#1e293b;
+box-shadow:0 0 15px #facc1588;
+animation:float 2s infinite;
+}
+
+/* animasi */
+
+@keyframes grow{
+0%{transform:scaleY(.3);}
+50%{transform:scaleY(1);}
+100%{transform:scaleY(.5);}
+}
 
 @keyframes float{
-50%{ transform:translateY(-8px); }
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
 }
 
 /* TEXT */
 
 h1{
 margin-top:20px;
-font-size:26px;
-font-weight:800;
+font-size:24px;
+letter-spacing:2px;
+color:#facc15;
 }
 
 p{
 margin-top:12px;
-color:#dcfce7;
-line-height:1.7;
+color:#e2e8f0;
+line-height:1.6;
 }
 
-/* TAG */
-
-.tag{
-margin-top:10px;
-font-size:12px;
-color:#bbf7d0;
-font-style:italic;
+.location{
+margin-top:18px;
+font-size:13px;
+letter-spacing:2px;
+color:#cbd5f5;
 }
 
 /* PROGRESS */
@@ -168,96 +161,21 @@ font-style:italic;
 .progress{
 margin-top:25px;
 height:7px;
-background:#ffffff33;
 border-radius:20px;
+background:#1e293b;
 overflow:hidden;
 }
 
-.bar{
+.progressbar{
 height:100%;
 width:40%;
-background:white;
+background:#facc15;
 animation:load 1.2s infinite;
 }
 
 @keyframes load{
-0%{ transform:translateX(-120%); }
-100%{ transform:translateX(300%); }
-}
-
-/* ========================= */
-/* BACK HOME BUTTON */
-/* ========================= */
-
-.back-home{
-
-position:fixed;
-right:20px;
-bottom:20px;
-
-width:60px;
-height:60px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-border-radius:50%;
-
-background:linear-gradient(135deg,#16a34a,#22c55e);
-
-color:white;
-text-decoration:none;
-font-size:26px;
-
-z-index:99999;
-
-box-shadow:0 12px 30px rgba(0,0,0,.35);
-
-overflow:hidden;
-transition:.2s;
-
-}
-
-/* CLICK EFFECT */
-.back-home:active{
-transform:scale(.9);
-}
-
-/* RIPPLE */
-.back-home::after{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-background:rgba(255,255,255,.4);
-border-radius:50%;
-transform:scale(0);
-opacity:0;
-transition:.4s;
-}
-
-.back-home:active::after{
-transform:scale(1.6);
-opacity:1;
-transition:0s;
-}
-
-/* HOVER */
-.back-home:hover{
-transform:translateY(-5px) scale(1.05);
-}
-
-/* MOBILE */
-
-@media(max-width:600px){
-.back-home{
-right:15px;
-bottom:15px;
-width:52px;
-height:52px;
-font-size:22px;
-}
+0%{transform:translateX(-120%)}
+100%{transform:translateX(300%)}
 }
 
 </style>
@@ -266,39 +184,47 @@ font-size:22px;
 
 <body>
 
-<!-- IFRAME APP -->
+<!-- IFRAME -->
 
 <iframe
 id="app"
-src="https://script.google.com/a/~/macros/s/AKfycby-BXYhuFMwv68DtmU6aK9pg1j_0xxL87-NLh85mTrBue-bDL6ieBrtVFYZTZhHG8S7/exec"
+src="https://script.google.com/macros/s/AKfycbzrBhpP8mj_UuJIs-QlIj3PyEPg4M9SxfSAByRAPY49JpI_BeGvIYOh-dRLOP2paZve5g/exec"
+allow="geolocation *;camera *;microphone *"
 loading="eager">
 </iframe>
 
-<!-- LOADER -->
+<!-- LOADING -->
 
 <div id="loader">
 
 <div class="card">
 
 <div class="icon">
-💰
+
+<div class="chart">
+<div class="bar" style="height:30px"></div>
+<div class="bar"></div>
+<div class="bar"></div>
+<div class="bar"></div>
 </div>
 
-<h1>
-Sistem Keuangan BLUD
-</h1>
+<div class="coin">Rp</div>
+
+</div>
+
+<h1>KEUANGAN BLUD</h1>
 
 <p>
-Manajemen Keuangan Digital<br>
-Puskesmas Panjatan I
+PUSPANSA<br>
+Anggaran • Kas • Laporan
 </p>
 
-<div class="tag">
-Transparansi • Akuntabilitas • Efisiensi
+<div class="location">
+PUSKESMAS PANJATAN I
 </div>
 
 <div class="progress">
-<div class="bar"></div>
+<div class="progressbar"></div>
 </div>
 
 <p>
@@ -316,31 +242,15 @@ const loader = document.getElementById("loader");
 document.getElementById("app").onload=function(){
 setTimeout(()=>{
 loader.classList.add("hide");
-},400);
+},300);
 };
 
-// fallback anti stuck
+// fallback
 setTimeout(()=>{
 loader.classList.add("hide");
 },6000);
 
-// PWA
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("sw.js");
-}
-
 </script>
-
-<!-- BACK HOME -->
-
-<a 
-href="https://puskesmaspanjatansatu.github.io/portal-digital/"
-class="back-home"
-title="Kembali ke Portal Digital">
-
-🏠
-
-</a>
 
 </body>
 </html>

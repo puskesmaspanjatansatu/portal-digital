@@ -515,6 +515,42 @@ document
 
 }
 
+/* JEMBATAN LINK EKSTERNAL (Fix Firefox NS_ERROR_DOM_COOP_FAILED)
+   Portal GAS di dalam iframe mengirim permintaan buka-link ke halaman ini.
+   Karena halaman ini TIDAK ter-sandbox, tab baru yang dibuka dari sini
+   bersih dari flag sandbox → situs ber-COOP (drive.google.com, kemkes.go.id,
+   SRIKANDI) terbuka normal di semua browser. */
+window.addEventListener('message', function(ev){
+
+  var d = ev.data;
+  if (!d || typeof d !== 'object') return;
+
+  // Hanya terima pesan dari konteks Google Apps Script
+  var okOrigin = /https:\/\/([a-z0-9-]+\.)*(googleusercontent\.com|google\.com)$/i.test(ev.origin || '');
+  if (!okOrigin) return;
+
+  if (d.type === 'portal-shell-ping') {
+    // Balas ke frame pengirim: wrapper siap menerima permintaan buka-link
+    try { ev.source.postMessage({ type: 'portal-shell-pong' }, '*'); } catch(e){}
+    return;
+  }
+
+  if (d.type === 'portal-open-url') {
+    var url = String(d.url || '').trim();
+    if (!/^https?:\/\//i.test(url)) return; // keamanan: hanya http/https
+
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ a.remove(); }, 100);
+  }
+
+});
+
 if ('serviceWorker' in navigator) {
 
 window.addEventListener('load', () => {

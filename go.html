@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Membuka Tautan... | Portal Digital Puskesmas Panjatan I</title>
+<meta name="robots" content="noindex">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;font-family:'Segoe UI',sans-serif}
+body{
+  display:flex;justify-content:center;align-items:center;
+  background:linear-gradient(135deg,#0c1445,#1d4ed8,#0ea5e9);
+  color:#fff;text-align:center;padding:24px;
+}
+.card{
+  width:100%;max-width:380px;padding:34px 24px;border-radius:28px;
+  background:rgba(255,255,255,.08);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+.spin{
+  width:44px;height:44px;margin:0 auto 18px;border-radius:50%;
+  border:4px solid rgba(255,255,255,.2);border-top-color:#38bdf8;
+  animation:sp 1s linear infinite;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+h1{font-size:1.1rem;font-weight:700}
+p{margin-top:10px;font-size:.85rem;color:#dbeafe;word-break:break-all;line-height:1.6}
+a.manual{
+  display:inline-block;margin-top:18px;padding:10px 22px;border-radius:99px;
+  background:linear-gradient(135deg,#38bdf8,#2563eb);color:#fff;
+  text-decoration:none;font-weight:700;font-size:.85rem;
+  box-shadow:0 8px 20px rgba(37,99,235,.4);
+}
+.err{color:#fecaca}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="spin" id="spin"></div>
+  <h1 id="msg">Membuka tautan...</h1>
+  <p id="dest"></p>
+  <a class="manual" id="manual" href="#" style="display:none">Buka Manual</a>
+</div>
+
+<script>
+(function(){
+  var params = new URLSearchParams(location.search);
+  var raw = params.get('u') || '';
+  var msg = document.getElementById('msg');
+  var dest = document.getElementById('dest');
+  var manual = document.getElementById('manual');
+  var spin = document.getElementById('spin');
+
+  var url = '';
+  try { url = decodeURIComponent(raw); } catch(e) { url = raw; }
+  url = (url || '').trim();
+
+  // Keamanan: hanya izinkan http/https (tolak javascript:, data:, dll.)
+  if (!/^https?:\/\//i.test(url)) {
+    spin.style.display = 'none';
+    msg.textContent = 'Tautan tidak valid';
+    msg.className = 'err';
+    dest.textContent = 'Parameter tautan kosong atau tidak diizinkan.';
+    return;
+  }
+
+  dest.textContent = url;
+  manual.href = url;
+
+  // Redirect sebagai navigasi tab normal (bebas dari sandbox & COOP opener)
+  setTimeout(function(){
+    location.replace(url);
+    // Fallback: jika redirect diblokir/tidak jalan, tampilkan tombol manual
+    setTimeout(function(){
+      spin.style.display = 'none';
+      msg.textContent = 'Klik tombol di bawah jika halaman tidak terbuka otomatis:';
+      manual.style.display = 'inline-block';
+    }, 2500);
+  }, 150);
+})();
+</script>
+</body>
+</html>

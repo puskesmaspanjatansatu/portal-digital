@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Digital Puskesmas Panjatan I</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Custom Utilities */
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; overflow-x: hidden; }
+    
+    /* Animations */
+    .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+    
+    /* Glass Effect for Navbar */
+    .glass { 
+        background: rgba(255, 255, 255, 0.9); 
+        backdrop-filter: blur(12px); 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* Spinner for Loading/Search */
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0D9488; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    /* Toast */
+    #toast-container { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+    .toast { pointer-events: auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    
+    /* Mobile Menu */
+    #mobile-menu { transition: transform 0.3s ease-out; transform: translateX(100%); }
+    #mobile-menu.active { transform: translateX(0); }
+    
+    /* Gallery Scroll Snap */
+    .gallery-track { scroll-snap-type: x mandatory; scroll-behavior: smooth; overflow-x: auto; padding-bottom: 1rem; }
+    .gallery-item { scroll-snap-align: start; min-width: 85vw; max-width: 380px; }
+    @media (min-width: 768px) {
+        .gallery-item { min-width: 300px; max-width: 320px; }
+    }
+    
+    /* Picker Grid for Icons */
+    #icon-picker { 
+      display: grid; 
+      grid-template-columns: repeat(6, 1fr); 
+      gap: 0.5rem;
+    }
+
+    /* Tree View Transitions */
+    .tree-grid {
+        display: grid;
+        transition: grid-template-rows 0.3s ease-out;
+    }
+
+    /* Archive Height Fix (v2) */
+    /* Kunci tinggi container agar panel & iframe Drive tidak terpotong/kolaps */
+    .archive-flex-container {
+        min-height: calc(100vh - 190px);
+        min-height: calc(100dvh - 190px); /* dvh: aman untuk address bar mobile */
+    }
+    @media (min-width: 768px) {
+        .archive-flex-container {
+            height: calc(100vh - 190px);
+            height: calc(100dvh - 190px);
+            min-height: 520px; /* jaga-jaga layar pendek */
+        }
+    }
+    /* Iframe Drive butuh tinggi pasti agar tidak terpotong */
+    #archive-content-area { min-height: 420px; }
+    #drive-iframe-view, #drive-iframe-view iframe { min-height: 420px; }
+    @media (max-width: 767px) {
+        /* Mobile: panel bertumpuk. Batasi tree & beri tinggi cukup untuk isi Drive */
+        .archive-tree-panel { max-height: 45vh; max-height: 45dvh; }
+        #archive-content-area, #drive-iframe-view, #drive-iframe-view iframe {
+            min-height: 65vh; min-height: 65dvh;
+        }
+    }
+    
+    /* Custom Classes for Archive Folder Styling */
+    /* Warna Standar & Publik */
+    .folder-public-icon { color: #f97316; } /* orange-500 */
+    .folder-private-icon { color: #7c3aed; } /* violet-600 */
+    .folder-root-icon { color: #0d9488; } /* teal-600 */
+
+    /* Warna Klaster/Unique Root Folder (NEW) */
+    .klaster-1-icon { color: #ef4444; } /* red-500 */
+    .klaster-2-icon { color: #10b981; } /* emerald-500 (Green) */
+    .klaster-3-icon { color: #3b82f6; } /* blue-500 */
+    .klaster-4-icon { color: #f59e0b; } /* amber-500 (Yellow/Gold) */
+    .klaster-5-icon { color: #ec4899; } /* pink-500 */
+    .klaster-default-icon { color: #94a3b8; } /* slate-400 (Fallback) */
+
+
+    /* Generic Active and Hover Styles - Updated */
+    .folder-item-active { 
+        background-color: #ccfbf1; /* bg-teal-50 */
+        color: #0f766e; /* text-teal-700 */
+        font-weight: 700;
+    }
+    .folder-item-hover:hover:not(.folder-item-active) {
+        background-color: #f3f4f6; /* bg-slate-100 */
+        color: #1e293b; /* text-slate-800 */
+    }
+
+    /* Private Folder Specific Active/Hover */
+    .folder-private-active {
+        background-color: #ede9fe; /* bg-violet-100 */
+        color: #5b21b6; /* text-violet-800 */
+        font-weight: 700;
+    }
+    .folder-private-hover:hover:not(.folder-private-active) {
+        background-color: #f5f3ff; /* bg-violet-50 */
+        color: #475569; /* text-slate-600 */
+    }
+
+  </style>
+</head>
+
+<body class="text-slate-800 antialiased">
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 inset-x-0 z-[60] glass h-16 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer group" onclick="renderPage('home')">
+            <div class="bg-gradient-to-br from-teal-500 to-emerald-600 text-white p-2 rounded-lg shadow-lg group-hover:scale-105 transition-transform">
+                <i class="bi bi-hospital-fill text-lg"></i>
+            </div>
+            <div>
+                <div class="font-bold text-sm leading-none text-slate-800">PORTAL DIGITAL</div>
+                <div class="text-[10px] font-bold text-teal-600 tracking-widest mt-0.5">PUSKESMAS PANJATAN I</div>
+            </div>
+        </div>
+        
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center bg-slate-100/50 p-1 rounded-full border border-slate-200 backdrop-blur-sm mx-auto">
+            <button onclick="renderPage('home')" class="nav-btn px-4 lg:px-6 py-1.5 rounded-full text-xs font-bold transition-all text-slate-500 hover:text-slate-900 whitespace-nowrap" data-page="home">Beranda</button>
+            <button onclick="renderPage('apps')" class="nav-btn px-4 lg:px-6 py-1.5 rounded-full text-xs font-bold transition-all text-slate-500 hover:text-slate-900 whitespace-nowrap" data-page="apps">Aplikasi</button>
+            <button onclick="renderPage('archive')" class="nav-btn px-4 lg:px-6 py-1.5 rounded-full text-xs font-bold transition-all text-slate-500 hover:text-slate-900 whitespace-nowrap" data-page="archive">Arsip</button>
+            <button onclick="renderPage('log')" class="nav-btn px-4 lg:px-6 py-1.5 rounded-full text-xs font-bold transition-all text-slate-500 hover:text-slate-900 whitespace-nowrap" data-page="log">Log Aktivitas</button>
+        </div>
+
+        <!-- Right Side (Auth) -->
+        <div class="flex items-center gap-3">
+            <div id="sync-status" class="hidden lg:flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-full shadow-sm">
+                <div class="spinner w-3 h-3 border-2"></div><span class="text-[10px] font-medium text-slate-400">Sync...</span>
+            </div>
+            <!-- Tombol Paksa Sinkronisasi -->
+            <button onclick="fetchData(true)" class="hidden md:flex items-center justify-center w-10 h-10 bg-white border border-slate-200 rounded-full text-slate-500 hover:bg-slate-100 transition shadow-sm" id="btn-force-refresh" title="Paksa Sinkronisasi Data">
+                <i class="bi bi-arrow-clockwise text-lg"></i>
+            </button>
+
+            <div id="auth-container" class="z-[70]">
+               <!-- Diisi oleh JS: updateAuthUI() -->
+            </div>
+            <button class="md:hidden w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full text-slate-700 hover:bg-slate-200" onclick="toggleMobileMenu()">
+                <i class="bi bi-list text-xl"></i>
+            </button>
+        </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[65] hidden" onclick="toggleMobileMenu()"></div>
+  <div id="mobile-menu" class="fixed top-0 right-0 w-72 h-full bg-white shadow-2xl z-[70] p-6 flex flex-col space-y-4">
+    <div class="flex justify-between items-center pb-4 border-b">
+        <div class="font-bold text-lg text-teal-600">Menu</div>
+        <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-red-500"><i class="bi bi-x-lg text-xl"></i></button>
+    </div>
+    <div class="flex flex-col space-y-2">
+        <button onclick="navigateMobile('home')" class="py-3 px-4 rounded-xl text-left font-bold text-slate-700 hover:bg-slate-50">Beranda</button>
+        <button onclick="navigateMobile('apps')" class="py-3 px-4 rounded-xl text-left font-bold text-slate-700 hover:bg-slate-50">Aplikasi</button>
+        <button onclick="navigateMobile('archive')" class="py-3 px-4 rounded-xl text-left font-bold text-slate-700 hover:bg-slate-50">Arsip</button>
+        <button onclick="navigateMobile('log')" class="py-3 px-4 rounded-xl text-left font-bold text-slate-700 hover:bg-slate-50">Log Aktivitas</button>
+    </div>
+    <div id="mobile-auth-status" class="mt-auto pt-4 border-t"></div>
+  </div>
+
+  <div id="toast-container"></div>
+  
+  <!-- MAIN CONTENT CONTAINER (Max width dan responsive padding) -->
+  <main class="pt-24 pb-20 px-4 max-w-7xl mx-auto min-h-screen relative" id="main-container">
+      <div class="flex flex-col items-center justify-center py-32 text-center" id="loading-state">
+          <div class="w-16 h-16 border-4 border-slate-100 border-t-teal-500 rounded-full animate-spin mb-6"></div>
+          <h3 class="text-xl font-bold text-slate-700">Memuat Portal Digital...</h3>
+          <p class="text-sm text-slate-400 mt-2">Menyiapkan data...</p>
+      </div>
+      
+      <!-- Error State (Hidden by default) -->
+      <div id="error-state" class="hidden flex-col items-center justify-center py-20 text-center">
+          <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mb-4">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-800">Gagal Memuat Data</h3>
+          <p class="text-sm text-slate-500 mt-2 mb-6 max-w-md mx-auto" id="error-message">Terjadi kesalahan saat menghubungi server.</p>
+          <button onclick="location.reload()" class="bg-slate-900 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-800 transition">
+              <i class="bi bi-arrow-clockwise mr-2"></i> Muat Ulang Halaman
+          </button>
+      </div>
+
+      <div id="page-content" class="hidden fade-in"></div>
+  </main>
+  
+  <!-- FOOTER (COPYRIGHT) -->
+  <footer class="bg-white border-t border-slate-100 py-4 mt-8">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+          <p class="text-xs text-slate-500 font-medium">
+              &copy; 2026 Puskesmas Panjatan I. Portal Digital Terintegrasi.
+          </p>
+      </div>
+  </footer>
+
+  <!-- MODALS -->
+  <!-- 1. LOGIN MODAL -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[80] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl relative animate-[fadeIn_0.3s_ease-out]">
+        <button onclick="closeModal('login-modal')" class="absolute top-4 right-4 text-slate-300 hover:text-red-500"><i class="bi bi-x-circle-fill text-2xl"></i></button>
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4"><i class="bi bi-person-lock"></i></div>
+            <h3 class="text-2xl font-bold text-slate-800">Login Pegawai</h3>
+            <p class="text-sm text-slate-400">Akses khusus admin & pegawai</p>
+        </div>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Username</label><input type="text" id="user-nip" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 mt-1" required placeholder="admin atau nip"></div>
+            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Password</label><input type="password" id="user-pass" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 mt-1" required placeholder="password"></div>
+            <button type="submit" id="btn-login" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition shadow-lg">Masuk Sistem</button>
+        </form>
+    </div>
+  </div>
+
+  <!-- 2. LOGOUT CONFIRM -->
+  <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-xs p-6 text-center shadow-2xl scale-95 opacity-0 transition-all duration-300" id="logout-confirm-content">
+      <div class="text-4xl text-red-500 mb-3 mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center"><i class="bi bi-box-arrow-right"></i></div>
+      <h3 class="text-lg font-bold mb-2 text-slate-800">Keluar Sistem?</h3>
+      <p class="text-sm text-slate-500 mb-6">Sesi Anda akan diakhiri.</p>
+      <div class="flex gap-3">
+          <button onclick="closeModal('logout-confirm-modal')" class="flex-1 py-2.5 text-slate-500 font-bold hover:bg-slate-50 rounded-xl border border-slate-200">Batal</button>
+          <button onclick="processLogout()" class="flex-1 bg-red-500 text-white py-2.5 rounded-xl font-bold shadow-lg shadow-red-500/30 hover:bg-red-600">Ya, Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FOLDER MODAL -->
+  <div id="folder-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[80] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeModal('folder-modal')" class="absolute top-4 right-4 text-slate-300 hover:text-red-500"><i class="bi bi-x-circle-fill text-2xl"></i></button>
+        <h3 class="font-bold text-xl mb-6 text-slate-800" id="folder-modal-title">Kelola Folder Arsip</h3>
+        <form onsubmit="handleSaveFolder(event)" class="space-y-4">
+            <input type="hidden" id="folder-id">
+
+            <!-- Folder Type Select -->
+            <div>
+                <label class="text-xs font-bold text-slate-500 block mb-1">Jenis Folder</label>
+                <select id="folder-type" onchange="toggleFolderConfig(this.value)" class="w-full p-3 border rounded-xl bg-slate-50 text-sm">
+                    <option value="single">Folder Tunggal (Arsip Umum/Role)</option>
+                    <option value="mass_employee">Folder Kepegawaian Pribadi (Massal)</option>
+                </select>
+            </div>
+            
+            <!-- Parent Folder Selection (Hanya untuk Single Folder) -->
+            <div id="parent-folder-select-group">
+                <label class="text-xs font-bold text-slate-500 block mb-1">Induk Folder (Parent)</label>
+                <select id="folder-parent" class="w-full p-3 border rounded-xl bg-slate-50 text-sm"></select>
+                <p class="text-[10px] text-slate-400 mt-1">*Pilih "Root Arsip" untuk folder utama, atau biarkan default untuk folder Pegawai Pribadi.</p>
+            </div>
+
+            <!-- Single Folder Config (Default) -->
+            <div id="single-folder-config">
+                <div><label class="text-xs font-bold text-slate-500 block mb-1">Nama Folder</label><input id="folder-name" class="w-full p-3 border rounded-xl text-sm" placeholder="Contoh: SK Kepala Puskesmas"></div>
+                <div><label class="text-xs font-bold text-slate-500 block mb-1">Akses Role/User (Kosongkan jika Publik)</label><input id="folder-role-akses" class="w-full p-3 border rounded-xl text-sm" placeholder="Contoh: Poli Gigi atau nip123"></div>
+            </div>
+
+            <!-- Mass Employee Config (Dikembalikan) -->
+            <div id="mass-employee-config" class="hidden">
+                <div class="mb-4">
+                    <p class="text-[10px] text-teal-600 bg-teal-50 border border-teal-100 p-2 rounded-lg"><i class="bi bi-info-circle-fill mr-1"></i>Folder akan dibuat di Root Folder Kepegawaian khusus, dan aksesnya otomatis diatur per pegawai.</p>
+                </div>
+                <div><label class="text-xs font-bold text-slate-500 block mb-1">Nama Template Folder</label><input id="employee-folder-name" class="w-full p-3 border rounded-xl text-sm" placeholder="Contoh: Berkas Pribadi Tahun 2025"></div>
+                <div>
+                    <label class="text-xs font-bold text-slate-500 block mb-2">Pilih Pegawai (Akses hanya diberikan ke yang dicentang)</label>
+                    <div id="employee-list-checkboxes" class="max-h-48 overflow-y-auto border p-3 rounded-xl bg-slate-50 space-y-2">
+                        <!-- Employee list here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-2 pt-3">
+                <button type="submit" id="btn-save-folder" class="flex-1 bg-teal-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-teal-700">Simpan</button>
+                <button type="button" onclick="prepareDeleteFolder(document.getElementById('folder-id').value)" id="btn-del-folder" class="hidden px-4 bg-red-100 text-red-500 rounded-xl hover:bg-red-200"><i class="bi bi-trash"></i> Hapus</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <!-- NEW MODAL: DELETE FOLDER CONFIRMATION (Lebih Modern) -->
+  <div id="delete-folder-confirm-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[95] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-8 text-center shadow-2xl scale-95 opacity-0 transition-all duration-300" id="delete-folder-confirm-content">
+      <div class="text-6xl text-red-500 mb-4 mx-auto w-16 h-16 rounded-full bg-red-50 flex items-center justify-center"><i class="bi bi-trash-fill"></i></div>
+      <h3 class="text-xl font-bold mb-2 text-slate-800">Hapus Folder Arsip?</h3>
+      <p class="text-sm text-slate-500 mb-6">Anda akan menghapus folder: <br><strong id="folder-to-delete-name" class="text-slate-700"></strong></p>
+      
+      <div class="p-3 bg-orange-50 border border-orange-200 rounded-xl mb-6">
+        <p class="text-xs font-medium text-orange-700 flex items-start gap-2">
+            <i class="bi bi-exclamation-triangle-fill text-lg flex-shrink-0 mt-0.5"></i>
+            <span>PENTING! Dokumen Drive dalam folder ini akan dipindahkan ke Trash. Proses ini <strong class="text-red-600">TIDAK DAPAT DIBATALKAN</strong>.</span>
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+          <button onclick="closeModal('delete-folder-confirm-modal')" class="flex-1 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-xl border border-slate-200">Batal</button>
+          <button onclick="confirmDeleteFolder()" id="btn-confirm-delete-folder" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-red-600/30 hover:bg-red-700 transition">Ya, Hapus Permanen</button>
+      </div>
+      <input type="hidden" id="folder-id-to-delete">
+    </div>
+  </div>
+
+
+  <!-- 4. CRUD APPS MODAL -->
+  <div id="app-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[80] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeModal('app-modal')" class="absolute top-4 right-4 text-slate-300 hover:text-red-500"><i class="bi bi-x-lg text-xl"></i></button>
+        <h3 class="font-bold text-xl mb-6 text-slate-800" id="app-modal-title">Kelola Aplikasi</h3>
+        <form onsubmit="handleSaveApp(event)" class="space-y-4">
+            <input type="hidden" id="app-id">
+            
+            <div><label class="text-xs font-bold text-slate-500 block mb-1">Nama Aplikasi</label><input type="text" id="app-title" class="w-full p-3 border border-slate-200 rounded-xl text-sm" required placeholder="Contoh: Simpus"></div>
+            <div><label class="text-xs font-bold text-slate-500 block mb-1">Deskripsi</label><textarea id="app-desc" rows="2" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="Penjelasan singkat..."></textarea></div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-500 block mb-1">Kategori</label>
+                    <select id="app-category" class="w-full p-3 border rounded-xl text-sm bg-white" required>
+                         <!-- Opsi akan diisi oleh JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-500 block mb-1">Jenis</label>
+                    <select id="app-type" class="w-full p-3 border rounded-xl text-sm bg-white" required>
+                        <option value="Web/Link">Web / Link</option>
+                        <option value="Aplikasi">Aplikasi</option>
+                    </select>
+                </div>
+            </div>
+
+            <div><label class="text-xs font-bold text-slate-500 block mb-1">URL</label><input type="url" id="app-url" placeholder="https://" class="w-full p-3 border border-slate-200 rounded-xl text-sm" required></div>
+            
+            <div><label class="text-xs font-bold text-slate-500 block mb-2">Icon</label><input type="hidden" id="app-icon" required><div id="icon-picker" class="p-2 bg-slate-50 rounded-xl border max-h-40 overflow-y-auto"></div></div>
+            <div><label class="text-xs font-bold text-slate-500 block mb-2">Warna</label><input type="hidden" id="app-color" required><div id="color-picker" class="flex flex-wrap gap-2 p-2 bg-slate-50 rounded-xl border"></div></div>
+
+            <div class="flex gap-2 pt-3">
+                <button type="submit" id="btn-save-app" class="flex-1 bg-teal-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-teal-700">Simpan Aplikasi</button>
+                <button type="button" onclick="delApp(document.getElementById('app-id').value)" id="btn-del-app" class="hidden px-4 bg-red-100 text-red-500 rounded-xl hover:bg-red-200"><i class="bi bi-trash"></i> Hapus</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <!-- 5. CRUD GALLERY MODAL -->
+  <div id="gallery-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[80] hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeModal('gallery-modal')" class="absolute top-4 right-4 text-slate-300 hover:text-red-500"><i class="bi bi-x-lg text-xl"></i></button>
+        <h3 class="font-bold text-xl mb-6 text-slate-800" id="gallery-modal-title">Kelola Galeri</h3>
+        <form onsubmit="handleSaveGallery(event)" class="space-y-4">
+            <input type="hidden" id="gal-id"><input type="hidden" id="gal-file-id">
+            
+            <div><label class="text-xs font-bold text-slate-500 block mb-1">Judul Kegiatan</label><input id="gal-title" class="w-full p-3 border rounded-xl text-sm" required placeholder="Contoh: Vaksinasi Massal"></div>
+            <div><label class="text-xs font-bold text-slate-500 block mb-1">Deskripsi</label><textarea id="gal-desc" rows="2" class="w-full p-3 border border-slate-200 rounded-xl text-sm" placeholder="Penjelasan singkat tentang kegiatan..."></textarea></div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="text-xs font-bold text-slate-500 block mb-1">Tanggal</label><input id="gal-date" class="w-full p-3 border rounded-xl text-sm" type="date" required></div>
+                <div><label class="text-xs font-bold text-slate-500 block mb-1">URL Foto</label><input type="url" id="gal-url" class="w-full p-3 border rounded-xl text-sm" placeholder="Kosongkan jika upload file"></div>
+            </div>
+            
+            <div>
+                <label class="text-xs font-bold text-slate-500 block mb-1">Atau Upload File (File akan disimpan di Drive)</label>
+                <div id="gal-drop-area" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:bg-slate-50 transition-all duration-200 group relative" onclick="document.getElementById('gal-file').click()">
+                    <input type="file" id="gal-file" class="hidden" accept="image/*" onchange="handleGalleryFileSelect(this)">
+                    <div id="gal-file-preview-area">
+                        <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="bi bi-image text-2xl text-slate-400"></i></div>
+                        <p class="text-sm font-bold text-slate-700">Pilih File</p>
+                        <p class="text-xs text-slate-400 mt-1" id="gal-current-status">Gambar saat ini: (Tidak ada)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-2 pt-3">
+                <button type="submit" id="btn-save-gallery" class="flex-1 bg-teal-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-teal-700">Simpan Foto</button>
+                <button type="button" onclick="delGallery(document.getElementById('gal-id').value, document.getElementById('gal-file-id').value)" id="btn-del-gallery" class="hidden px-4 bg-red-100 text-red-500 rounded-xl hover:bg-red-200"><i class="bi bi-trash"></i> Hapus</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+
+  <script>
+    const IS_APPS_SCRIPT = typeof google !== 'undefined' && google.script;
+
+    /* --- HELPER LINK EKSTERNAL (Fix link diblokir/tidak terbuka di sandbox GAS & PWA) --- */
+    // Pastikan URL punya protokol; URL tanpa https:// akan gagal di dalam iframe googleusercontent
+    function normalizeUrl(url) {
+        const u = String(url || '').trim();
+        if (!u || u === '#') return '#';
+        if (/^(https?:|mailto:|tel:|whatsapp:)/i.test(u)) return u;
+        return 'https://' + u.replace(/^\/+/, '');
+    }
+    // Halaman perantara di GitHub Pages (pola sama dengan e-Cuti).
+    // Firefox memblokir tab baru dari iframe sandbox ke situs ber-COOP
+    // (NS_ERROR_DOM_COOP_FAILED, misal: kemkes.go.id, SRIKANDI).
+    // Solusi: buka dulu halaman github.io biasa, lalu redirect ke tujuan.
+    const REDIRECT_GO_PAGE = 'https://puskesmaspanjatansatu.github.io/portal-digital/ePortalDigital/go.html';
+
+    /* --- JEMBATAN KE WRAPPER PWA (Fix Firefox NS_ERROR_DOM_COOP_FAILED) ---
+       Firefox tetap memblokir tab baru yang dibuka dari dalam iframe sandbox
+       menuju situs ber-COOP (drive.google.com, kemkes.go.id, dll.),
+       meskipun sudah lewat halaman perantara.
+       Solusi: minta halaman wrapper GitHub (window.top, TIDAK ter-sandbox)
+       yang membuka tab barunya via postMessage. */
+    let shellBridgeAvailable = false;
+    try {
+        window.addEventListener('message', function(ev) {
+            if (ev.data && ev.data.type === 'portal-shell-pong') {
+                shellBridgeAvailable = true;
+            }
+        });
+        if (window.top !== window.self) {
+            const pingShell = () => {
+                try { window.top.postMessage({ type: 'portal-shell-ping' }, '*'); } catch(e) {}
+            };
+            pingShell();
+            setTimeout(pingShell, 1500); // ulangi sekali, jaga-jaga wrapper belum siap
+        }
+    } catch(e) {}
+
+    // Buka link via klik <a target="_blank"> sintetis (diizinkan sandbox GAS: allow-popups),
+    // jauh lebih andal daripada window.open() yang sering diblokir popup blocker.
+    function openExternal(url) {
+        let target = normalizeUrl(url);
+        if (target === '#') return;
+
+        if (/^https?:\/\//i.test(target)) {
+            // Jalur 1 (terbaik): wrapper GitHub yang membuka tab baru -> bebas sandbox & COOP
+            if (shellBridgeAvailable) {
+                try {
+                    window.top.postMessage({ type: 'portal-open-url', url: target }, '*');
+                    return;
+                } catch(e) { /* lanjut ke fallback */ }
+            }
+            // Jalur 2 (fallback, mis. akses langsung URL GAS): lewat halaman perantara
+            target = REDIRECT_GO_PAGE + '?u=' + encodeURIComponent(target);
+        }
+
+        const a = document.createElement('a');
+        a.href = target;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => a.remove(), 100);
+    }
+
+    let db = { apps: [], gallery: [], archives: [], employees: [], logs: [] }; 
+    let folderConfig = [], archiveStruct = [];
+    let user = { loggedIn: false, name: 'Publik', role: 'Guest', id: '' }; 
+    let currentFolderId = null;
+    let galleryFileToUpload = null;
+    let galleryAutoplayInterval = null; 
+    let archiveViewMode = 'drive'; 
+    let rootDriveId = 'SIMULATED_MASTER_DRIVE_ID'; 
+    const MASTER_EMPLOYEE_FOLDER_ID = 'SIMULATED_MASTER_EMPLOYEE_DRIVE_ID'; 
+    
+    let expandedFolders = {}; 
+    let searchQuery = ''; // State untuk menyimpan query pencarian
+
+    /* --- CACHE DATA (Percepat load: render instan dari cache, refresh di background) --- */
+    var DATA_CACHE_PREFIX = 'PORTAL_DATA_CACHE_V1:';
+    var DATA_CACHE_MAX_AGE = 604800000; // 7 hari (ms)
+    var currentPageName = 'home';
+
+    function dataCacheKey() {
+        return DATA_CACHE_PREFIX + (user.id || 'guest');
+    }
+
+    function saveDataCache() {
+        try {
+            var payload = {
+                ts: new Date().getTime(),
+                apps: db.apps,
+                gallery: db.gallery,
+                folderConfig: folderConfig,
+                employees: db.employees,
+                logs: db.logs
+            };
+            localStorage.setItem(dataCacheKey(), JSON.stringify(payload));
+        } catch(e) {
+            // localStorage penuh atau diblokir. Abaikan, cache hanya optimasi.
+        }
+    }
+
+    function tryRenderFromCache() {
+        if (!IS_APPS_SCRIPT) return false;
+        try {
+            var raw = localStorage.getItem(dataCacheKey());
+            if (!raw) return false;
+            var c = JSON.parse(raw);
+            if (!c || !Array.isArray(c.apps)) return false;
+            var age = new Date().getTime() - (c.ts || 0);
+            if (age > DATA_CACHE_MAX_AGE) return false;
+            db.apps = c.apps || [];
+            db.gallery = c.gallery || [];
+            folderConfig = c.folderConfig || [];
+            db.employees = c.employees || [];
+            db.logs = c.logs || [];
+            finishLoading('home'); // Tampil instan. Data segar menyusul di background.
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    const APP_CATEGORY_OPTIONS = ["Pusat / Kementerian", "Provinsi", "Kabupaten", "Dinas", "Internal Puskesmas", "Lainnya"];
+    const APP_CATEGORY_PRIORITY = {
+        "Pusat / Kementerian": 1, "Provinsi": 2, "Kabupaten": 3, "Dinas": 4, 
+        "Internal Puskesmas": 5, "Lainnya": 6
+    };
+    const ICON_LIST = [
+        'bi-hospital-fill', 'bi-file-earmark-text', 'bi-speedometer', 'bi-person-rolodex', 
+        'bi-bar-chart-line', 'bi-calendar-check', 'bi-briefcase', 'bi-gear', 
+        'bi-globe', 'bi-archive', 'bi-person-badge', 'bi-people',
+        'bi-printer', 'bi-calculator', 'bi-check2-square', 'bi-laptop', 
+        'bi-phone', 'bi-wifi', 'bi-database', 'bi-cloud', 
+        'bi-envelope', 'bi-telephone', 'bi-whatsapp', 'bi-qr-code',
+        'bi-info-circle', 'bi-bell', 'bi-megaphone', 'bi-chat-dots',
+        'bi-box-arrow-in-right', 'bi-folder', 'bi-clock', 'bi-hourglass-split', 'bi-activity',
+        'bi-cash-coin', 'bi-credit-card', 'bi-bag', 'bi-cart', 'bi-truck',
+        'bi-building', 'bi-house', 'bi-bank', 'bi-lightbulb', 'bi-tools',
+        'bi-shield-check', 'bi-lock', 'bi-key', 'bi-clipboard-data', 'bi-r-square',
+        'bi-list-task', 'bi-terminal', 'bi-code-slash', 'bi-save', 'bi-trash',
+        'bi-upload', 'bi-download', 'bi-search', 'bi-zoom-in', 'bi-zoom-out',
+        'bi-music-note-list', 'bi-camera', 'bi-image', 'bi-video', 'bi-mic',
+        'bi-book', 'bi-journal-text', 'bi-patch-check', 'bi-person-lines-fill', 'bi-wallet',
+        'bi-heart-pulse', 'bi-bandaid', 'bi-thermometer-half', 'bi-syringe', 'bi-virus',
+        'bi-arrow-repeat', 'bi-pie-chart', 'bi-map', 'bi-geo-alt', 'bi-compass',
+        'bi-star', 'bi-exclamation-triangle', 'bi-x-octagon', 'bi-plus-circle', 'bi-dash-circle',
+        'bi-brightness-high', 'bi-moon', 'bi-sun', 'bi-cloud-sun', 'bi-cloud-moon',
+        'bi-life-preserver', 'bi-puzzle', 'bi-hand-thumbs-up', 'bi-hand-thumbs-down', 'bi-award'
+    ];
+    const COLOR_LIST = [
+        'bg-red-500', 'bg-pink-500', 'bg-purple-500', 'bg-indigo-500', 'bg-blue-500', 'bg-cyan-500', 
+        'bg-teal-500', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500', 'bg-amber-500', 'bg-orange-500', 
+        'bg-fuchsia-600', 'bg-violet-600', 'bg-sky-600', 'bg-emerald-600', 'bg-rose-600', 'bg-stone-600', 
+        'bg-red-400', 'bg-pink-400', 'bg-purple-400', 'bg-indigo-400', 'bg-blue-400', 'bg-cyan-400', 
+        'bg-teal-400', 'bg-green-400', 'bg-lime-400', 'bg-yellow-400', 'bg-amber-400', 'bg-orange-400', 
+        'bg-slate-700', 'bg-gray-700', 'bg-neutral-700', 'bg-zinc-700', 'bg-stone-700', 'bg-black',
+        'bg-red-700', 'bg-indigo-700', 'bg-teal-700', 'bg-amber-700', 'bg-rose-700', 'bg-sky-700'
+    ];
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const u = localStorage.getItem("PORTAL_USER"); 
+        if(u) {
+            try { 
+                const d=JSON.parse(u); 
+                if(d.loggedIn) user=d; 
+            } catch(e) {
+                console.error("Error parsing user data", e);
+            }
+        }
+        updateAuthUI(user.name);
+        var cachedShown = tryRenderFromCache();
+        fetchData(false, cachedShown); // silent=true jika sudah tampil dari cache
+        setupPickers();
+    });
+    
+    function fetchRootDriveId() {
+        if (!IS_APPS_SCRIPT) return;
+        
+        google.script.run
+            .withSuccessHandler(id => {
+                rootDriveId = id;
+                if (document.getElementById('page-content').classList.contains('archive-page')) {
+                    // Hanya panggil updateRightPanel jika search-results-area tidak aktif
+                    if (!document.getElementById('search-results-area')?.classList.contains('hidden')) {
+                        updateRightPanel();
+                    }
+                }
+            })
+            .withFailureHandler(e => {
+                console.error("Error fetching Root Drive ID:", e);
+                showToast("Gagal mengambil ID Drive utama. Periksa Apps Script.", 'error');
+            })
+            .getRootArchiveId();
+    }
+
+    /* --- DATA FETCHING & INIT --- */
+    function fetchData(forceRefresh, silent) { 
+        forceRefresh = forceRefresh === true;
+        silent = silent === true;
+        if (!silent) {
+            document.getElementById('loading-state').style.display = 'flex';
+            document.getElementById('error-state').classList.add('hidden'); 
+            document.getElementById('page-content').classList.add('hidden');
+        }
+        document.getElementById('sync-status').classList.replace('hidden','flex');
+        
+        if (forceRefresh) {
+            showToast("Memaksa sinkronisasi data dari Spreadsheet...", 'info');
+        }
+
+        fetchRootDriveId(); 
+
+        if (!IS_APPS_SCRIPT) {
+             initSimulationData();
+             setTimeout(() => {
+                 finishLoading();
+             }, 500);
+             return;
+        }
+        
+        const failureHandler = (e) => {
+            console.error("Error Fetching Data:", e);
+            document.getElementById('sync-status').classList.replace('flex','hidden');
+            if (silent) {
+                // Sudah tampil dari cache: cukup beri tahu, jangan tutup halaman
+                showToast("Gagal menyegarkan data. Menampilkan data tersimpan.", 'error');
+                return;
+            }
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-state').classList.remove('hidden');
+            document.getElementById('error-state').style.display = 'flex';
+            document.getElementById('error-message').innerText = `Error: ${e.message || e.toString()}`;
+            showToast(`Gagal memuat data. Periksa koneksi internet atau Apps Script.`, 'error');
+        };
+
+        // Menggunakan Promise.all
+        Promise.all([
+             new Promise((resolve, reject) => {
+                 google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getConfig();
+             }),
+             new Promise((resolve, reject) => {
+                 google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getFolderConfig(user.role, user.id);
+             }),
+             new Promise((resolve, reject) => {
+                 google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getEmployeeList();
+             }),
+             new Promise((resolve, reject) => {
+                 google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).getLogData();
+             }) 
+         ]).then(([resConfig, resFolders, resEmployees, resLogs]) => { 
+             db.apps = resConfig.apps || []; 
+             
+             db.gallery = (resConfig.gallery || []).map(g => {
+                 let fotoUrl = g.url || "";
+                 let viewUrl = fotoUrl; // URL yang dibuka saat kartu galeri diklik
+                 
+                 if (fotoUrl && (fotoUrl.indexOf("drive.google.com") !== -1 || fotoUrl.indexOf("docs.google.com") !== -1)) {
+                     const idMatch = /[-\w]{25,}/.exec(fotoUrl);
+                     
+                     if (idMatch) {
+                         fotoUrl = "https://drive.google.com/thumbnail?export=view&id=" + idMatch[0] + "&sz=w1000";
+                         // Buka halaman viewer Drive (lebih stabil daripada link thumbnail/uc?export=view)
+                         viewUrl = "https://drive.google.com/file/d/" + idMatch[0] + "/view";
+                     }
+                 }
+                 
+                 return { ...g, url: fotoUrl, viewUrl: viewUrl, fileId: g.fileId || '' };
+             }); 
+             
+             folderConfig = resFolders || [];
+             db.employees = resEmployees || [];
+             db.logs = resLogs || []; 
+             
+             saveDataCache(); // Simpan untuk load instan berikutnya
+             if (silent) {
+                 finishLoading(currentPageName); // Silent: tetap di halaman aktif
+             } else {
+                 finishLoading();
+             }
+         }).catch(failureHandler);
+    }
+
+    function initSimulationData() {
+        db.apps = [
+            {id:1, judul:"Simpus", desc:"Sistem Informasi Puskesmas", category:"Internal Puskesmas", url:"#", color:"bg-teal-500", icon:"bi-hospital-fill", type:"Aplikasi"},
+        ];
+        db.gallery = [
+            {id:1, judul:"Vaksinasi Massal", url:"https://placehold.co/600x400/10b981/ffffff?text=Vaksin+Kegiatan", date:"2025-01-01", fileId: '123_sim', desc: 'Kegiatan tahunan vaksinasi anak.'},
+        ];
+        folderConfig = [
+            {id:"1", parentId:"0", name:"Klaster I - Administrasi", driveId: "drive_id_1", roleAkses: 'public', isEmployeeFolder: false}, 
+            {id:"6", parentId:"0", name:"Klaster II - UKM", driveId: "drive_id_6", roleAkses: 'public', isEmployeeFolder: false}, 
+            {id:"7", parentId:"0", name:"Klaster III - UKP", driveId: "drive_id_7", roleAkses: 'public', isEmployeeFolder: false}, 
+            {id:"2", parentId:"0", name:"Berkas Pegawai Budi", driveId: "drive_id_budi", roleAkses: 'peg1', isEmployeeFolder: true},
+            {id:"3", parentId:"0", name:"Berkas Pegawai Ani", driveId: "drive_id_ani", roleAkses: 'peg2', isEmployeeFolder: true},
+            {id:"4", parentId:"1", name:"Tahun 2025", driveId: "drive_id_4", roleAkses: 'public', isEmployeeFolder: false},
+            {id:"5", parentId:"4", name:"Sub-Folder Test", driveId: "drive_id_5", roleAkses: 'public', isEmployeeFolder: false}
+        ];
+        db.employees = [{id:'peg1', name:'Budi Santoso', role:'Pegawai'}, {id:'peg2', name:'Ani Wijaya', role:'Pegawai'}];
+        db.logs = [
+            {timestamp: new Date().toISOString(), user: 'admin', activity: 'Membuat folder Kepegawaian Massal'},
+        ]; 
+        
+        expandedFolders['1'] = true;
+    }
+
+    function finishLoading(page) {
+        archiveStruct = buildStruct(folderConfig);
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('sync-status').classList.replace('flex','hidden');
+        document.getElementById('page-content').classList.remove('hidden');
+        
+        populateEmployeeCheckboxes(); 
+        populateAppCategorySelect(); 
+        setupPickers(); 
+        
+        renderPage(page || 'home'); 
+    }
+    
+    // --- FOLDER MANAGEMENT HELPERS ---
+    function populateEmployeeCheckboxes() {
+        const container = document.getElementById('employee-list-checkboxes');
+        if (!container) return;
+
+        let html = '';
+        const pegawaiList = db.employees.filter(emp => emp.role.toLowerCase() === 'pegawai' || emp.role.toLowerCase() === 'admin');
+        
+        if (pegawaiList.length === 0) {
+            html = '<p class="text-sm text-red-500">Tidak ada data pegawai yang terdaftar di sheet Users.</p>';
+        } else {
+            pegawaiList.forEach(emp => {
+                const folderExists = folderConfig.some(f => String(f.roleAkses) === String(emp.id).toLowerCase() && f.isEmployeeFolder);
+                const status = folderExists ? '<span class="text-xs font-medium text-teal-500">(Folder ada)</span>' : '<span class="text-xs font-medium text-orange-500">(Belum ada folder)</span>';
+
+                html += `
+                <label class="flex items-center justify-between space-x-2 text-sm text-slate-700">
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" name="pegawai_id" value="${emp.id}" class="form-checkbox h-4 w-4 text-teal-600 rounded">
+                        <span>${emp.name} (${emp.id})</span>
+                    </div>
+                    ${status}
+                </label>`;
+            });
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleFolderConfig(type) {
+        const isSingle = type === 'single';
+        const isEdit = !!document.getElementById('folder-id').value;
+
+        document.getElementById('single-folder-config').classList.toggle('hidden', !isSingle);
+        document.getElementById('parent-folder-select-group').classList.toggle('hidden', !isSingle);
+        document.getElementById('mass-employee-config').classList.toggle('hidden', isSingle);
+
+        document.getElementById('folder-name').required = isSingle;
+        document.getElementById('employee-folder-name').required = !isSingle;
+        
+        const currentFolder = folderConfig.find(f => String(f.id) === String(document.getElementById('folder-id').value));
+        const isEmployeeFolderType = currentFolder && currentFolder.isEmployeeFolder;
+        document.getElementById('folder-type').disabled = isEdit && isEmployeeFolderType;
+    }
+
+    /* --- RENDERING & NAVIGATION --- */
+    function startGalleryAutoplay(){ 
+        if(galleryAutoplayInterval) clearInterval(galleryAutoplayInterval); 
+        const track = document.querySelector('.gallery-track'); 
+        if(!track || db.gallery.length <= 1) return; 
+        const scrollDuration = 4000; 
+        galleryAutoplayInterval = setInterval(()=>{ 
+            const galleryItem = track.querySelector('.gallery-item');
+            if (!galleryItem) return;
+            const scrollDistance = galleryItem.offsetWidth + 16; 
+            let nextScroll = track.scrollLeft + scrollDistance;
+            if (nextScroll >= track.scrollWidth - track.clientWidth) nextScroll = 0;
+            track.scrollTo({ left: nextScroll, behavior: 'smooth' });
+        }, scrollDuration); 
+    }
+
+    function renderPage(p) {
+        currentPageName = p; // Lacak halaman aktif (untuk refresh background)
+        if (galleryAutoplayInterval) clearInterval(galleryAutoplayInterval);
+
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            const isActive = b.dataset.page === p;
+            b.className = `nav-btn px-4 lg:px-6 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${isActive ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'}`;
+        });
+        const c = document.getElementById('page-content');
+        if (p === 'home') {
+             renderHome(c);
+             startGalleryAutoplay(); 
+        }
+        else if (p === 'apps') renderApps(c);
+        else if (p === 'archive') renderArchive(c);
+        else if (p === 'log') renderLog(c); 
+        
+        if (p === 'archive') {
+            c.classList.add('archive-page');
+            document.getElementById('main-container').classList.remove('pb-20');
+        } else {
+            c.classList.remove('archive-page');
+            document.getElementById('main-container').classList.add('pb-20');
+        }
+    }
+    
+    function renderHome(c) {
+        const isAdmin = user.role === 'Admin';
+        let h = `
+        <!-- HERO SECTION -->
+        <div class="relative bg-slate-900 rounded-[2rem] p-8 md:p-12 mb-12 overflow-hidden shadow-2xl fade-in text-white">
+            <div class="relative z-10 max-w-2xl">
+                <h1 class="text-3xl sm:text-4xl font-extrabold mb-3 sm:mb-4 leading-tight">Portal Digital<br>Puskesmas Panjatan I</h1>
+                <p class="text-slate-300 text-sm sm:text-lg">Layanan terintegrasi satu pintu untuk pengelolaan arsip dan aplikasi.</p>
+            </div>
+             <div class="absolute -top-24 -right-24 w-64 h-64 bg-teal-500 rounded-full blur-[100px] opacity-40"></div>
+        </div>
+
+        <div class="mb-16 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Galeri Kegiatan</h2>
+                ${isAdmin ? `<button onclick="openGalleryModal()" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-teal-700 shadow flex gap-1 items-center"><i class="bi bi-plus-lg"></i> Tambah</button>` : ''}
+            </div>
+            <div class="gallery-track flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x">`;
+        
+        if (db.gallery.length === 0) {
+            h += `<div class="w-full py-10 text-center text-slate-400 border-2 border-dashed rounded-xl bg-slate-50">Belum ada item Galeri.</div>`;
+        } else {
+            db.gallery.forEach(g => { 
+                const formattedDate = g.date ? new Date(g.date).toLocaleDateString('id-ID', {year: 'numeric', month: 'long', day: 'numeric'}) : '-';
+                
+                h += `<div class="gallery-item flex flex-col bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 snap-start h-auto group cursor-pointer" data-open-url="${g.viewUrl || g.url}" onclick="openExternal(this.dataset.openUrl)">
+                    
+                    <!-- DIBUAT ROUNDED DENGAN rounded-t-2xl -->
+                    <div class="relative h-48 w-full overflow-hidden bg-slate-100 rounded-t-2xl">
+                        <img src="${g.url}" 
+                             loading="lazy"
+                             alt="Foto Kegiatan: ${g.judul}"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/f1f5f9/94a3b8?text=No+Image'">
+                        
+                        ${isAdmin ? `<div class="absolute top-2 right-2 flex gap-1 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openGalleryModal('${g.id}');event.stopPropagation()" class="bg-white/90 text-slate-600 hover:text-blue-600 p-2 rounded-full shadow-md backdrop-blur-sm transition-colors"><i class="bi bi-pencil-fill text-xs"></i></button>
+                            <button onclick="delGallery('${g.id}', '${g.fileId}');event.stopPropagation()" class="bg-white/90 text-slate-600 hover:text-red-500 p-2 rounded-full shadow-md backdrop-blur-sm transition-colors"><i class="bi bi-trash-fill text-xs"></i></button>
+                        </div>` : ''}
+                    </div>
+                    
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] font-bold px-2 py-0.5 bg-teal-50 text-teal-600 rounded-md border border-teal-100">
+                                <i class="bi bi-calendar-event me-1"></i> ${formattedDate}
+                            </span>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 mb-1 line-clamp-2 leading-snug group-hover:text-teal-600 transition-colors">${g.judul}</h4>
+                        <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${g.desc || 'Tidak ada deskripsi tambahan.'}</p>
+                    </div>
+                </div>`;
+            });
+        }
+        h += `</div></div>`; 
+        
+        h += `
+        <div class="text-center pt-8 pb-12 fade-in">
+            <h3 class="text-xl font-bold text-slate-700 mb-6">Akses Cepat</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 justify-center gap-4 max-w-xl mx-auto">
+                
+                <button onclick="renderPage('apps')" class="p-6 bg-white border border-slate-200 rounded-2xl font-bold text-base shadow-xl hover:shadow-2xl hover:border-teal-400 transition transform hover:scale-[1.02] duration-300 flex flex-col items-center justify-center text-slate-700">
+                    <div class="w-12 h-12 bg-teal-500 text-white rounded-xl flex items-center justify-center text-2xl mb-3 shadow-lg shadow-teal-500/50">
+                        <i class="bi bi-grid-fill"></i>
+                    </div>
+                    <span class="font-extrabold text-sm sm:text-base">Semua Aplikasi</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1">Sistem & Tautan Eksternal</span>
+                </button>
+                
+                <button onclick="renderPage('archive')" class="p-6 bg-white border border-slate-200 rounded-2xl font-bold text-base shadow-xl hover:shadow-2xl hover:border-blue-400 transition transform hover:scale-[1.02] duration-300 flex flex-col items-center justify-center text-slate-700">
+                     <div class="w-12 h-12 bg-blue-500 text-white rounded-xl flex items-center justify-center text-2xl mb-3 shadow-lg shadow-blue-500/50">
+                        <i class="bi bi-folder-fill"></i>
+                    </div>
+                    <span class="font-extrabold text-sm sm:text-base">Arsip Dokumen</span>
+                    <span class="text-xs font-medium text-slate-400 mt-1">Akses Berkas Publik & Pribadi</span>
+                </button>
+            </div>
+        </div>`;
+        
+        c.innerHTML = h;
+    }
+
+    function renderApps(c) {
+        const isAdmin = user.role === 'Admin';
+        
+        const groupedApps = db.apps.reduce((acc, app) => {
+            const category = app.category || 'Lainnya';
+            if (!acc[category]) acc[category] = [];
+            acc[category].push(app);
+            return acc;
+        }, {});
+
+        const sortedCategories = Object.keys(groupedApps).sort((a, b) => {
+            return (APP_CATEGORY_PRIORITY[a] || 99) - (APP_CATEGORY_PRIORITY[b] || 99);
+        });
+
+        let h = `<div class="fade-in pb-12"><div class="flex justify-between items-center mb-8"><h2 class="text-2xl font-bold">Aplikasi & Web</h2>${isAdmin ? `<button onclick="openAppModal()" class="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-teal-700 shadow flex gap-2"><i class="bi bi-plus-lg"></i> Tambah Aplikasi</button>` : ''}</div>`;
+        
+        if (db.apps.length === 0) {
+             h += `<div class="col-span-full py-10 text-center text-slate-400 border-2 border-dashed rounded-xl bg-slate-50">Belum ada Aplikasi.</div>`;
+        } else {
+            sortedCategories.forEach(category => {
+                const appsInSection = groupedApps[category];
+                h += `<div class="mb-10">
+                    <h3 class="text-xl font-bold text-slate-700 mb-4 pb-2 border-b-2 border-teal-100">${category}</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">`;
+                
+                appsInSection.forEach(a => { 
+                    const isApp = a.type === 'Aplikasi';
+                    const badgeClass = isApp ? 'bg-purple-500' : 'bg-blue-500'; 
+                    h += `<div class="bg-white p-5 rounded-2xl border shadow-sm hover:shadow-lg transition relative group hover:scale-[1.02] transform duration-200">
+                        <a href="${normalizeUrl(a.url)}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openExternal(this.href);" class="absolute inset-0 z-10 p-5 group">
+                           <span class="sr-only">Buka Aplikasi ${a.judul}</span>
+                        </a>
+                        <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full text-white shadow-sm ${badgeClass}">${a.type || 'Web'}</span>
+                        
+                        <div class="w-12 h-12 rounded-xl ${a.color || 'bg-teal-500'} text-white flex items-center justify-center text-xl mb-3 shadow-md transition-transform">
+                            <i class="bi ${a.icon || 'bi-globe'}"></i>
+                        </div>
+                        
+                        <h3 class="font-bold text-base line-clamp-1">${a.judul}</h3>
+                        <p class="text-xs text-slate-500 line-clamp-2 mt-1">${a.desc || 'Akses cepat portal digital.'}</p>
+
+                        ${isAdmin ? `<div class="absolute top-2 left-2 flex gap-1 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="openAppModal('${a.id}');event.stopPropagation()" class="text-blue-500 hover:text-blue-700 p-1 bg-white/70 rounded-full"><i class="bi bi-pencil-fill text-xs"></i></button>
+                            <button onclick="delApp('${a.id}');event.stopPropagation()" class="text-red-500 hover:text-red-700 p-1 bg-white/70 rounded-full"><i class="bi bi-trash-fill text-xs"></i></button>
+                        </div>` : ''}
+                    </div>`;
+                });
+                h += `</div></div>`; 
+            });
+        }
+        h += `</div>`; c.innerHTML = h;
+    }
+    
+    function renderLog(c) {
+        if (user.role !== 'Admin') {
+            c.innerHTML = `
+                <div class="fade-in py-20 text-center">
+                    <i class="bi bi-lock-fill text-6xl text-red-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-slate-800">Akses Ditolak</h2>
+                    <p class="text-slate-500 mt-2">Halaman Log Aktivitas hanya dapat diakses oleh Administrator.</p>
+                    <button onclick="renderPage('archive')" class="mt-6 px-4 py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700">Kembali ke Arsip</button>
+                </div>
+            `;
+            return;
+        }
+
+        const logs = db.logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        let logListHtml = '';
+        if (logs.length === 0) {
+            logListHtml = `<div class="w-full py-10 text-center text-slate-400 border-2 border-dashed rounded-xl bg-slate-50">Belum ada aktivitas yang tercatat.</div>`;
+        } else {
+            logListHtml = `<div class="space-y-3">`;
+            logs.forEach(log => {
+                const date = new Date(log.timestamp);
+                const timeStr = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                
+                let logType = 'text-slate-600';
+                let icon = 'bi-activity';
+                const activityLower = log.activity.toLowerCase();
+                
+                if (activityLower.includes('berhasil') || activityLower.includes('membuat') || activityLower.includes('simpan')) {
+                    logType = 'text-teal-600';
+                } else if (activityLower.includes('gagal') || activityLower.includes('hapus')) {
+                    logType = 'text-red-600';
+                } else {
+                    logType = 'text-blue-600';
+                }
+
+                if (activityLower.includes('login')) { icon = 'bi-person-check'; }
+                else if (activityLower.includes('hapus')) { icon = 'bi-trash'; }
+                else if (activityLower.includes('folder')) { icon = 'bi-folder'; }
+                else if (activityLower.includes('galeri')) { icon = 'bi-image'; }
+                else if (activityLower.includes('aplikasi')) { icon = 'bi-grid'; }
+
+
+                logListHtml += `
+                    <div class="p-4 bg-white rounded-xl shadow-sm border flex items-center gap-4">
+                        <div class="w-10 h-10 flex-shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-xl ${logType}">
+                            <i class="bi ${icon}"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold text-sm text-slate-800">${log.activity}</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Oleh: <span class="font-medium">${log.user}</span> - <span class="text-xs text-slate-400">${dateStr}, ${timeStr}</span></p>
+                        </div>
+                    </div>
+                `;
+            });
+            logListHtml += `</div>`;
+        }
+
+        let h = `
+        <div class="fade-in pb-12">
+            <h2 class="text-2xl font-bold mb-8">Log Aktivitas Sistem</h2>
+            <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+                <p class="text-sm text-slate-500 mb-6">Menampilkan riwayat aktivitas terakhir di portal (diurutkan dari terbaru).</p>
+                ${logListHtml}
+            </div>
+        </div>
+        `;
+        c.innerHTML = h;
+    }
+
+    function checkFolderAccess(folder) {
+        if (!folder) return true; 
+        if (user.role === 'Admin') return true; 
+        
+        const akses = (folder.roleAkses || '').toLowerCase().trim();
+        
+        if (akses === '' || akses === 'public') return true;
+        if (akses === user.role.toLowerCase()) return true;
+        if (akses === String(user.id).toLowerCase()) return true;
+        
+        return false; 
+    }
+
+    function renderArchive(c) {
+        const isAdmin = user.loggedIn;
+        const driveId = getCurrentFolderDriveId(); 
+        const activeId = currentFolderId || "0";
+        const isDriveButtonDisabled = !driveId;
+        
+        let h = `
+        <div class="fade-in">
+            <!-- Tombol Kembali ke Beranda -->
+            <button onclick="renderPage('home')" class="mb-4 text-sm text-slate-500 hover:text-teal-600 font-medium flex items-center gap-1.5 p-2 rounded-xl bg-white border shadow-sm">
+                <i class="bi bi-arrow-left"></i> Kembali ke Beranda
+            </button>
+
+            <!-- Container Utama Arsip (Memastikan tinggi penuh di desktop) -->
+            <div class="flex flex-col md:flex-row gap-6 archive-flex-container">
+                <!-- LEFT PANEL: TREE VIEW -->
+                <div class="archive-tree-panel w-full md:w-1/3 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+                    <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-slate-700">Struktur Folder</h3>
+                        ${user.role === 'Admin' ? `<button onclick="openFolderModal()" class="text-teal-600 hover:bg-teal-100 p-1.5 rounded-lg" title="Tambah Folder Baru"><i class="bi bi-folder-plus text-lg"></i></button>` : ''}
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-4 space-y-1" id="tree-container-root">
+                        <!-- Root Arsip -->
+                         <div class="tree-item group select-none">
+                            <div id="tree-row-0" onclick="handleFolderClick('0', 'Root Arsip', false)" class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${currentFolderId === '0' || !currentFolderId ? 'folder-item-active' : 'text-slate-600 folder-item-hover'}">
+                                <div class="flex items-center gap-2.5 overflow-hidden flex-1" title="Akses Publik Default">
+                                    <span class="w-5 h-5 flex-shrink-0"></span>
+                                    <i class="bi bi-house-door-fill folder-root-icon text-sm"></i>
+                                    <span class="truncate text-sm font-medium">Root Arsip (Folder Utama)</span>
+                                </div>
+                            </div>
+                        </div>
+                        ${renderTree(archiveStruct)}
+                    </div>
+                </div>
+
+                <!-- RIGHT PANEL: CONTENT VIEW -->
+                <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+                    
+                    <!-- View Mode & Current Folder Title -->
+                    <div class="p-4 border-b flex justify-between items-center bg-white z-10 shadow-sm flex-shrink-0">
+                        <div class="flex items-center gap-2">
+                             <h3 class="font-bold text-slate-700 text-lg flex items-center gap-2">
+                                <i class="bi bi-folder2-open text-teal-500"></i>
+                                <span id="upload-target-folder">${document.getElementById('upload-target-folder')?.innerText || 'Root Arsip'}</span>
+                             </h3>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                             <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                                <button disabled title="Lihat Sistem Dihapus" class="${archiveViewMode === 'list' ? 'bg-white shadow text-teal-600' : 'text-slate-500 opacity-50 cursor-not-allowed'} px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1">
+                                    <i class="bi bi-list-ul"></i> <span class="hidden sm:inline">Sistem (Disabled)</span>
+                                </button>
+                                <button onclick="setArchiveView('drive')" ${isDriveButtonDisabled ? 'disabled title="Folder ini tidak terhubung ke Drive"' : ''} class="${archiveViewMode === 'drive' ? 'bg-white shadow text-teal-600' : 'text-slate-500 hover:text-slate-700'} ${isDriveButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''} px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1">
+                                    <i class="bi bi-google"></i> <span class="hidden sm:inline">Isi Drive</span>
+                                </button>
+                            </div>
+                            
+                            <div id="drive-link-container">
+                               ${driveId ? `<a href="https://drive.google.com/drive/folders/${driveId}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openExternal(this.href);" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 shadow flex gap-2 items-center"><i class="bi bi-box-arrow-up-right"></i> <span class="hidden md:inline">Buka Drive</span></a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="p-4 bg-slate-50 border-b flex gap-3 items-center flex-shrink-0">
+                        <div class="relative flex-1">
+                            <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="archive-search-input" onkeyup="if(event.key === 'Enter') startSearch();" class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:border-teal-500 text-sm" placeholder="Cari file atau folder di dalam folder aktif (rekursif)...">
+                            <button onclick="startSearch()" class="absolute right-1 top-1/2 transform -translate-y-1/2 bg-teal-600 text-white p-1.5 rounded-lg hover:bg-teal-700 transition">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                        <button id="btn-cancel-search" onclick="clearSearch()" class="${searchQuery ? '' : 'hidden'} text-sm text-red-500 hover:text-red-700 font-medium">Batal</button>
+                    </div>
+
+                    
+                    <!-- Content Area (iframe or search results) -->
+                    <div class="flex-1 overflow-y-auto bg-slate-50/50 relative" id="archive-content-area">
+                        <div id="drive-iframe-view" class="${searchQuery ? 'hidden' : ''} w-full h-full">
+                            ${driveId ? `
+                                <iframe src="https://drive.google.com/embeddedfolderview?id=${driveId}#list" class="w-full h-full border-0" allowfullscreen></iframe>
+                            ` : `
+                                <div class="p-8 text-center text-slate-500">
+                                    <i class="bi bi-folder-x text-6xl mb-3 text-red-300"></i>
+                                    <p class="font-bold text-xl mb-2">Folder Drive Belum Terpasang</p>
+                                    <p class="text-sm">Silakan hubungi admin untuk memastikan folder Drive ID telah dikonfigurasi.</p>
+                                </div>
+                            `}
+                        </div>
+                        
+                        <div id="search-results-area" class="${searchQuery ? '' : 'hidden'} p-4">
+                            <!-- Results will be injected here -->
+                            <div id="search-loading" class="hidden text-center py-10">
+                                <div class="spinner w-8 h-8 mx-auto mb-3"></div>
+                                <p class="text-slate-600">Mencari dokumen...</p>
+                            </div>
+                            <ul id="search-results-list" class="space-y-3">
+                                <!-- Search results go here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        c.innerHTML = h;
+        
+        // Restore search input value if state exists
+        if(searchQuery) {
+            const inputElement = document.getElementById('archive-search-input');
+            if (inputElement) inputElement.value = searchQuery;
+            
+            // Re-run search only if results are empty (avoiding double fetch on initial render)
+            if (document.getElementById('search-results-list')?.innerHTML === '' && IS_APPS_SCRIPT) {
+                 startSearch(searchQuery); 
+            }
+        }
+
+        let folderName = "Root Arsip";
+        if (currentFolderId && currentFolderId !== "0") {
+             folderName = folderConfig.find(f => String(f.id) === String(currentFolderId))?.name || "Unknown";
+        }
+        const targetLabel = document.getElementById('upload-target-folder');
+        if(targetLabel) targetLabel.innerText = folderName;
+    }
+    
+    // NEW: Search Functions
+    
+    function startSearch(query = null) {
+        const input = document.getElementById('archive-search-input');
+        const q = (query || input?.value || '').trim();
+        searchQuery = q;
+
+        const resultsArea = document.getElementById('search-results-area');
+        const loading = document.getElementById('search-loading');
+        const driveView = document.getElementById('drive-iframe-view');
+        const searchList = document.getElementById('search-results-list');
+        const cancelBtn = document.getElementById('btn-cancel-search');
+        
+        if (q === '') {
+            return clearSearch();
+        }
+        
+        // Update UI state
+        resultsArea?.classList.remove('hidden');
+        driveView?.classList.add('hidden');
+        loading?.classList.remove('hidden');
+        if (searchList) searchList.innerHTML = '';
+        cancelBtn?.classList.remove('hidden');
+        input.disabled = true;
+
+        const folderDriveId = getCurrentFolderDriveId();
+        
+        if (!IS_APPS_SCRIPT) {
+             // SIMULASI
+             setTimeout(() => {
+                 input.disabled = false;
+                 loading?.classList.add('hidden');
+                 const simulatedResults = [
+                     // Tambahkan simulasi hasil pencarian file dan folder
+                     { name: `Hasil Simulasi File PDF: Surat Balasan '${q}'`, url: '#', type: 'file', icon: 'bi-file-earmark-pdf' },
+                     { name: `Folder Rekursif Test: Sub-Folder Rapat`, url: '#', type: 'folder', icon: 'bi-folder-fill' },
+                     { name: `Laporan Tahunan 2024 (File Word)`, url: '#', type: 'file', icon: 'bi-file-earmark-word' },
+                 ];
+                 renderSearchResults(simulatedResults);
+             }, 1000);
+             return;
+        }
+
+        google.script.run
+            .withSuccessHandler(results => {
+                input.disabled = false;
+                renderSearchResults(results);
+            })
+            .withFailureHandler(e => {
+                input.disabled = false;
+                loading?.classList.add('hidden');
+                searchList.innerHTML = `<li class="text-red-500 p-4 bg-red-50 rounded-xl">Gagal mencari di Drive: ${e.message || e.toString()}. Pastikan Apps Script terotorisasi untuk Drive.</li>`;
+                showToast("Pencarian Gagal", 'error');
+            })
+            .searchDriveFiles(folderDriveId, q);
+    }
+
+    function renderSearchResults(results) {
+        const loading = document.getElementById('search-loading');
+        const searchList = document.getElementById('search-results-list');
+        loading?.classList.add('hidden');
+        searchList.innerHTML = ''; // Clear previous results
+
+        if (!results || results.length === 0) {
+            searchList.innerHTML = `<li class="text-center text-slate-500 py-10">
+                <i class="bi bi-file-x text-5xl mb-2 text-slate-300"></i>
+                <p>Tidak ditemukan file atau folder yang cocok dengan '<strong class="text-slate-700">${searchQuery}</strong>'.</p>
+            </li>`;
+            return;
+        }
+        
+        results.forEach(item => {
+            const iconClass = item.icon || 'bi-file-earmark';
+            const isFolder = item.type === 'folder';
+            
+            searchList.innerHTML += `
+                <li class="bg-white p-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition">
+                    <a href="${normalizeUrl(item.url)}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openExternal(this.href);" class="flex items-center gap-4">
+                        <div class="w-10 h-10 flex-shrink-0 text-xl flex items-center justify-center ${isFolder ? 'text-orange-500' : 'text-blue-500'}">
+                            <i class="bi ${iconClass}"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="font-bold text-sm text-slate-800 truncate">${item.name}</p>
+                            <p class="text-xs text-slate-500">${isFolder ? 'Folder' : 'File'} (Buka di Drive)</p>
+                        </div>
+                        <i class="bi bi-box-arrow-up-right text-slate-400 text-sm flex-shrink-0"></i>
+                    </a>
+                </li>
+            `;
+        });
+        
+        showToast(`Ditemukan ${results.length} hasil.`, 'success');
+    }
+
+    function clearSearch() {
+        searchQuery = '';
+        const input = document.getElementById('archive-search-input');
+        if (input) input.value = '';
+
+        const resultsArea = document.getElementById('search-results-area');
+        const driveView = document.getElementById('drive-iframe-view');
+        const searchList = document.getElementById('search-results-list');
+        const cancelBtn = document.getElementById('btn-cancel-search');
+
+        resultsArea?.classList.add('hidden');
+        driveView?.classList.remove('hidden');
+        if (searchList) searchList.innerHTML = '';
+        cancelBtn?.classList.add('hidden');
+        if (input) input.disabled = false;
+        
+        updateRightPanel(); // Refresh iframe view to current folder
+    }
+    
+    // Existing functions...
+
+    function getCurrentFolderDriveId() {
+        if (!currentFolderId || currentFolderId === "0") {
+             return rootDriveId; 
+        }
+        const folder = folderConfig.find(f => String(f.id) === String(currentFolderId));
+        return folder ? folder.driveId : null;
+    }
+    
+    /**
+     * Helper function to determine the Klaster color class based on the folder name.
+     * @param {string} folderName 
+     * @returns {string} Tailwind CSS class for the icon color.
+     */
+    function getKlasterIconClass(folderName) {
+        const nameLower = folderName.toLowerCase();
+        
+        if (nameLower.includes('klaster i')) return 'klaster-1-icon'; // Merah
+        if (nameLower.includes('klaster ii')) return 'klaster-2-icon'; // Hijau Emerald
+        if (nameLower.includes('klaster iii')) return 'klaster-3-icon'; // Biru
+        if (nameLower.includes('klaster iv')) return 'klaster-4-icon'; // Kuning Amber
+        if (nameLower.includes('klaster v')) return 'klaster-5-icon'; // Pink
+        
+        // Logic untuk folder root non-klaster agar tetap unik
+        const rootFolders = archiveStruct.filter(f => f.parentId === '0' && !f.isEmployeeFolder);
+        
+        // Jika folderName adalah salah satu root folder publik non-Klaster, berikan warna bergantian
+        if (rootFolders.length > 0 && nameLower === rootFolders.find(f => f.name.toLowerCase() === nameLower)?.name.toLowerCase()) {
+            const index = rootFolders.findIndex(f => f.name.toLowerCase() === nameLower);
+            
+            // Memberikan warna unik bergantian untuk root folders non-klaster/non-private
+            const colors = ['klaster-1-icon', 'klaster-3-icon', 'klaster-4-icon', 'klaster-2-icon', 'klaster-5-icon'];
+            
+            // Coba ambil dari array colors, jika tidak ada, default ke folder-public-icon
+            return colors[index % colors.length] || 'folder-public-icon';
+        }
+
+        // Default untuk folder sub-level atau folder non-Klaster/non-Private
+        return 'folder-public-icon'; 
+    }
+
+    function renderTree(n, l = 0) {
+        let h = '';
+        n.forEach(x => {
+            const folderInConfig = folderConfig.find(f => String(f.id) === String(x.id));
+            if (!checkFolderAccess(folderInConfig)) return; 
+
+            const active = String(x.id) === String(currentFolderId);
+            const hasChildren = x.children && x.children.length > 0;
+            const isExpanded = expandedFolders[x.id];
+            
+            const isEmployeeFolder = folderInConfig && folderInConfig.isEmployeeFolder; 
+            const isPrivate = isEmployeeFolder || (folderInConfig && folderInConfig.roleAkses && folderInConfig.roleAkses.toLowerCase() !== 'public' && folderInConfig.roleAkses !== ''); 
+
+            // LOGIC WARNA FOLDER
+            let iconClass = 'bi-folder-fill'; 
+            let iconColorClass = 'folder-public-icon'; 
+            let bgColorClass = 'text-slate-600 folder-item-hover';
+            
+            if (String(x.id) === '0') {
+                // Root Arsip
+                iconClass = 'bi-house-door-fill';
+                iconColorClass = 'folder-root-icon'; // Teal
+                bgColorClass = active ? 'folder-item-active' : 'text-slate-600 folder-item-hover';
+            } else if (isPrivate) {
+                // Folder Terbatas / Pribadi
+                iconClass = active ? 'bi-lock-open-fill' : 'bi-lock-fill';
+                iconColorClass = 'folder-private-icon'; // Violet
+                bgColorClass = active ? 'folder-private-active' : 'text-slate-600 folder-private-hover';
+            } else {
+                // Folder Publik (Klaster atau Sub-Folder)
+                iconClass = active ? 'bi-folder2-open' : 'bi-folder-fill';
+                
+                // Tentukan warna ikon berdasarkan Klaster (hanya untuk folder level 0/root publik non-private)
+                if (x.parentId === '0') {
+                    iconColorClass = getKlasterIconClass(x.name);
+                } else {
+                    // Sub-folder akan mengikuti warna default public/orange atau warna klaster jika induknya adalah klaster.
+                    // Untuk menyederhanakan, sub-folder menggunakan warna default orange (folder-public-icon)
+                    iconColorClass = 'folder-public-icon';
+                }
+
+                bgColorClass = active ? 'folder-item-active' : 'text-slate-600 folder-item-hover';
+            }
+            // AKHIR LOGIC WARNA
+            
+            const tooltip = isPrivate ? `Akses Terbatas: ${folderInConfig.roleAkses || 'Pegawai'}` : 'Akses Publik';
+            
+            const gridClass = isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]';
+
+            h += `<div class="tree-item group select-none">
+                <div id="tree-row-${x.id}" onclick="handleFolderClick('${x.id}', '${x.name}', ${hasChildren})" class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${bgColorClass}" style="margin-left:${l*8}px">
+                    
+                    <div class="flex items-center gap-2.5 overflow-hidden flex-1" title="${tooltip}">
+                        ${hasChildren ? 
+                        `<button id="toggle-btn-${x.id}" onclick="event.stopPropagation(); toggleFolder('${x.id}')" class="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-teal-600 transition-transform duration-200 ${isExpanded ? 'rotate-0' : '-rotate-90'}">
+                            <i class="bi bi-caret-down-fill text-[10px]"></i>
+                        </button>` 
+                        : `<span class="w-5 h-5 flex-shrink-0"></span>`}
+
+                        <i class="bi ${iconClass} ${iconColorClass} flex-shrink-0 text-sm"></i>
+                        <span class="truncate text-sm font-medium">${x.name}</span>
+                    </div>
+                    
+                    ${user.role === 'Admin' ? `<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        
+                        <!-- NEW: Move Up/Down Buttons -->
+                        <button onclick="handleMoveFolder('${x.id}', 'up');event.stopPropagation()" class="text-slate-500 hover:text-blue-500 p-1.5 bg-white/80 rounded-full hover:bg-white shadow-sm" title="Pindah ke Atas"><i class="bi bi-arrow-up text-[10px]"></i></button>
+                        <button onclick="handleMoveFolder('${x.id}', 'down');event.stopPropagation()" class="text-slate-500 hover:text-blue-500 p-1.5 bg-white/80 rounded-full hover:bg-white shadow-sm" title="Pindah ke Bawah"><i class="bi bi-arrow-down text-[10px]"></i></button>
+                        
+                        <button onclick="openFolderModal('${x.id}', '${x.name}', '${x.parentId}');event.stopPropagation()" class="text-blue-500 hover:text-blue-700 p-1.5 bg-white/80 rounded-full hover:bg-white shadow-sm" title="Edit Folder"><i class="bi bi-pencil text-[10px]"></i></button>
+                        <button onclick="prepareDeleteFolder('${x.id}');event.stopPropagation()" class="text-red-500 hover:text-red-700 p-1.5 bg-white/80 rounded-full hover:bg-white shadow-sm" title="Hapus Folder"><i class="bi bi-trash text-[10px]"></i></button>
+                    </div>` : ''}
+                </div>
+                
+                <!-- Subfolder Container with Transition -->
+                <div id="subfolders-${x.id}" class="tree-grid ${gridClass}">
+                    <div class="overflow-hidden">
+                         ${hasChildren ? renderTree(x.children, l + 1) : ''}
+                    </div>
+                </div>
+            </div>`;
+        });
+        return h;
+    }
+
+    function toggleFolder(folderId) {
+        expandedFolders[folderId] = !expandedFolders[folderId];
+        const isExpanded = expandedFolders[folderId];
+        
+        // 1. Toggle Subfolder Container (CSS Transition)
+        const subContainer = document.getElementById(`subfolders-${folderId}`);
+        if(subContainer) {
+            if (isExpanded) {
+                subContainer.classList.remove('grid-rows-[0fr]');
+                subContainer.classList.add('grid-rows-[1fr]');
+            } else {
+                subContainer.classList.remove('grid-rows-[1fr]');
+                subContainer.classList.add('grid-rows-[0fr]');
+            }
+        }
+        
+        // 2. Rotate Arrow Icon
+        const btn = document.getElementById(`toggle-btn-${folderId}`);
+        if(btn) {
+             btn.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)';
+        }
+    }
+    
+    function handleFolderClick(id, name, hasChildren) {
+        // Clear search state on folder navigation
+        clearSearch();
+        
+        // 1. Update Current ID
+        currentFolderId = id;
+        
+        // 2. Update UI Highlighting (Manual DOM manipulation)
+        
+        // Remove active/hover classes from all rows and reset to default text color
+        const allRows = document.querySelectorAll('[id^="tree-row-"]');
+        allRows.forEach(row => {
+            const folderId = row.id.replace('tree-row-', '');
+            const folderInConfig = folderConfig.find(f => String(f.id) === String(folderId));
+            const isPrivate = folderId !== '0' && folderInConfig && (folderInConfig.isEmployeeFolder || (folderInConfig.roleAkses && folderInConfig.roleAkses.toLowerCase() !== 'public' && folderInConfig.roleAkses !== ''));
+
+            // Remove all specific active/hover classes
+            row.classList.remove('folder-item-active', 'folder-private-active');
+            row.classList.remove('text-teal-700', 'font-bold', 'text-violet-800');
+            row.classList.remove('bg-teal-50', 'bg-violet-100');
+            
+            // Reapply non-active classes based on type
+            row.classList.add('text-slate-600');
+            if (isPrivate) {
+                row.classList.add('folder-private-hover');
+            } else {
+                row.classList.add('folder-item-hover');
+            }
+
+            // Reset icons to closed state (if they were open)
+            const iconElement = row.querySelector('i');
+            if (iconElement) {
+                if (isPrivate) {
+                    iconElement.classList.remove('bi-lock-open-fill');
+                    iconElement.classList.add('bi-lock-fill');
+                } else if (folderId !== '0') {
+                    iconElement.classList.remove('bi-folder2-open');
+                    iconElement.classList.add('bi-folder-fill');
+                }
+            }
+        });
+        
+        // Apply Active styles to the clicked row
+        const activeRow = document.getElementById(`tree-row-${id}`);
+        if(activeRow) {
+            // Determine if the active folder is private
+            const folderInConfig = folderConfig.find(f => String(f.id) === String(id));
+            const isPrivate = id !== '0' && folderInConfig && (folderInConfig.isEmployeeFolder || (folderInConfig.roleAkses && folderInConfig.roleAkses.toLowerCase() !== 'public' && folderInConfig.roleAkses !== ''));
+
+            // Remove non-active classes
+            activeRow.classList.remove('folder-item-hover', 'folder-private-hover');
+            activeRow.classList.remove('text-slate-600');
+            
+            // Apply Active classes
+            if (isPrivate) {
+                activeRow.classList.add('folder-private-active');
+            } else {
+                activeRow.classList.add('folder-item-active');
+            }
+            
+            // Set icon to open state
+            const iconElement = activeRow.querySelector('i');
+            if(iconElement) {
+                if (isPrivate) {
+                    iconElement.classList.remove('bi-lock-fill');
+                    iconElement.classList.add('bi-lock-open-fill');
+                } else if (id !== '0') {
+                    iconElement.classList.remove('bi-folder-fill');
+                    iconElement.classList.add('bi-folder2-open');
+                }
+            }
+        }
+
+        // 3. Update Breadcrumb/Title
+        const targetLabel = document.getElementById('upload-target-folder');
+        if(targetLabel) targetLabel.innerText = name || 'Root Arsip';
+
+        // 4. Update Right Panel (loads the iframe for the new folder)
+        updateRightPanel();
+        
+        // 5. If it has children and is collapsed, expand it?
+        // if (hasChildren && !expandedFolders[id]) { toggleFolder(id); }
+    }
+    
+    function updateRightPanel() {
+        // This function ensures the iframe/content area reflects the current folder, especially after a search is cleared.
+        const driveId = getCurrentFolderDriveId();
+        const driveView = document.getElementById('drive-iframe-view');
+        const linkContainer = document.getElementById('drive-link-container');
+        
+        if (driveView) {
+            // Check if it is currently displaying search results. If so, don't update iframe yet.
+            if (!document.getElementById('search-results-area')?.classList.contains('hidden')) return;
+
+            if (driveId) {
+                driveView.innerHTML = `<iframe src="https://drive.google.com/embeddedfolderview?id=${driveId}#list" class="w-full h-full border-0" allowfullscreen></iframe>`;
+            } else {
+                 driveView.innerHTML = `
+                    <div class="p-8 text-center text-slate-500">
+                        <i class="bi bi-folder-x text-6xl mb-3 text-red-300"></i>
+                        <p class="font-bold text-xl mb-2">Folder Drive Belum Terpasang</p>
+                        <p class="text-sm">Silakan hubungi admin untuk memastikan folder Drive ID telah dikonfigurasi.</p>
+                    </div>`;
+            }
+        }
+        
+        // Update the 'Buka Drive' button link
+        if (linkContainer) {
+             linkContainer.innerHTML = driveId ? `<a href="https://drive.google.com/drive/folders/${driveId}" target="_blank" rel="noopener noreferrer" onclick="event.preventDefault(); openExternal(this.href);" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 shadow flex gap-2 items-center"><i class="bi bi-box-arrow-up-right"></i> <span class="hidden md:inline">Buka Drive</span></a>` : '';
+        }
+
+        // Update view mode buttons state (since we re-render on folder click, this handles the drive button enable/disable)
+        const driveButton = document.querySelector('button[onclick="setArchiveView(\'drive\')"]');
+        if (driveButton) {
+            driveButton.disabled = !driveId;
+            driveButton.title = driveId ? '' : 'Folder ini tidak terhubung ke Drive';
+            if (driveId) {
+                driveButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                driveButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+    }
+    
+    function setArchiveView(mode) {
+        if (!getCurrentFolderDriveId() && mode === 'drive') {
+             return showToast("Folder ini tidak memiliki Drive ID terpasang.", "error");
+        }
+        archiveViewMode = mode;
+        renderArchive(document.getElementById('page-content'));
+    }
+
+    // --- HELPER LAINNYA ---
+    function populateAppCategorySelect() {
+        const select = document.getElementById('app-category');
+        if (select) {
+            select.innerHTML = APP_CATEGORY_OPTIONS.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+    }
+
+    function setupPickers(){ 
+        const iconPicker = document.getElementById('icon-picker');
+        const colorPicker = document.getElementById('color-picker');
+        
+        if (iconPicker) {
+            iconPicker.innerHTML = ICON_LIST.map(i=>`<div onclick="document.getElementById('app-icon').value='${i}';this.parentNode.querySelectorAll('div').forEach(x=>x.classList.remove('bg-teal-100','text-teal-600'));this.classList.add('bg-teal-100','text-teal-600')" class="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 cursor-pointer text-slate-400 transition-colors"><i class="bi ${i}"></i></div>`).join(''); 
+        }
+        
+        if (colorPicker) {
+            colorPicker.innerHTML = COLOR_LIST.map(c=>`<div onclick="document.getElementById('app-color').value='${c}';this.parentNode.querySelectorAll('div').forEach(x=>x.classList.remove('scale-125', 'ring-2', 'ring-offset-2', 'ring-teal-500'));this.classList.add('scale-125','ring-2','ring-offset-2','ring-teal-500')" class="w-6 h-6 rounded-full ${c} cursor-pointer transition-transform duration-150"></div>`).join(''); 
+        }
+    }
+
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('active'); document.getElementById('mobile-menu-backdrop').classList.toggle('hidden'); }
+    function navigateMobile(p) { renderPage(p); toggleMobileMenu(); }
+    
+    function openModal(id) { 
+        const m = document.getElementById(id); 
+        m.classList.remove('hidden'); 
+        m.classList.add('flex');
+        // Tambahkan efek transisi scale/opacity untuk modal modern
+        const contentId = id.replace('-modal', '-content');
+        const content = document.getElementById(contentId);
+        if(content) setTimeout(()=> { content.classList.remove('scale-95','opacity-0'); }, 10);
+    }
+    
+    function closeModal(id) { 
+        const m = document.getElementById(id);
+        // Tambahkan efek transisi scale/opacity untuk modal modern
+        const contentId = id.replace('-modal', '-content');
+        const content = document.getElementById(contentId);
+        if(content) {
+            content.classList.add('scale-95','opacity-0');
+            setTimeout(() => {
+                m.classList.add('hidden'); 
+                m.classList.remove('flex'); 
+            }, 300); // Tunggu sampai transisi selesai
+        } else {
+            m.classList.add('hidden'); 
+            m.classList.remove('flex'); 
+        }
+    }
+
+    function showToast(m,t='success'){const d=document.createElement('div');d.className=`toast p-3 rounded-xl bg-white border-l-4 ${t==='error'?'border-red-500':'border-teal-500'} flex items-center gap-2 text-sm font-medium text-slate-700 shadow-lg`;d.innerHTML=`<i class="bi ${t==='error'?'bi-x-circle text-red-500':'bi-check-circle text-teal-500'}"></i> ${m}`;document.getElementById('toast-container').appendChild(d);setTimeout(()=>d.remove(),3000);}
+    
+    function buildStruct(flat) { 
+        const map = {}, roots = []; 
+        const list = flat.map(i => ({ ...i, id: String(i.id), parentId: String(i.parentId), children: [], isEmployeeFolder: i.isEmployeeFolder || false })); 
+        
+        list.forEach((n, i) => map[n.id] = i); 
+        
+        list.forEach(n => { 
+            if (n.parentId !== '0' && map[n.parentId] !== undefined) {
+                list[map[n.parentId]].children.push(n); 
+            } else { 
+                const isEmployeeFolder = n.isEmployeeFolder;
+                if (!isEmployeeFolder) {
+                   roots.push(n);
+                } else if (user.role === 'Admin') {
+                   roots.push(n);
+                } else if (String(user.id).toLowerCase() === n.roleAkses) {
+                   roots.push(n);
+                }
+            }
+        }); 
+        return roots; 
+    }
+    
+    // --- AUTH ---
+    function handleLogin(e) { 
+        e.preventDefault(); 
+        const u = document.getElementById('user-nip').value;
+        const p = document.getElementById('user-pass').value; 
+        const btn = document.getElementById('btn-login'); 
+        const oldTxt = btn.innerText; 
+        
+        btn.innerHTML = `<div class="spinner border-white w-4 h-4 border-2"></div> Memproses...`; 
+        btn.disabled = true; 
+        
+        if (!IS_APPS_SCRIPT) { 
+            let s=false, n='', r='', id=''; 
+            if(u==='admin' && p==='admin'){s=true;n='Admin Portal';r='Admin';id='admin'} 
+            if(u==='peg1' && p==='pegawai'){s=true;n='Budi Santoso';r='Pegawai';id='peg1'} 
+            
+            if(s){ 
+                user={loggedIn:true,name:n,role:r,id:id}; 
+                localStorage.setItem("PORTAL_USER",JSON.stringify(user)); 
+                updateAuthUI(n); 
+                closeModal('login-modal'); 
+                fetchData(); 
+            } else { 
+                btn.innerText = oldTxt; 
+                btn.disabled = false; 
+                showToast("Simulasi: Username/Password salah", 'error'); 
+            } 
+            return; 
+        } 
+        
+        google.script.run
+            .withSuccessHandler(r => { 
+                btn.innerText = oldTxt; 
+                btn.disabled = false; 
+                if(r.status){ 
+                    user={loggedIn:true,name:r.name,role:r.role,id:r.user}; 
+                    localStorage.setItem("PORTAL_USER",JSON.stringify(user)); 
+                    updateAuthUI(r.name); 
+                    closeModal('login-modal'); 
+                    fetchData(); 
+                } else {
+                    showToast(r.message, 'error');
+                }
+            })
+            .withFailureHandler(e => { 
+                btn.innerText = oldTxt; 
+                btn.disabled = false; 
+                showToast(`Gagal koneksi server saat login: ${e.message || e.toString()}`, 'error'); 
+            })
+            .doLogin(u,p); 
+    }
+
+    function processLogout() { 
+        localStorage.removeItem("PORTAL_USER"); 
+        user = { loggedIn: false, name: 'Publik', role: 'Guest', id: '' }; 
+        updateAuthUI('Publik'); 
+        closeModal('logout-confirm-modal'); 
+        renderPage('archive'); 
+    } 
+
+    function updateAuthUI(n) { 
+        const da = document.getElementById('auth-container'); 
+        const ma = document.getElementById('mobile-auth-status'); 
+        const isAdmin = user.role === 'Admin';
+        
+        // Gunakan style.display agar class 'hidden md:flex' tetap utuh (tombol hanya muncul di desktop saat login)
+        document.getElementById('btn-force-refresh').style.display = user.loggedIn ? '' : 'none';
+
+        if(user.loggedIn) { 
+            da.innerHTML = `<button onclick="openModal('logout-confirm-modal')" class="bg-white border text-slate-700 px-4 py-2 rounded-full text-xs font-bold hover:bg-slate-50 flex items-center gap-2"><i class="bi bi-person-check-fill text-teal-600"></i> <span class="hidden md:inline">${n}</span></button>`; 
+            ma.innerHTML = `<div class="px-4 py-3 bg-slate-50 rounded-xl text-center mb-3 border border-slate-100"><div class="font-bold text-slate-800">${n}</div><div class="text-xs text-slate-500">${user.role} (${user.id})</div></div><button onclick="openModal('logout-confirm-modal');toggleMobileMenu()" class="w-full bg-red-500 text-white p-2 rounded-xl font-bold">Keluar</button>`; 
+        } else { 
+            da.innerHTML = `<button onclick="openModal('login-modal')" class="bg-slate-900 text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-slate-800 flex items-center gap-2 shadow-lg"><i class="bi bi-person-fill"></i> <span class="hidden md:inline">Login</span></button>`; 
+            ma.innerHTML = `<button onclick="openModal('login-modal')" class="w-full bg-slate-900 text-white p-2 rounded-xl font-bold">Login Pegawai</button>`; 
+        } 
+    }
+    
+    // --- FOLDER CRUD ---
+
+    /**
+     * Mempersiapkan dan menampilkan modal konfirmasi hapus folder.
+     * @param {string} id ID folder yang akan dihapus.
+     */
+    function prepareDeleteFolder(id) { 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola folder.", "error");
+        if (!id) return showToast("ID Folder tidak valid.", "error");
+
+        const folder = folderConfig.find(f => String(f.id) === String(id));
+        if (!folder) return showToast("Folder tidak ditemukan.", "error");
+
+        // Tutup modal folder jika masih terbuka
+        closeModal('folder-modal'); 
+
+        // Set data folder yang akan dihapus ke dalam modal konfirmasi
+        document.getElementById('folder-id-to-delete').value = id;
+        document.getElementById('folder-to-delete-name').innerText = folder.name;
+
+        // Buka modal konfirmasi hapus
+        openModal('delete-folder-confirm-modal');
+    }
+
+    /**
+     * Melakukan proses penghapusan setelah konfirmasi dari modal.
+     */
+    function confirmDeleteFolder() {
+        const id = document.getElementById('folder-id-to-delete').value;
+        if (!id) return showToast("ID Folder tidak valid.", "error");
+        
+        // Disable tombol dan tampilkan spinner
+        const btn = document.getElementById('btn-confirm-delete-folder');
+        const oldTxt = btn.innerHTML; 
+        btn.innerHTML = `<div class="spinner border-white w-4 h-4 border-2"></div> Menghapus...`;
+        btn.disabled = true;
+
+        const cb = (res) => { 
+             closeModal('delete-folder-confirm-modal');
+             // Reset tombol (walaupun modal ditutup, untuk jaga-jaga)
+             btn.innerHTML = oldTxt; 
+             btn.disabled = false;
+             
+             if (res.success) { 
+                 showToast(res.message || "Folder berhasil dihapus.", 'success'); 
+                 fetchData(); 
+             } else { 
+                 showToast(`Gagal menghapus: ${res.message}`, 'error'); 
+             } 
+        }; 
+        
+        if (IS_APPS_SCRIPT) {
+            google.script.run
+            .withSuccessHandler(cb)
+            .withFailureHandler(e => { 
+                showToast(`Gagal koneksi server saat hapus folder: ${e.message || e.toString()}`, 'error'); 
+                btn.innerHTML = oldTxt; 
+                btn.disabled = false;
+            })
+            .deleteFolderConfig(id, user); 
+        } else { 
+            setTimeout(() => cb({success: true}), 500); 
+        } 
+    }
+
+    // Fungsi delFolder lama diganti dengan prepareDeleteFolder, tapi tetap dipertahankan
+    // untuk kompatibilitas jika ada elemen lain yang masih memanggilnya (misal di renderTree)
+    function delFolder(id) {
+        // Panggil fungsi baru untuk menampilkan modal konfirmasi modern
+        prepareDeleteFolder(id);
+    }
+    
+    /**
+     * Memindahkan urutan folder di dalam kelompok sibling-nya (sekelompok folder dengan parentId yang sama).
+     * @param {string} id ID folder yang akan dipindahkan.
+     * @param {'up'|'down'} direction Arah perpindahan.
+     */
+    function handleMoveFolder(id, direction) {
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola urutan folder.", "error");
+        if (id === '0') return showToast("Folder Root tidak dapat dipindahkan.", "error");
+
+        // 1. Dapatkan index folder yang akan dipindahkan di array global
+        const folderToMoveIndex = folderConfig.findIndex(f => String(f.id) === String(id));
+        if (folderToMoveIndex === -1) return showToast("Folder tidak ditemukan.", "error");
+
+        const folderToMove = folderConfig[folderToMoveIndex];
+        const parentId = folderToMove.parentId;
+
+        // 2. Dapatkan SEMUA sibling (termasuk dirinya sendiri), mempertahankan urutan global
+        const siblings = folderConfig.filter(f => String(f.parentId) === String(parentId));
+        
+        // 3. Cari index *relatif* folderToMove di dalam array siblings
+        const currentSiblingIndex = siblings.findIndex(f => String(f.id) === String(id));
+
+        const newSiblingIndex = direction === 'up' ? currentSiblingIndex - 1 : currentSiblingIndex + 1;
+
+        // 4. Cek batas
+        if (newSiblingIndex < 0 || newSiblingIndex >= siblings.length) {
+            return showToast(`Folder sudah berada di posisi paling ${direction === 'up' ? 'atas' : 'bawah'} dalam grup ini.`, 'info');
+        }
+
+        // 5. Tentukan ID folder target yang akan ditukar posisinya
+        const targetSibling = siblings[newSiblingIndex];
+        const targetIndex = folderConfig.findIndex(f => String(f.id) === String(targetSibling.id));
+        
+        if (targetIndex === -1) return showToast("Kesalahan saat menemukan folder target.", "error");
+
+        // 6. Lakukan pertukaran (Swap) di array GLOBAL folderConfig
+        const temp = folderConfig[folderToMoveIndex];
+        folderConfig[folderToMoveIndex] = folderConfig[targetIndex];
+        folderConfig[targetIndex] = temp;
+
+        // 7. Simpan urutan baru ke server
+        saveFolderOrder(folderConfig);
+    }
+
+    /**
+     * Mengirim konfigurasi folder baru (setelah diurutkan) ke GAS untuk disimpan.
+     * @param {Array} updatedConfig 
+     */
+    function saveFolderOrder(updatedConfig) {
+        if (!IS_APPS_SCRIPT) {
+            // SIMULASI
+            showToast("Simulasi: Urutan folder diperbarui secara lokal. Memuat ulang tampilan...", 'success');
+            setTimeout(() => {
+                finishLoading('archive'); 
+            }, 500);
+            return;
+        }
+
+        showToast("Menyimpan urutan folder baru...", 'info');
+
+        // Filter data yang akan dikirim, hanya kolom yang relevan untuk urutan
+        const dataToSave = updatedConfig.map(f => ({
+            id: String(f.id),
+            parentId: String(f.parentId),
+            name: f.name,
+            driveId: f.driveId,
+            roleAkses: f.roleAkses,
+            isEmployeeFolder: f.isEmployeeFolder
+        }));
+
+        google.script.run
+            .withSuccessHandler(res => {
+                if (res.success) {
+                    showToast("Urutan folder berhasil disimpan!", 'success');
+                    fetchData(); // Muat ulang data untuk mengkonfirmasi
+                } else {
+                    showToast(`Gagal menyimpan urutan: ${res.message}`, 'error');
+                    fetchData(); // Muat ulang data asli jika gagal
+                }
+            })
+            .withFailureHandler(e => { 
+                showToast(`Gagal koneksi server saat simpan urutan: ${e.message || e.toString()}`, 'error');
+                fetchData(); // Muat ulang data asli jika gagal
+            })
+            .saveFolderOrder(dataToSave, user);
+    }
+
+    function openFolderModal(id, name, parent) { 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola folder.", "error");
+        populateFolderSelect(parent); 
+        document.getElementById('folder-id').value = id||''; 
+        
+        const isEdit = !!id;
+        let currentRole = '';
+        let isEmployeeFolderType = false;
+
+        if (isEdit) {
+            const f = folderConfig.find(x => String(x.id) === String(id));
+            if(f) {
+                currentRole = f.roleAkses || '';
+                isEmployeeFolderType = f.isEmployeeFolder;
+            }
+            document.getElementById('folder-name').value = name||''; 
+        } else {
+            document.getElementById('folder-name').value = ''; 
+        }
+        
+        document.getElementById('folder-role-akses').value = currentRole;
+        document.getElementById('employee-folder-name').value = '';
+        
+        document.getElementById('folder-type').value = isEmployeeFolderType ? 'mass_employee' : 'single';
+        toggleFolderConfig(isEmployeeFolderType ? 'mass_employee' : 'single');
+        
+        const currentFolder = folderConfig.find(f => String(f.id) === String(document.getElementById('folder-id').value));
+        const disableType = isEdit && (currentFolder && currentFolder.isEmployeeFolder);
+        document.getElementById('folder-type').disabled = disableType;
+
+
+        document.querySelectorAll('#employee-list-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+        document.getElementById('folder-modal-title').innerText = isEdit ? 'Edit Folder' : 'Folder Baru'; 
+        document.getElementById('btn-del-folder').classList.toggle('hidden', !isEdit); 
+        
+        const btn = document.getElementById('btn-save-folder');
+        btn.disabled = false;
+        btn.innerHTML = 'Simpan'; 
+        
+        openModal('folder-modal'); 
+    }
+    
+    function populateFolderSelect(selId) { 
+        let o='<option value="0">&#128194; Root Arsip</option>'; 
+        const tr=(n,l=0)=>{n.forEach(x=>{
+            if(String(x.id)!==document.getElementById('folder-id').value && !x.isEmployeeFolder){
+                o+=`<option value="${x.id}">${'- '.repeat(l)} ${x.name}</option>`;
+                if(x.children)tr(x.children,l+1);
+            }})}; 
+        
+        const nonEmployeeFolders = archiveStruct.filter(f => !f.isEmployeeFolder);
+        tr(nonEmployeeFolders); 
+        
+        document.getElementById('folder-parent').innerHTML=o; 
+        if(selId)document.getElementById('folder-parent').value=selId; 
+    }
+    
+    function handleSaveFolder(e) { 
+        e.preventDefault(); 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat menyimpan folder.", "error");
+
+        const type = document.getElementById('folder-type').value;
+        const btn = document.getElementById('btn-save-folder'); 
+        const oldTxt = btn.innerHTML; 
+        
+        let folderData = {
+            id: document.getElementById('folder-id').value || null,
+            isMassEmployeeFolder: type === 'mass_employee',
+            parentId: document.getElementById('folder-parent').value, 
+            roleAkses: document.getElementById('folder-role-akses').value, 
+            name: '', 
+            pegawaiIds: []
+        };
+        
+        if (type === 'mass_employee') {
+            const selectedPegawai = Array.from(document.querySelectorAll('#employee-list-checkboxes input[name="pegawai_id"]:checked')).map(cb => cb.value);
+            folderData.name = document.getElementById('employee-folder-name').value;
+            
+            if (!folderData.name.trim() || folderData.id && selectedPegawai.length === 0) {
+                if(folderData.id) {
+                    folderData.name = folderConfig.find(f => String(f.id) === String(folderData.id))?.name || folderData.name;
+                    folderData.isMassEmployeeFolder = false; 
+                } else {
+                    return showToast("Pastikan Nama Template dan minimal satu Pegawai dipilih.", 'error');
+                }
+            }
+            folderData.pegawaiIds = selectedPegawai;
+            folderData.parentId = "0"; 
+            folderData.roleAkses = ''; 
+            
+        } else { 
+             folderData.name = document.getElementById('folder-name').value;
+             if (!folderData.name.trim()) return showToast("Nama Folder wajib diisi.", 'error');
+        }
+
+        btn.innerHTML = `<div class="spinner border-white w-4 h-4 border-2"></div> Memproses...`; 
+        btn.disabled = true;
+
+        const cb = (res) => { 
+            btn.innerHTML = oldTxt; 
+            btn.disabled = false; 
+            if (res.success) { 
+                showToast(res.message || "Folder berhasil disimpan/dibuat.", 'success'); 
+                closeModal('folder-modal'); 
+                fetchData(); 
+            } else { 
+                showToast(`Gagal menyimpan: ${res.message}`, 'error');
+            } 
+        };
+
+        if (IS_APPS_SCRIPT) {
+            google.script.run
+            .withSuccessHandler(cb)
+            .withFailureHandler(e => {
+                btn.innerHTML = oldTxt; 
+                btn.disabled = false; 
+                showToast(`Gagal koneksi server saat simpan folder: ${e.message || e.toString()}`, 'error');
+            })
+            .saveFolderConfig(folderData, user);
+        } else {
+            setTimeout(() => cb({success: true, message: folderData.id ? 'Simulasi: Folder diperbarui.' : 'Simulasi: Folder dibuat.'}), 1000);
+        }
+    }
+    
+
+    // --- CRUD APPS HANDLERS ---
+    function openAppModal(id) {
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola aplikasi.", "error");
+        populateAppCategorySelect(); setupPickers(); 
+        const isEdit = !!id; const app = db.apps.find(a => String(a.id) === String(id));
+        document.getElementById('app-id').value = id || ''; 
+        document.getElementById('app-modal-title').innerText = isEdit ? 'Edit Aplikasi' : 'Tambah Aplikasi Baru';
+        document.getElementById('btn-save-app').innerText = isEdit ? 'Simpan Perubahan' : 'Tambah Aplikasi'; 
+        document.getElementById('btn-del-app').classList.toggle('hidden', !isEdit);
+        
+        if (isEdit && app) { 
+            document.getElementById('app-title').value = app.judul; document.getElementById('app-desc').value = app.desc || ''; 
+            document.getElementById('app-url').value = app.url; document.getElementById('app-category').value = app.category; 
+            document.getElementById('app-type').value = app.type; document.getElementById('app-icon').value = app.icon; 
+            document.getElementById('app-color').value = app.color; 
+        } else { 
+            document.getElementById('app-title').value = ''; document.getElementById('app-desc').value = ''; 
+            document.getElementById('app-url').value = ''; document.getElementById('app-category').value = APP_CATEGORY_OPTIONS[0]; 
+            document.getElementById('app-type').value = 'Web/Link'; document.getElementById('app-icon').value = ICON_LIST[0]; 
+            document.getElementById('app-color').value = COLOR_LIST[0]; 
+        } 
+        openModal('app-modal');
+    }
+
+    function handleSaveApp(e) { 
+        e.preventDefault(); 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat menyimpan aplikasi.", "error");
+
+        const btn = document.getElementById('btn-save-app'); const oldTxt = btn.innerText;
+        btn.innerHTML = `<div class="spinner border-white w-4 h-4 border-2"></div> Memproses...`; btn.disabled = true;
+        const appData = { 
+            id: document.getElementById('app-id').value || new Date().getTime(), 
+            judul: document.getElementById('app-title').value, desc: document.getElementById('app-desc').value, 
+            url: document.getElementById('app-url').value, category: document.getElementById('app-category').value, 
+            type: document.getElementById('app-type').value, icon: document.getElementById('app-icon').value, 
+            color: document.getElementById('app-color').value 
+        };
+        const cb = (res) => { 
+            btn.innerText = oldTxt; btn.disabled = false; 
+            if (res.success) { 
+                showToast("Aplikasi berhasil disimpan."); closeModal('app-modal'); fetchData(); 
+            } else { 
+                showToast(`Gagal menyimpan: ${res.message}`, 'error');
+            } 
+        };
+        if (IS_APPS_SCRIPT) {
+            google.script.run
+            .withSuccessHandler(cb)
+            .withFailureHandler(e => { 
+                btn.innerText = oldTxt; 
+                btn.disabled = false;
+                showToast(`Gagal koneksi server saat simpan aplikasi: ${e.message || e.toString()}`, 'error'); 
+            })
+            .saveApp(appData, user); 
+        } else { 
+            setTimeout(() => cb({success: true}), 500); 
+        }
+    }
+
+    function delApp(id) { 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat menghapus aplikasi.", "error");
+        if (!confirm("Anda yakin ingin menghapus aplikasi ini?")) return;
+        const cb = (res) => { 
+            if (res.success) { showToast("Aplikasi berhasil dihapus."); fetchData(); 
+            } else { showToast(`Gagal menghapus: ${res.message}`, 'error'); } 
+        }; 
+        if (IS_APPS_SCRIPT) {
+            google.script.run
+            .withSuccessHandler(cb)
+            .withFailureHandler(e => { showToast(`Gagal koneksi server saat hapus aplikasi: ${e.message || e.toString()}`, 'error'); })
+            .deleteApp(id, user); 
+        } else { 
+            setTimeout(() => cb({success: true}), 500); 
+        } 
+    }
+
+    // --- CRUD GALLERY HANDLERS ---
+    function handleGalleryFileSelect(input) { 
+        galleryFileToUpload = input.files[0]; 
+        document.getElementById('gal-current-status').innerText = `Gambar baru: ${galleryFileToUpload.name}`; 
+        document.getElementById('gal-drop-area').classList.add('bg-teal-50', 'border-teal-500'); 
+    }
+
+    function openGalleryModal(id) {
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola galeri.", "error");
+        const isEdit = !!id; const item = db.gallery.find(g => String(g.id) === String(id));
+        document.getElementById('gal-id').value = id || ''; 
+        document.getElementById('gal-file-id').value = (item ? item.fileId : '') || ''; 
+        document.getElementById('gal-url').value = (item ? item.url : '') || '';
+        document.getElementById('gallery-modal-title').innerText = isEdit ? 'Edit Galeri' : 'Tambah Galeri Baru'; 
+        document.getElementById('btn-save-gallery').innerText = isEdit ? 'Simpan Perubahan' : 'Simpan Foto'; 
+        document.getElementById('btn-del-gallery').classList.toggle('hidden', !isEdit);
+        
+        galleryFileToUpload = null; document.getElementById('gal-file').value = ''; 
+        document.getElementById('gal-drop-area').classList.remove('bg-teal-50', 'border-teal-500');
+        
+        if (isEdit && item) { 
+            document.getElementById('gal-title').value = item.judul; document.getElementById('gal-desc').value = item.desc || ''; 
+            document.getElementById('gal-date').value = item.date ? new Date(item.date).toISOString().split('T')[0] : ''; 
+            document.getElementById('gal-current-status').innerText = `Gambar saat ini: ${item.fileId ? 'Tersimpan di Drive' : 'URL Eksternal'}`; 
+        } else { 
+            document.getElementById('gal-title').value = ''; document.getElementById('gal-desc').value = ''; 
+            document.getElementById('gal-date').value = new Date().toISOString().split('T')[0]; 
+            document.getElementById('gal-current-status').innerText = '(Tidak ada)'; 
+        } 
+        openModal('gallery-modal');
+    }
+
+    function handleSaveGallery(e) {
+        e.preventDefault(); 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat menyimpan galeri.", "error");
+
+        const isEdit = !!document.getElementById('gal-id').value;
+        if (!galleryFileToUpload && !isEdit && !document.getElementById('gal-url').value) return showToast("Wajib memilih gambar atau mengisi URL untuk Galeri baru!", 'error');
+        
+        const btn = document.getElementById('btn-save-gallery'); 
+        const oldTxt = btn.innerText;
+        btn.innerHTML = `<div class="spinner border-white w-4 h-4 border-2"></div> Memproses...`; 
+        btn.disabled = true;
+        
+        const galleryData = { 
+            id: document.getElementById('gal-id').value || new Date().getTime(), 
+            judul: document.getElementById('gal-title').value, desc: document.getElementById('gal-desc').value, 
+            date: document.getElementById('gal-date').value, url: document.getElementById('gal-url').value, 
+            fileId: document.getElementById('gal-file-id').value 
+        };
+        
+        const executeSave = (fileData = null) => {
+            const cb = (res) => { 
+                btn.innerText = oldTxt; btn.disabled = false; 
+                if (res.success) { 
+                    showToast("Galeri berhasil disimpan."); closeModal('gallery-modal'); fetchData(); 
+                } else { 
+                    showToast(`Gagal menyimpan: ${res.message}`, 'error'); 
+                } 
+            };
+            if (IS_APPS_SCRIPT) {
+                google.script.run
+                .withSuccessHandler(cb)
+                .withFailureHandler(e => { 
+                    btn.innerText = oldTxt; 
+                    btn.disabled = false;
+                    showToast(`Gagal koneksi server saat simpan galeri: ${e.message || e.toString()}`, 'error'); 
+                })
+                .saveGallery(galleryData, fileData, user); 
+            } else { 
+                setTimeout(() => cb({success: true}), 500); 
+            }
+        };
+
+        if (galleryFileToUpload) { 
+            const reader = new FileReader(); 
+            reader.onload = (e) => { 
+                const fileData = { 
+                    filename: galleryFileToUpload.name, 
+                    mimeType: galleryFileToUpload.type, 
+                    bytes: Array.from(new Uint8Array(e.target.result)) 
+                }; 
+                executeSave(fileData); 
+            }; 
+            reader.readAsArrayBuffer(galleryFileToUpload); 
+        } else { 
+            executeSave(null); 
+        }
+    }
+
+    function delGallery(id, fileId) { 
+        if (user.role !== 'Admin') return showToast("Hanya Admin yang dapat mengelola galeri.", "error");
+        if (!confirm("Anda yakin ingin menghapus item Galeri ini? Gambar di Drive akan dipindahkan ke Trash.")) return; 
+        const cb = (res) => { 
+            if (res.success) { showToast("Item Galeri berhasil dihapus."); fetchData(); 
+            } else { showToast(`Gagal menghapus: ${res.message}`, 'error'); } 
+        }; 
+        if (IS_APPS_SCRIPT) {
+            google.script.run
+            .withSuccessHandler(cb)
+            .withFailureHandler(e => { showToast(`Gagal koneksi server saat hapus galeri: ${e.message || e.toString()}`, 'error'); })
+            .deleteGallery(id, fileId, user); 
+        } else { 
+            setTimeout(() => cb({success: true}), 500); 
+        } 
+    }
+  </script>
+</body>
+</html>

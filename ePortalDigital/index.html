@@ -50,13 +50,22 @@ width:100vw;
 height:100dvh;
 background:#fff;
 overflow:hidden;
+
+/* FIX TERPOTONG (PWA standalone):
+   beri ruang untuk status bar iOS (atas) & gesture bar (bawah)
+   agar navbar portal tidak tertutup */
+padding-top:env(safe-area-inset-top,0px);
+padding-bottom:env(safe-area-inset-bottom,0px);
 }
 
 iframe{
 position:absolute;
-inset:0;
+top:env(safe-area-inset-top,0px);
+left:0;
+right:0;
+bottom:env(safe-area-inset-bottom,0px);
 width:100%;
-height:100%;
+height:calc(100% - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
 border:none;
 background:#fff;
 display:block;
@@ -321,120 +330,15 @@ font-size:.85rem;
 
 }
 
-</style>
-
-</head>
-
-<body>
-
-<div class="iframe-container">
-
-<div class="loader-screen" id="loader">
-
-<div class="loader-card">
-
-<div class="portal-loader">
-
-<div class="ring ring1"></div>
-<div class="ring ring2"></div>
-<div class="ring ring3"></div>
-
-<div class="core">
-⌘
-</div>
-
-</div>
-
-<div class="app-title">
-e-PORTAL DIGITAL
-</div>
-
-<div class="app-subtitle">
-Portal Terintegrasi Layanan Digital<br>
-Puskesmas Panjatan I
-</div>
-
-<div class="app-location">
-PUSKESMAS PANJATAN I
-</div>
-
-<div class="tagline">
-Satu Portal • Semua Layanan • Terintegrasi Digital
-</div>
-
-<div class="progress">
-<div class="progress-bar"></div>
-</div>
-
-<div class="loading-text">
-Memuat layanan digital Puskesmas Panjatan I...
-</div>
-
-</div>
-
-</div>
-
-<iframe
-id="appFrame"
-src="https://script.google.com/a/~/macros/s/AKfycbyq2VJNosxfGQ6CEkYVCL8gZ11pPfvhJAnCqhlpXk8h7BvqDVh-SmzcYKErj_Osgtui_Q/exec"
-allow="geolocation *; camera *; microphone *"
-sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-downloads"
-loading="eager"
-referrerpolicy="no-referrer"
-allowfullscreen
-onload="hideLoader()">
-</iframe>
-
-</div>
-
-<script>
-
-function hideLoader(){
-
-setTimeout(() => {
-
-document
-.getElementById('loader')
-.classList.add('fade-out');
-
-},300);
-
-}
-
-if ('serviceWorker' in navigator) {
-
-window.addEventListener('load', () => {
-
-navigator.serviceWorker
-.register('/sw.js')
-.catch(err => console.log(err));
-
-});
-
-}
-
-</script>
-
-</body>
-<!-- BACK HOME -->
-
-<a 
-href="https://puskesmaspanjatansatu.github.io/portal-digital/"
-class="back-home"
-title="Kembali ke Portal Digital">
-
-🏠
-
-</a>
-
-<style>
+/* BACK HOME */
 
 .back-home{
 
 position:fixed;
 
-right:20px;
-bottom:20px;
+/* FIX TERPOTONG: offset mengikuti safe-area (gesture bar) */
+right:calc(20px + env(safe-area-inset-right,0px));
+bottom:calc(20px + env(safe-area-inset-bottom,0px));
 
 
 width:58px;
@@ -501,8 +405,8 @@ box-shadow:
 .back-home{
 
 
-right:15px;
-bottom:15px;
+right:calc(15px + env(safe-area-inset-right,0px));
+bottom:calc(15px + env(safe-area-inset-bottom,0px));
 
 
 width:52px;
@@ -518,4 +422,114 @@ font-size:22px;
 }
 
 </style>
+
+</head>
+
+<body>
+
+<div class="iframe-container">
+
+<div class="loader-screen" id="loader">
+
+<div class="loader-card">
+
+<div class="portal-loader">
+
+<div class="ring ring1"></div>
+<div class="ring ring2"></div>
+<div class="ring ring3"></div>
+
+<div class="core">
+⌘
+</div>
+
+</div>
+
+<div class="app-title">
+e-PORTAL DIGITAL
+</div>
+
+<div class="app-subtitle">
+Portal Terintegrasi Layanan Digital<br>
+Puskesmas Panjatan I
+</div>
+
+<div class="app-location">
+PUSKESMAS PANJATAN I
+</div>
+
+<div class="tagline">
+Satu Portal • Semua Layanan • Terintegrasi Digital
+</div>
+
+<div class="progress">
+<div class="progress-bar"></div>
+</div>
+
+<div class="loading-text">
+Memuat layanan digital Puskesmas Panjatan I...
+</div>
+
+</div>
+
+</div>
+
+<!-- FIX LINK DIBLOKIR:
+     + allow-popups-to-escape-sandbox : tab baru TIDAK mewarisi sandbox (kunci utama)
+     + allow-top-navigation-by-user-activation : izinkan navigasi keluar via klik user -->
+<iframe
+id="appFrame"
+src="https://script.google.com/a/~/macros/s/AKfycbyq2VJNosxfGQ6CEkYVCL8gZ11pPfvhJAnCqhlpXk8h7BvqDVh-SmzcYKErj_Osgtui_Q/exec"
+allow="geolocation *; camera *; microphone *; clipboard-write *; fullscreen *"
+sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-modals allow-downloads"
+loading="eager"
+referrerpolicy="no-referrer"
+allowfullscreen
+onload="hideLoader()">
+</iframe>
+
+</div>
+
+<!-- BACK HOME (dipindah ke DALAM <body> agar HTML valid & selalu dirender) -->
+
+<a
+href="https://puskesmaspanjatansatu.github.io/portal-digital/"
+class="back-home"
+title="Kembali ke Portal Digital">
+
+🏠
+
+</a>
+
+<script>
+
+function hideLoader(){
+
+setTimeout(() => {
+
+document
+.getElementById('loader')
+.classList.add('fade-out');
+
+},300);
+
+}
+
+if ('serviceWorker' in navigator) {
+
+window.addEventListener('load', () => {
+
+// FIX PATH: '/sw.js' menunjuk ke root domain github.io (404 di project page).
+// Pola sub-layanan portal-digital: sw.js berada di folder induk.
+navigator.serviceWorker
+.register('../sw.js')
+.catch(err => console.log(err));
+
+});
+
+}
+
+</script>
+
+</body>
 </html>

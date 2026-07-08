@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+
+<title>Monev SIGAP ILP</title>
+
+<meta name="theme-color" content="#0f172a">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',sans-serif;
+background:#020617;
+}
+
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+}
+
+/* LOADER */
+
+#loader{
+position:fixed;
+inset:0;
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:radial-gradient(circle at top,#0f172a,#020617 70%);
+transition:.5s;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+.card{
+width:90%;
+max-width:360px;
+padding:35px 25px;
+text-align:center;
+border-radius:30px;
+
+background:rgba(148,163,184,.08);
+backdrop-filter:blur(20px);
+border:1px solid #94a3b833;
+
+color:#f1f5f9;
+box-shadow:0 20px 60px #0008;
+}
+
+/* =====================
+   MONEV ANIMATION
+===================== */
+
+.icon{
+width:120px;
+height:120px;
+margin:auto;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* checklist */
+
+.checklist{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.item{
+display:flex;
+align-items:center;
+gap:8px;
+opacity:.6;
+animation:fadeIn 2s infinite;
+}
+
+.item:nth-child(2){animation-delay:.3s;}
+.item:nth-child(3){animation-delay:.6s;}
+
+.box{
+width:14px;
+height:14px;
+border:2px solid #22c55e;
+border-radius:4px;
+}
+
+.line{
+width:60px;
+height:4px;
+background:#22c55e;
+border-radius:2px;
+}
+
+/* icon circle */
+
+.circle{
+position:absolute;
+top:-10px;
+right:10px;
+width:35px;
+height:35px;
+border-radius:50%;
+background:#22c55e;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:#022c22;
+box-shadow:0 0 15px #22c55e88;
+animation:float 2s infinite;
+}
+
+/* animasi */
+
+@keyframes fadeIn{
+0%{opacity:.2;}
+50%{opacity:1;}
+100%{opacity:.4;}
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
+}
+
+/* TEXT */
+
+h1{
+margin-top:20px;
+font-size:22px;
+letter-spacing:2px;
+color:#22c55e;
+}
+
+p{
+margin-top:12px;
+color:#e2e8f0;
+line-height:1.6;
+}
+
+.location{
+margin-top:18px;
+font-size:13px;
+letter-spacing:2px;
+color:#cbd5f5;
+}
+
+/* PROGRESS */
+
+.progress{
+margin-top:25px;
+height:7px;
+border-radius:20px;
+background:#1e293b;
+overflow:hidden;
+}
+
+.progressbar{
+height:100%;
+width:40%;
+background:#22c55e;
+animation:load 1.2s infinite;
+}
+
+@keyframes load{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(300%)}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- IFRAME -->
+
+<iframe
+id="app"
+src="https://script.google.com/a/~/macros/s/AKfycbwGAq1TMlsjTaDE5hXiWNz0l00LV4mBUxIuUUR5O-JaF3PDwZVPYweKVIu3JppX5cPj/exec"
+allow="geolocation *;camera *;microphone *"
+loading="eager">
+</iframe>
+
+<!-- LOADING -->
+
+<div id="loader">
+
+<div class="card">
+
+<div class="icon">
+
+<div class="checklist">
+<div class="item">
+<div class="box"></div>
+<div class="line"></div>
+</div>
+<div class="item">
+<div class="box"></div>
+<div class="line"></div>
+</div>
+<div class="item">
+<div class="box"></div>
+<div class="line"></div>
+</div>
+</div>
+
+<div class="circle">✔</div>
+
+</div>
+
+<h1>MONEV SIGAP ILP</h1>
+
+<p>
+Monitoring & Evaluasi<br>
+Indikator • Pelaporan • Kinerja
+</p>
+
+<div class="location">
+PUSKESMAS PANJATAN I
+</div>
+
+<div class="progress">
+<div class="progressbar"></div>
+</div>
+
+<p>
+Memuat sistem monitoring...
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+const loader = document.getElementById("loader");
+
+document.getElementById("app").onload=function(){
+setTimeout(()=>{
+loader.classList.add("hide");
+},300);
+};
+
+// fallback
+setTimeout(()=>{
+loader.classList.add("hide");
+},6000);
+
+</script>
+
+</body>
+</html>

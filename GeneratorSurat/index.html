@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no">
+
+<title>Generator Surat | Puskesmas Panjatan I</title>
+
+<meta name="theme-color" content="#0f766e">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#020617;
+}
+
+/* IFRAME */
+
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+background:#fff;
+}
+
+/* LOADER */
+
+#loader{
+position:fixed;
+inset:0;
+z-index:9999;
+display:flex;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at top,#134e4a,#020617 70%);
+transition:.5s;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+.card{
+width:90%;
+max-width:360px;
+padding:35px 25px;
+text-align:center;
+border-radius:28px;
+
+background:rgba(148,163,184,.08);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.15);
+
+color:#f1f5f9;
+box-shadow:0 20px 60px #0008;
+}
+
+/* ================= ANIMASI KERTAS ================= */
+
+.icon{
+width:140px;
+height:140px;
+margin:auto;
+perspective:800px;
+position:relative;
+}
+
+/* paper container */
+
+.paper-wrap{
+width:80px;
+height:100px;
+margin:auto;
+position:relative;
+transform-style:preserve-3d;
+animation:slideIn 2.5s ease-in-out infinite;
+}
+
+/* sisi depan & belakang */
+
+.paper,
+.paper-back{
+position:absolute;
+width:100%;
+height:100%;
+border-radius:8px;
+background:#f8fafc;
+backface-visibility:hidden;
+box-shadow:0 10px 25px #0005;
+}
+
+/* belakang */
+
+.paper-back{
+transform:rotateY(180deg);
+background:#e2e8f0;
+}
+
+/* isi garis */
+
+.line{
+height:4px;
+background:#cbd5f5;
+margin:8px 10px;
+border-radius:3px;
+}
+
+.line:nth-child(1){width:70%}
+.line:nth-child(2){width:85%}
+.line:nth-child(3){width:60%}
+
+/* animasi flip */
+
+@keyframes slideIn{
+0%{
+transform:translateY(40px) rotateY(0deg);
+opacity:0;
+}
+20%{
+opacity:1;
+}
+50%{
+transform:translateY(0px) rotateY(0deg);
+}
+70%{
+transform:rotateY(180deg);
+}
+100%{
+transform:translateY(0px) rotateY(180deg);
+}
+}
+
+/* stempel */
+
+.stamp{
+position:absolute;
+top:-12px;
+right:-12px;
+width:36px;
+height:36px;
+border-radius:50%;
+background:#ef4444;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+color:#fff;
+font-weight:bold;
+box-shadow:0 0 15px #ef444488;
+animation:stamp 2.5s infinite;
+}
+
+@keyframes stamp{
+0%,60%{transform:scale(0);opacity:0}
+70%{transform:scale(1.3);opacity:1}
+100%{transform:scale(1);opacity:1}
+}
+
+/* TEXT */
+
+h1{
+margin-top:20px;
+font-size:22px;
+letter-spacing:1px;
+color:#5eead4;
+}
+
+p{
+margin-top:12px;
+color:#e2e8f0;
+line-height:1.6;
+}
+
+.location{
+margin-top:15px;
+font-size:13px;
+letter-spacing:2px;
+color:#94a3b8;
+}
+
+/* PROGRESS */
+
+.progress{
+margin-top:22px;
+height:6px;
+border-radius:20px;
+background:#1e293b;
+overflow:hidden;
+}
+
+.progressbar{
+height:100%;
+width:40%;
+background:linear-gradient(90deg,#2dd4bf,#34d399);
+animation:load 1.2s infinite;
+}
+
+@keyframes load{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(300%)}
+}
+
+/* FLOAT BUTTON */
+
+.home-btn{
+position:fixed;
+right:18px;
+bottom:18px;
+width:50px;
+height:50px;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+background:rgba(15,23,42,.55);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,.2);
+color:#fff;
+z-index:99999;
+box-shadow:0 8px 25px rgba(0,0,0,.3);
+transition:.25s;
+}
+
+.home-btn:hover{
+transform:translateY(-3px);
+background:#14b8a6;
+}
+
+.home-btn svg{
+width:22px;
+height:22px;
+fill:#fff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<iframe
+id="app"
+src="https://script.google.com/a/~/macros/s/AKfycbxXV2Ov97wluSoyphNtJsqMcC97YAqSDWpRK3IUp51k4UnPGPPoemBgsMF3bhLtXbvtLg/exec"
+allow="geolocation *;camera *;microphone *"
+loading="eager">
+</iframe>
+
+<div id="loader">
+
+<div class="card">
+
+<div class="icon">
+
+<div class="paper-wrap">
+
+<div class="paper">
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+</div>
+
+<div class="paper-back"></div>
+
+</div>
+
+<div class="stamp">OK</div>
+
+</div>
+
+<h1>GENERATOR SURAT</h1>
+
+<p>
+Puskesmas Panjatan I<br>
+Cepat • Digital • Otomatis
+</p>
+
+<div class="location">
+KULON PROGO • DIY
+</div>
+
+<div class="progress">
+<div class="progressbar"></div>
+</div>
+
+<p>Menyiapkan dokumen...</p>
+
+</div>
+
+</div>
+
+<a href="https://puskesmaspanjatansatu.github.io/portal-digital/" class="home-btn">
+<svg viewBox="0 0 24 24">
+<path d="M12 3.1 2.6 11a1 1 0 0 0 .64 1.77H5v7a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-7h1.76A1 1 0 0 0 21.4 11L12 3.1z"/>
+</svg>
+</a>
+
+<script>
+
+const loader = document.getElementById("loader");
+
+document.getElementById("app").onload=function(){
+setTimeout(()=>{
+loader.classList.add("hide");
+},300);
+};
+
+setTimeout(()=>{
+loader.classList.add("hide");
+},8000);
+
+</script>
+
+</body>
+</html>

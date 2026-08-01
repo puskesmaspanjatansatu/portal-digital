@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struktur Organisasi Puskesmas Panjatan I</title>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:system-ui;
+background:#020617;
+overflow:hidden;
+}
+
+/* iframe */
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+background:#fff;
+}
+
+/* LOADER */
+#loader{
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+background:radial-gradient(circle,#0ea5e9,#020617);
+transition:.6s;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+/* CARD */
+.card{
+width:90%;
+max-width:380px;
+padding:30px;
+border-radius:24px;
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.1);
+color:#e2e8f0;
+text-align:center;
+box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+
+/* HEADER */
+.title{
+font-size:18px;
+color:#38bdf8;
+margin-bottom:10px;
+}
+
+.sub{
+font-size:13px;
+color:#94a3b8;
+}
+
+/* ===== ANIMASI ORGANISASI ===== */
+.org{
+position:relative;
+height:120px;
+margin:25px 0;
+}
+
+/* node pusat */
+.node-center{
+width:60px;
+height:60px;
+border-radius:50%;
+background:#38bdf8;
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:12px;
+font-weight:bold;
+box-shadow:0 0 20px #38bdf8;
+animation:pulse 2s infinite;
+}
+
+/* node bawahan */
+.node{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#22c55e;
+position:absolute;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:10px;
+box-shadow:0 0 15px #22c55e;
+}
+
+/* posisi node */
+.n1{top:0;left:50%;transform:translateX(-50%)}
+.n2{bottom:0;left:20%}
+.n3{bottom:0;right:20%}
+
+/* garis */
+.line{
+position:absolute;
+width:2px;
+background:#38bdf8;
+left:50%;
+top:50%;
+transform-origin:top;
+animation:grow 1.5s ease-in-out infinite alternate;
+}
+
+.l1{height:40px;transform:translateX(-50%) rotate(0deg)}
+.l2{height:60px;transform:translateX(-50%) rotate(-35deg)}
+.l3{height:60px;transform:translateX(-50%) rotate(35deg)}
+
+@keyframes grow{
+from{opacity:.3}
+to{opacity:1}
+}
+
+@keyframes pulse{
+0%,100%{transform:translate(-50%,-50%) scale(1)}
+50%{transform:translate(-50%,-50%) scale(1.1)}
+}
+
+/* progress */
+.progress{
+margin-top:20px;
+height:5px;
+background:#1e293b;
+border-radius:20px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+width:40%;
+background:linear-gradient(90deg,#38bdf8,#22c55e);
+animation:load 1.5s infinite;
+}
+
+@keyframes load{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(300%)}
+}
+
+/* ===== HOME BUTTON ===== */
+.home{
+position:fixed;
+bottom:18px;
+right:18px;
+width:55px;
+height:55px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(15,23,42,.6);
+border:1px solid rgba(255,255,255,.2);
+backdrop-filter:blur(10px);
+z-index:99999;
+transition:.3s;
+box-shadow:0 10px 25px rgba(0,0,0,.4);
+}
+
+.home:hover{
+background:#38bdf8;
+transform:translateY(-4px) scale(1.05);
+}
+
+.home svg{
+width:26px;
+fill:#fff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- WEB APP -->
+<iframe
+id="app"
+src="https://script.google.com/macros/s/AKfycbwjZN_sGY2gMsdGn6pDfDBXUIMXIBV9MO1aas18X3lKh_U70G6oAc9eJRk6fPuy9LG1FA/exec">
+</iframe>
+
+<!-- LOADER -->
+<div id="loader">
+
+<div class="card">
+
+<div class="title">STRUKTUR ORGANISASI</div>
+<div class="sub">Puskesmas Panjatan I</div>
+
+<div class="org">
+
+<div class="line l1"></div>
+<div class="line l2"></div>
+<div class="line l3"></div>
+
+<div class="node-center">Kepala</div>
+<div class="node n1">TU</div>
+<div class="node n2">UKM</div>
+<div class="node n3">UKP</div>
+
+</div>
+
+<div class="sub">Memuat struktur organisasi...</div>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+</div>
+
+</div>
+
+<!-- HOME BUTTON -->
+<a href="https://panjatansatu.github.io/puskesmas-diy/" class="home">
+<svg viewBox="0 0 24 24">
+<path d="M12 3.1 2.6 11a1 1 0 0 0 .64 1.77H5v7a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-7h1.76A1 1 0 0 0 21.4 11L12 3.1z"/>
+</svg>
+</a>
+
+<script>
+
+const loader=document.getElementById("loader");
+
+document.getElementById("app").onload=()=>{
+setTimeout(()=>loader.classList.add("hide"),500);
+};
+
+setTimeout(()=>loader.classList.add("hide"),7000);
+
+</script>
+
+</body>
+</html>

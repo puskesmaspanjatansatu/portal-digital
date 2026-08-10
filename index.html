@@ -159,6 +159,87 @@ margin-bottom:20px;
 font-size:1.3rem;
 }
 
+/* Search */
+
+.search-wrap{
+max-width:1200px;
+margin:0 auto 25px;
+padding:0 20px;
+}
+
+.search-box{
+position:relative;
+display:flex;
+align-items:center;
+background:var(--glass);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+border-radius:18px;
+padding:4px 4px 4px 18px;
+transition:.25s;
+}
+
+.search-box:focus-within{
+border-color:rgba(255,255,255,.5);
+box-shadow:0 8px 25px rgba(0,0,0,.2);
+}
+
+.search-icon{
+font-size:18px;
+opacity:.8;
+margin-right:10px;
+}
+
+.search-box input{
+flex:1;
+background:transparent;
+border:none;
+outline:none;
+color:#fff;
+font-size:1rem;
+padding:14px 0;
+}
+
+.search-box input::placeholder{
+color:#dbeafe;
+opacity:.75;
+}
+
+.search-clear{
+display:none;
+border:none;
+background:rgba(255,255,255,.15);
+color:#fff;
+width:32px;
+height:32px;
+border-radius:50%;
+font-size:16px;
+cursor:pointer;
+margin-right:6px;
+flex-shrink:0;
+}
+
+.search-count{
+margin-top:10px;
+font-size:.85rem;
+color:#dbeafe;
+opacity:.85;
+padding-left:4px;
+min-height:18px;
+}
+
+.no-result{
+display:none;
+text-align:center;
+padding:40px 20px;
+color:#dbeafe;
+}
+
+.no-result .icon{
+font-size:42px;
+margin-bottom:12px;
+}
+
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -184,6 +265,10 @@ box-shadow:
 0 20px 40px rgba(0,0,0,.25);
 }
 
+.card.hidden{
+display:none;
+}
+
 .icon{
 font-size:42px;
 margin-bottom:15px;
@@ -199,6 +284,13 @@ margin-bottom:10px;
 font-size:.9rem;
 line-height:1.6;
 color:#dbeafe;
+}
+
+mark{
+background:rgba(250,204,21,.55);
+color:#fff;
+border-radius:4px;
+padding:0 2px;
 }
 
 /* Footer */
@@ -399,9 +491,22 @@ Puskesmas Panjatan I
 
 <h3>Aplikasi Digital</h3>
 
-<div class="grid">
+<div class="search-wrap">
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input
+type="text"
+id="appSearch"
+placeholder="Cari aplikasi... (mis. cuti, keuangan, absensi)"
+autocomplete="off">
+<button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+</div>
+<div class="search-count" id="searchCount"></div>
+</div>
 
-<a class="card" href="./ePortalDigital/">
+<div class="grid" id="appGrid">
+
+<a class="card" href="./ePortalDigital/" data-name="e-Portal Digital" data-desc="Portal Terintegrasi Layanan Digital">
 <div class="icon">🖥️</div>
 <div class="name">e-Portal Digital</div>
 <div class="desc">
@@ -409,7 +514,7 @@ Portal Terintegrasi Layanan Digital
 </div>
 </a>
 
-<a class="card" href="./sigap/">
+<a class="card" href="./sigap/" data-name="SIGAP" data-desc="Sistem Informasi Presensi Pegawai">
 <div class="icon">🕒</div>
 <div class="name">SIGAP</div>
 <div class="desc">
@@ -417,7 +522,7 @@ Sistem Informasi Presensi Pegawai
 </div>
 </a>
 
-<a class="card" href="./pamanpanji/">
+<a class="card" href="./pamanpanji/" data-name="PAMAN PANJI" data-desc="Sistem Manajemen dan Perencanaan">
 <div class="icon">🎯</div>
 <div class="name">PAMAN PANJI</div>
 <div class="desc">
@@ -425,7 +530,7 @@ Sistem Manajemen dan Perencanaan
 </div>
 </a>
 
-<a class="card" href="./e Cuti/">
+<a class="card" href="./e Cuti/" data-name="e Cuti Puspansa" data-desc="Pengajuan dan Approval Cuti">
 <div class="icon">📅</div>
 <div class="name">e Cuti Puspansa</div>
 <div class="desc">
@@ -433,7 +538,7 @@ Pengajuan dan Approval Cuti
 </div>
 </a>
 
-<div class="card" onclick="comingSoon('PKG')">
+<div class="card" onclick="comingSoon('PKG')" data-name="PKG" data-desc="Pemeriksaan Kesehatan Gratis">
 <div class="icon">🩺</div>
 <div class="name">PKG</div>
 <div class="desc">
@@ -441,7 +546,7 @@ Pemeriksaan Kesehatan Gratis
 </div>
 </div>
 
-<div class="card" onclick="comingSoon('Dashboard')">
+<div class="card" onclick="comingSoon('Dashboard')" data-name="Dashboard" data-desc="Monitoring dan Evaluasi Program">
 <div class="icon">📊</div>
 <div class="name">Dashboard</div>
 <div class="desc">
@@ -449,7 +554,7 @@ Monitoring dan Evaluasi Program
 </div>
 </div>
 
-<a class="card" href="./DashboardCKGPuspansa/"> 
+<a class="card" href="./DashboardCKGPuspansa/" data-name="Dashboard CKG" data-desc="Monitoring & Evaluasi Cek Kesehatan Gratis">
 <div class="icon">📈</div>
 <div class="name">Dashboard CKG</div>
 <div class="desc">
@@ -458,7 +563,7 @@ Cek Kesehatan Gratis
 </div>
 </a>
 
-<a class="card" href="./GeoLocReport/"> 
+<a class="card" href="./GeoLocReport/" data-name="Geo Location Report" data-desc="Pelaporan berbasis lokasi real-time Monitoring kunjungan aktivitas lapangan">
 <div class="icon">🧭</div>
 <div class="name">Geo Location Report</div>
 <div class="desc">
@@ -467,7 +572,7 @@ Monitoring kunjungan & aktivitas lapangan
 </div>
 </a>
 
-<a class="card" href="./StrukturOrganisasiPuspansa/"> 
+<a class="card" href="./StrukturOrganisasiPuspansa/" data-name="Struktur Organisasi" data-desc="Susunan organisasi dan tata kerja Puskesmas Menampilkan jabatan unit koordinasi pelayanan">
 <div class="icon">🏢</div>
 <div class="name">Struktur Organisasi</div>
 <div class="desc">
@@ -475,8 +580,8 @@ Susunan organisasi dan tata kerja Puskesmas<br>
 Menampilkan jabatan, unit, dan koordinasi pelayanan
 </div>
 </a>
-  
-<a class="card" href="./TarifLayananBLUD/"> 
+
+<a class="card" href="./TarifLayananBLUD/" data-name="Tarif Layanan" data-desc="Informasi tarif layanan BLUD Puskesmas Transparansi biaya pelayanan kesehatan">
 <div class="icon">💰</div>
 <div class="name">Tarif Layanan</div>
 <div class="desc">
@@ -484,8 +589,8 @@ Informasi tarif layanan BLUD Puskesmas<br>
 Transparansi biaya pelayanan kesehatan
 </div>
 </a>
-  
-<a class="card" href="./SikepBudi/">
+
+<a class="card" href="./SikepBudi/" data-name="Keuangan" data-desc="Pendapatan dan Belanja BLUD">
 <div class="icon">💰</div>
 <div class="name">Keuangan</div>
 <div class="desc">
@@ -493,7 +598,7 @@ Pendapatan dan Belanja BLUD
 </div>
 </a>
 
-<a class="card" href="./monev-sigap/">
+<a class="card" href="./monev-sigap/" data-name="Monev SIGAP ILP" data-desc="Monitoring Evaluasi Integrasi Layanan Primer">
 <div class="icon">📋✅</div>
 <div class="name">Monev SIGAP ILP</div>
 <div class="desc">
@@ -501,15 +606,15 @@ Monitoring & Evaluasi Integrasi Layanan Primer
 </div> 
 </a>
 
-<a class="card" href="./GeneratorSurat/">
+<a class="card" href="./GeneratorSurat/" data-name="Surat Menyurat" data-desc="Administrasi Generator Persuratan Digital">
 <div class="icon">📄</div>
 <div class="name">Surat Menyurat</div>
 <div class="desc">
 Administrasi Generator Persuratan Digital
 </div>
 </a>
-  
-<a class="card" href="./SapaPanji/">
+
+<a class="card" href="./SapaPanji/" data-name="Sapa Panji" data-desc="Sarana Aspirasi Pengaduan Puskesmas Panjatan Siji">
 <div class="icon">📢</div>
 <div class="name">Sapa Panji</div>
 <div class="desc">
@@ -517,7 +622,7 @@ Administrasi Generator Persuratan Digital
 </div>
 </a>
 
-<a class="card" href="./eJadwal/">
+<a class="card" href="./eJadwal/" data-name="Jadwal Pegawai" data-desc="Jadwal Dinas dan Shift Pegawai">
 <div class="icon">📆</div>
 <div class="name">Jadwal Pegawai</div>
 <div class="desc">
@@ -525,6 +630,11 @@ Jadwal Dinas dan Shift Pegawai
 </div>
 </a>
 
+</div>
+
+<div class="no-result" id="noResult">
+<div class="icon">🔎</div>
+<div>Tidak ada aplikasi yang cocok dengan pencarian Anda.</div>
 </div>
 
 </div>
@@ -656,9 +766,85 @@ navigator.serviceWorker
 
 }
 
+/* ===== Pencarian Aplikasi ===== */
+
+const appSearch = document.getElementById('appSearch');
+const searchClear = document.getElementById('searchClear');
+const searchCount = document.getElementById('searchCount');
+const noResult = document.getElementById('noResult');
+const cards = Array.from(document.querySelectorAll('#appGrid .card'));
+
+const originalNameHTML = new Map();
+const originalDescHTML = new Map();
+cards.forEach(card=>{
+const nameEl = card.querySelector('.name');
+const descEl = card.querySelector('.desc');
+originalNameHTML.set(card, nameEl.innerHTML);
+originalDescHTML.set(card, descEl.innerHTML);
+});
+
+function escapeRegExp(str){
+return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+}
+
+function highlight(html, query){
+if(!query) return html;
+const re = new RegExp('('+escapeRegExp(query)+')','ig');
+return html.replace(re,'<mark>$1</mark>');
+}
+
+function filterApps(){
+
+const query = appSearch.value.trim().toLowerCase();
+searchClear.style.display = query ? 'flex' : 'none';
+
+let visibleCount = 0;
+
+cards.forEach(card=>{
+
+const name = (card.dataset.name || '').toLowerCase();
+const desc = (card.dataset.desc || '').toLowerCase();
+const match = !query || name.includes(query) || desc.includes(query);
+
+card.classList.toggle('hidden', !match);
+
+if(match) visibleCount++;
+
+const nameEl = card.querySelector('.name');
+const descEl = card.querySelector('.desc');
+
+nameEl.innerHTML = highlight(originalNameHTML.get(card), appSearch.value.trim());
+descEl.innerHTML = highlight(originalDescHTML.get(card), appSearch.value.trim());
+
+});
+
+noResult.style.display = visibleCount===0 ? 'block' : 'none';
+
+searchCount.textContent = query
+? (visibleCount+' aplikasi ditemukan untuk "'+appSearch.value.trim()+'"')
+: '';
+
+}
+
+function clearSearch(){
+appSearch.value='';
+filterApps();
+appSearch.focus();
+}
+
+appSearch.addEventListener('input', filterApps);
+
+document.addEventListener('keydown', function(e){
+if(e.key==='/' && document.activeElement!==appSearch){
+e.preventDefault();
+appSearch.focus();
+}
+if(e.key==='Escape' && document.activeElement===appSearch){
+clearSearch();
+}
+});
+
 </script>
-
-
 
 </body>
 </html>

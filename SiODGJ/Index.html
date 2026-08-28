@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>SIODGJ | Sistem Informasi Pencatatan Penanganan ODGJ</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#020617;
+}
+
+
+/* =========================
+   WEB APP
+========================= */
+
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+background:#fff;
+}
+
+
+/* =========================
+   LOADER
+========================= */
+
+#loader{
+position:fixed;
+inset:0;
+z-index:9999;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:
+radial-gradient(
+circle at center,
+#164e63 0%,
+#083344 35%,
+#020617 82%
+);
+
+transition:
+opacity .7s ease,
+visibility .7s ease;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+
+/* Ambient glow */
+
+#loader::before{
+content:"";
+
+position:absolute;
+
+width:340px;
+height:340px;
+
+border-radius:50%;
+
+background:
+rgba(34,211,238,.12);
+
+filter:blur(85px);
+
+animation:
+ambient 5s infinite ease-in-out;
+}
+
+@keyframes ambient{
+
+0%,100%{
+transform:scale(.9);
+opacity:.5;
+}
+
+50%{
+transform:scale(1.15);
+opacity:1;
+}
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card{
+position:relative;
+z-index:2;
+
+width:92%;
+max-width:410px;
+
+padding:30px 25px;
+
+border-radius:30px;
+
+background:
+rgba(8,47,73,.94);
+
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+
+border:
+1px solid rgba(165,243,252,.28);
+
+color:#fff;
+
+text-align:center;
+
+box-shadow:
+0 25px 70px rgba(0,0,0,.75);
+
+text-shadow:
+0 2px 5px rgba(0,0,0,.85);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+margin-bottom:8px;
+}
+
+.label{
+font-size:11px;
+
+font-weight:800;
+
+letter-spacing:2px;
+
+color:#cffafe;
+}
+
+.status{
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:#22d3ee;
+
+box-shadow:
+0 0 15px #22d3ee;
+
+animation:
+statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse{
+
+0%,100%{
+transform:scale(1);
+opacity:1;
+}
+
+50%{
+transform:scale(1.6);
+opacity:.45;
+}
+
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.title{
+font-size:21px;
+
+font-weight:800;
+
+color:#ffffff;
+
+margin-top:7px;
+
+text-shadow:
+0 2px 10px rgba(0,0,0,.9);
+}
+
+.subtitle{
+font-size:13px;
+
+font-weight:500;
+
+color:#cffafe;
+
+margin-top:7px;
+
+line-height:1.65;
+}
+
+
+/* =========================
+   ANIMASI SIODGJ
+========================= */
+
+.siodgj{
+position:relative;
+
+height:170px;
+
+margin:18px 0 14px;
+}
+
+
+/* =========================
+   CENTRAL PERSON
+========================= */
+
+.person{
+position:absolute;
+
+left:50%;
+top:50%;
+
+transform:
+translate(-50%,-50%);
+
+width:72px;
+height:72px;
+
+border-radius:50%;
+
+background:
+linear-gradient(
+145deg,
+#a5f3fc,
+#06b6d4
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:36px;
+
+box-shadow:
+0 0 35px rgba(34,211,238,.7);
+
+animation:
+personPulse 2.5s infinite ease-in-out;
+
+z-index:3;
+}
+
+@keyframes personPulse{
+
+0%,100%{
+transform:
+translate(-50%,-50%)
+scale(1);
+}
+
+50%{
+transform:
+translate(-50%,-50%)
+scale(1.07);
+}
+
+}
+
+
+/* =========================
+   SUPPORTING NODES
+========================= */
+
+.node{
+position:absolute;
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:19px;
+
+background:
+rgba(8,47,73,.95);
+
+border:
+2px solid #67e8f9;
+
+box-shadow:
+0 0 15px rgba(34,211,238,.35);
+
+animation:
+nodeFloat 3s infinite ease-in-out;
+}
+
+.node1{
+top:5px;
+left:50%;
+
+transform:translateX(-50%);
+
+animation-delay:.2s;
+}
+
+.node2{
+bottom:5px;
+left:18%;
+
+animation-delay:.6s;
+}
+
+.node3{
+bottom:5px;
+right:18%;
+
+animation-delay:1s;
+}
+
+@keyframes nodeFloat{
+
+0%,100%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-6px);
+}
+
+}
+
+
+/* =========================
+   CONNECTING LINES
+========================= */
+
+.connect{
+position:absolute;
+
+left:50%;
+top:50%;
+
+height:65px;
+width:2px;
+
+background:
+linear-gradient(
+to bottom,
+#67e8f9,
+rgba(103,232,249,.1)
+);
+
+transform-origin:top;
+
+animation:
+linePulse 2s infinite;
+}
+
+.connect1{
+transform:
+translateX(-50%)
+rotate(0deg);
+
+top:18%;
+}
+
+.connect2{
+transform:
+translateX(-50%)
+rotate(55deg);
+
+top:52%;
+height:65px;
+}
+
+.connect3{
+transform:
+translateX(-50%)
+rotate(-55deg);
+
+top:52%;
+height:65px;
+}
+
+@keyframes linePulse{
+
+0%,100%{
+opacity:.35;
+}
+
+50%{
+opacity:1;
+}
+
+}
+
+
+/* =========================
+   RIPPLE
+========================= */
+
+.ripple{
+position:absolute;
+
+left:50%;
+top:50%;
+
+width:95px;
+height:95px;
+
+border:
+1px solid rgba(103,232,249,.3);
+
+border-radius:50%;
+
+transform:
+translate(-50%,-50%);
+
+animation:
+ripple 2.8s infinite;
+}
+
+.ripple:nth-child(2){
+width:125px;
+height:125px;
+
+animation-delay:.7s;
+}
+
+.ripple:nth-child(3){
+width:155px;
+height:155px;
+
+animation-delay:1.4s;
+}
+
+@keyframes ripple{
+
+0%{
+opacity:.6;
+
+transform:
+translate(-50%,-50%)
+scale(.7);
+}
+
+100%{
+opacity:0;
+
+transform:
+translate(-50%,-50%)
+scale(1.15);
+}
+
+}
+
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.badges{
+position:absolute;
+
+left:50%;
+bottom:0;
+
+transform:translateX(-50%);
+
+display:flex;
+
+gap:7px;
+}
+
+.badge{
+padding:4px 9px;
+
+border-radius:20px;
+
+font-size:9px;
+
+font-weight:700;
+
+color:#cffafe;
+
+background:
+rgba(8,47,73,.9);
+
+border:
+1px solid rgba(103,232,249,.25);
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.loading-text{
+font-size:14px;
+
+font-weight:700;
+
+color:#ffffff;
+
+margin-top:8px;
+
+text-shadow:
+0 2px 6px rgba(0,0,0,.9);
+}
+
+.description{
+font-size:12px;
+
+line-height:1.7;
+
+color:#cffafe;
+
+margin-top:7px;
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress{
+margin-top:20px;
+
+height:6px;
+
+border-radius:20px;
+
+background:#042f3d;
+
+overflow:hidden;
+
+border:
+1px solid rgba(165,243,252,.15);
+}
+
+.bar{
+height:100%;
+
+width:38%;
+
+border-radius:20px;
+
+background:
+linear-gradient(
+90deg,
+#0891b2,
+#a5f3fc,
+#0891b2
+);
+
+animation:
+loading 1.5s infinite;
+}
+
+@keyframes loading{
+
+0%{
+transform:translateX(-130%);
+}
+
+100%{
+transform:translateX(330%);
+}
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px){
+
+.card{
+padding:27px 20px;
+}
+
+.title{
+font-size:19px;
+}
+
+.siodgj{
+height:160px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- =========================
+     WEB APP SIODGJ
+========================= -->
+
+<iframe
+id="app"
+src="https://script.google.com/macros/s/AKfycbxP4cZYTMfjsnGciHa2T3dFiICNVgl4K_kbAFKBHfk5LTlBu7ZhMIwwzLI4sf2zGgX29g/exec">
+</iframe>
+
+
+<!-- =========================
+     LOADER
+========================= -->
+
+<div id="loader">
+
+<div class="card">
+
+
+<div class="header">
+
+<div class="label">
+KESEHATAN JIWA
+</div>
+
+<div class="status"></div>
+
+</div>
+
+
+<div class="title">
+SIODGJ
+</div>
+
+
+<div class="subtitle">
+Sistem Informasi Pencatatan<br>
+Penanganan ODGJ
+</div>
+
+
+<!-- =========================
+     ANIMASI
+========================= -->
+
+<div class="siodgj">
+
+
+<!-- Ripple -->
+
+<div class="ripple"></div>
+<div class="ripple"></div>
+<div class="ripple"></div>
+
+
+<!-- Connecting lines -->
+
+<div class="connect connect1"></div>
+<div class="connect connect2"></div>
+<div class="connect connect3"></div>
+
+
+<!-- Supporting nodes -->
+
+<div class="node node1">
+🏥
+</div>
+
+<div class="node node2">
+👨‍⚕️
+</div>
+
+<div class="node node3">
+👨‍👩‍👦
+</div>
+
+
+<!-- Central person -->
+
+<div class="person">
+🧠
+</div>
+
+
+<!-- Badges -->
+
+<div class="badges">
+
+<div class="badge">
+PENCATATAN
+</div>
+
+<div class="badge">
+PEMANTAUAN
+</div>
+
+<div class="badge">
+TINDAK LANJUT
+</div>
+
+</div>
+
+
+</div>
+
+
+<div class="loading-text">
+Menyiapkan sistem...
+</div>
+
+
+<div class="description">
+Pencatatan, pemantauan dan tindak lanjut<br>
+pelayanan kesehatan jiwa ODGJ
+</div>
+
+
+<div class="progress">
+
+<div class="bar"></div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+const loader =
+document.getElementById("loader");
+
+const app =
+document.getElementById("app");
+
+
+/* Web App selesai dimuat */
+
+app.onload=function(){
+
+setTimeout(()=>{
+
+loader.classList.add("hide");
+
+},500);
+
+};
+
+
+/* Fallback */
+
+setTimeout(()=>{
+
+loader.classList.add("hide");
+
+},8000);
+
+</script>
+
+
+</body>
+</html>

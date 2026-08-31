@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>e-Rapot | Puskesmas Panjatan I</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#020617;
+}
+
+
+/* =========================
+   WEB APP
+========================= */
+
+iframe{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+border:0;
+background:#fff;
+}
+
+
+/* =========================
+   LOADER
+========================= */
+
+#loader{
+position:fixed;
+inset:0;
+z-index:9999;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:
+radial-gradient(
+circle at center,
+#312e81 0%,
+#1e1b4b 38%,
+#020617 82%
+);
+
+transition:
+opacity .7s ease,
+visibility .7s ease;
+}
+
+.hide{
+opacity:0;
+visibility:hidden;
+}
+
+
+/* =========================
+   AMBIENT GLOW
+========================= */
+
+#loader::before{
+content:"";
+
+position:absolute;
+
+width:340px;
+height:340px;
+
+border-radius:50%;
+
+background:
+rgba(129,140,248,.14);
+
+filter:blur(85px);
+
+animation:
+ambient 5s infinite ease-in-out;
+}
+
+@keyframes ambient{
+
+0%,100%{
+transform:scale(.9);
+opacity:.5;
+}
+
+50%{
+transform:scale(1.15);
+opacity:1;
+}
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card{
+position:relative;
+z-index:2;
+
+width:92%;
+max-width:410px;
+
+padding:30px 25px;
+
+border-radius:30px;
+
+background:
+rgba(15,23,42,.94);
+
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+
+border:
+1px solid rgba(196,181,253,.3);
+
+color:#fff;
+
+text-align:center;
+
+box-shadow:
+0 25px 70px rgba(0,0,0,.78);
+
+text-shadow:
+0 2px 5px rgba(0,0,0,.85);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+margin-bottom:8px;
+}
+
+.label{
+font-size:11px;
+
+font-weight:800;
+
+letter-spacing:2px;
+
+color:#ddd6fe;
+}
+
+.status{
+width:10px;
+height:10px;
+
+border-radius:50%;
+
+background:#a78bfa;
+
+box-shadow:
+0 0 15px #a78bfa;
+
+animation:
+statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse{
+
+0%,100%{
+transform:scale(1);
+opacity:1;
+}
+
+50%{
+transform:scale(1.6);
+opacity:.45;
+}
+
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.title{
+font-size:23px;
+
+font-weight:800;
+
+color:#ffffff;
+
+margin-top:7px;
+
+letter-spacing:.5px;
+
+text-shadow:
+0 2px 10px rgba(0,0,0,.95);
+}
+
+.subtitle{
+font-size:13px;
+
+font-weight:500;
+
+color:#ede9fe;
+
+margin-top:7px;
+
+line-height:1.65;
+}
+
+
+/* =========================
+   ANIMASI RAPOT
+========================= */
+
+.report{
+position:relative;
+
+height:175px;
+
+margin:18px 0 12px;
+}
+
+
+/* =========================
+   GLOW
+========================= */
+
+.report-glow{
+position:absolute;
+
+left:50%;
+top:50%;
+
+width:135px;
+height:135px;
+
+transform:
+translate(-50%,-50%);
+
+border-radius:50%;
+
+background:
+rgba(139,92,246,.12);
+
+box-shadow:
+0 0 75px rgba(139,92,246,.35);
+
+animation:
+glowPulse 3s infinite;
+}
+
+@keyframes glowPulse{
+
+0%,100%{
+transform:
+translate(-50%,-50%)
+scale(.9);
+}
+
+50%{
+transform:
+translate(-50%,-50%)
+scale(1.08);
+}
+
+}
+
+
+/* =========================
+   RAPOR / DOKUMEN
+========================= */
+
+.paper{
+position:absolute;
+
+left:50%;
+top:50%;
+
+width:88px;
+height:112px;
+
+transform:
+translate(-50%,-50%)
+rotate(-3deg);
+
+border-radius:8px;
+
+background:
+linear-gradient(
+145deg,
+#ffffff,
+#e0e7ff
+);
+
+box-shadow:
+0 15px 30px rgba(0,0,0,.45);
+
+animation:
+paperFloat 2.8s infinite ease-in-out;
+
+z-index:3;
+
+overflow:hidden;
+}
+
+@keyframes paperFloat{
+
+0%,100%{
+transform:
+translate(-50%,-50%)
+rotate(-3deg)
+translateY(0);
+}
+
+50%{
+transform:
+translate(-50%,-50%)
+rotate(2deg)
+translateY(-7px);
+}
+
+}
+
+
+/* bagian atas dokumen */
+
+.paper-header{
+height:18px;
+
+background:
+linear-gradient(
+90deg,
+#6366f1,
+#a78bfa
+);
+}
+
+
+/* garis dokumen */
+
+.paper-line{
+height:5px;
+
+border-radius:10px;
+
+background:#c7d2fe;
+
+margin:8px 12px 0;
+}
+
+.paper-line.short{
+width:45%;
+}
+
+.paper-line.medium{
+width:68%;
+}
+
+
+/* =========================
+   CHECK / NILAI
+========================= */
+
+.score{
+position:absolute;
+
+right:25px;
+top:22px;
+
+width:48px;
+height:48px;
+
+border-radius:50%;
+
+background:
+linear-gradient(
+145deg,
+#8b5cf6,
+#6366f1
+);
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:21px;
+
+font-weight:800;
+
+color:#fff;
+
+box-shadow:
+0 0 22px rgba(139,92,246,.65);
+
+z-index:5;
+
+animation:
+scorePulse 2s infinite;
+}
+
+@keyframes scorePulse{
+
+0%,100%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+}
+
+
+/* =========================
+   CHECKMARK
+========================= */
+
+.check{
+position:absolute;
+
+left:25px;
+bottom:24px;
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+background:#10b981;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:22px;
+
+box-shadow:
+0 0 18px rgba(16,185,129,.55);
+
+animation:
+checkPulse 2s infinite;
+}
+
+@keyframes checkPulse{
+
+0%,100%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.1);
+}
+
+}
+
+
+/* =========================
+   GRAFIK
+========================= */
+
+.chart{
+position:absolute;
+
+right:20px;
+bottom:8px;
+
+width:70px;
+height:65px;
+
+display:flex;
+
+align-items:flex-end;
+
+gap:5px;
+
+z-index:4;
+}
+
+.chart span{
+width:10px;
+
+border-radius:4px 4px 0 0;
+
+background:
+linear-gradient(
+to top,
+#6366f1,
+#a78bfa
+);
+
+box-shadow:
+0 0 8px rgba(139,92,246,.35);
+
+animation:
+chart 1.8s infinite ease-in-out;
+}
+
+.chart span:nth-child(1){
+height:24px;
+animation-delay:.1s;
+}
+
+.chart span:nth-child(2){
+height:36px;
+animation-delay:.25s;
+}
+
+.chart span:nth-child(3){
+height:48px;
+animation-delay:.4s;
+}
+
+.chart span:nth-child(4){
+height:58px;
+animation-delay:.55s;
+}
+
+@keyframes chart{
+
+0%,100%{
+transform:scaleY(.65);
+}
+
+50%{
+transform:scaleY(1);
+}
+
+}
+
+
+/* =========================
+   BINTANG / PARTIKEL
+========================= */
+
+.star{
+position:absolute;
+
+width:5px;
+height:5px;
+
+border-radius:50%;
+
+background:#c4b5fd;
+
+box-shadow:
+0 0 10px #a78bfa;
+
+animation:
+starFloat 2.5s infinite ease-in-out;
+}
+
+.star1{
+left:30px;
+top:35px;
+}
+
+.star2{
+right:35px;
+top:45px;
+
+animation-delay:.5s;
+}
+
+.star3{
+left:45px;
+bottom:30px;
+
+animation-delay:1s;
+}
+
+@keyframes starFloat{
+
+0%,100%{
+opacity:.3;
+transform:scale(.7);
+}
+
+50%{
+opacity:1;
+transform:scale(1.3);
+}
+
+}
+
+
+/* =========================
+   TEKS
+========================= */
+
+.loading-text{
+font-size:14px;
+
+font-weight:700;
+
+color:#ffffff;
+
+margin-top:8px;
+
+text-shadow:
+0 2px 6px rgba(0,0,0,.9);
+}
+
+.description{
+font-size:12px;
+
+line-height:1.7;
+
+color:#ede9fe;
+
+margin-top:7px;
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress{
+margin-top:20px;
+
+height:6px;
+
+border-radius:20px;
+
+background:#111827;
+
+overflow:hidden;
+
+border:
+1px solid rgba(196,181,253,.18);
+}
+
+.bar{
+height:100%;
+
+width:38%;
+
+border-radius:20px;
+
+background:
+linear-gradient(
+90deg,
+#6366f1,
+#c4b5fd,
+#6366f1
+);
+
+animation:
+loading 1.5s infinite;
+}
+
+@keyframes loading{
+
+0%{
+transform:translateX(-130%);
+}
+
+100%{
+transform:translateX(330%);
+}
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px){
+
+.card{
+padding:27px 20px;
+}
+
+.title{
+font-size:20px;
+}
+
+.report{
+height:165px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- =========================
+     WEB APP
+========================= -->
+
+<iframe
+id="app"
+src="https://script.google.com/macros/s/AKfycbzrQrTAxIMceyL_829ld9Tsy_azp1cRajj-ty7SHWTPLch4xZhoQ7uOFs6cOM3jO65UAA/exec">
+</iframe>
+
+
+<!-- =========================
+     LOADING SCREEN
+========================= -->
+
+<div id="loader">
+
+<div class="card">
+
+
+<div class="header">
+
+<div class="label">
+PERFORMANCE REPORT
+</div>
+
+<div class="status"></div>
+
+</div>
+
+
+<div class="title">
+e-RAPOT
+</div>
+
+
+<div class="subtitle">
+Sistem Informasi Rapot<br>
+Puskesmas Panjatan I
+</div>
+
+
+<!-- =========================
+     ANIMASI
+========================= -->
+
+<div class="report">
+
+
+<div class="report-glow"></div>
+
+
+<!-- PARTIKEL -->
+
+<div class="star star1"></div>
+<div class="star star2"></div>
+<div class="star star3"></div>
+
+
+<!-- DOKUMEN RAPOT -->
+
+<div class="paper">
+
+<div class="paper-header"></div>
+
+<div class="paper-line medium"></div>
+<div class="paper-line"></div>
+<div class="paper-line short"></div>
+
+<div class="paper-line medium"></div>
+<div class="paper-line"></div>
+
+</div>
+
+
+<!-- NILAI -->
+
+<div class="score">
+✓
+</div>
+
+
+<!-- CHECK -->
+
+<div class="check">
+✓
+</div>
+
+
+<!-- GRAFIK -->
+
+<div class="chart">
+
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+
+</div>
+
+
+</div>
+
+
+<div class="loading-text">
+Menyiapkan e-Rapot...
+</div>
+
+
+<div class="description">
+Pencatatan, penilaian dan pemantauan<br>
+kinerja Puskesmas Panjatan I
+</div>
+
+
+<!-- PROGRESS -->
+
+<div class="progress">
+
+<div class="bar"></div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+const loader =
+document.getElementById("loader");
+
+const app =
+document.getElementById("app");
+
+
+/* Web App selesai dimuat */
+
+app.onload=function(){
+
+setTimeout(()=>{
+
+loader.classList.add("hide");
+
+},500);
+
+};
+
+
+/* Fallback */
+
+setTimeout(()=>{
+
+loader.classList.add("hide");
+
+},8000);
+
+</script>
+
+
+</body>
+</html>

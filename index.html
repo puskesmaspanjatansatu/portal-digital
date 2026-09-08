@@ -28,12 +28,14 @@
   --kepeg-accent:var(--emas);--kepeg-tint:#F6ECD1;
   --monitor-accent:var(--teal);--monitor-tint:#DEEDE8;
   --keu-accent:var(--sogan);--keu-tint:#EDE1D0;
+  --hijau-teks:var(--hijau);
 }
 [data-theme="dark"]{
   --krem:#111610;--kertas:#192019;--panel:rgba(25,32,25,.78);
   --panel-strong:#202a20;--garis:#344034;--teks:#EDF2E9;--teks-muted:#AAB5A7;
   --utama-tint:#27372A;--layanan-tint:#3A2823;--kepeg-tint:#3B3523;
   --monitor-tint:#253934;--keu-tint:#382D23;
+  --hijau-teks:#8FD79B;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -150,7 +152,7 @@ radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:bl
 .pill.active{background:var(--hijau);border-color:var(--hijau);color:#fff}.pill.active .dot{background:#fff}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
 .stat{background:var(--panel-strong);border:1px solid var(--garis);border-radius:13px;padding:10px 12px}
-.stat strong{font-family:Sora;font-size:1.15rem;display:block;color:var(--hijau)}
+.stat strong{font-family:Sora;font-size:1.15rem;display:block;color:var(--hijau-teks)}
 .stat span{font-size:.72rem;color:var(--teks-muted)}
 
 /* Apps */
@@ -194,6 +196,9 @@ box-shadow:
 .name{font-size:1rem;font-weight:700;margin-bottom:5px;padding-right:24px}.desc{font-size:.83rem;line-height:1.55;color:var(--teks-muted)}
 .badge{position:absolute;right:14px;top:14px;padding:4px 7px;border-radius:999px;font-size:.62rem;font-weight:700;border:1px solid var(--garis);background:var(--panel-strong)}
 .badge.online{color:#247c43}.badge.soon{color:var(--bata)}.badge.maintenance{color:#a56d00}
+[data-theme="dark"] .badge.online{color:#5FE38A}
+[data-theme="dark"] .badge.soon{color:#FF9B7D}
+[data-theme="dark"] .badge.maintenance{color:#FFCB61}
 .favorite{position:absolute;right:12px;bottom:12px;width:34px;height:34px;border-radius:10px;border:1px solid var(--garis);background:var(--panel-strong);color:var(--teks-muted);cursor:pointer;display:grid;place-items:center}
 .favorite.active{color:var(--emas);border-color:var(--emas);background:var(--kepeg-tint)}
 .favorite svg{width:18px;height:18px}
@@ -203,14 +208,14 @@ mark{background:rgba(201,162,39,.4);color:inherit;border-radius:4px;padding:0 2p
 
 /* Footer / floating */
 footer{padding:42px 20px calc(110px + env(safe-area-inset-bottom));text-align:center;color:var(--teks-muted);font-size:.82rem;line-height:1.7}
-footer strong{color:var(--hijau)}
-.status-dot{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--hijau)}
+footer strong{color:var(--hijau-teks)}
+.status-dot{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--hijau-teks)}
 .status-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#2FAE5C;box-shadow:0 0 0 0 rgba(47,174,92,.55);animation:pulse-dot 2s ease-out infinite}
 @keyframes pulse-dot{0%{box-shadow:0 0 0 0 rgba(47,174,92,.55)}70%{box-shadow:0 0 0 8px rgba(47,174,92,0)}100%{box-shadow:0 0 0 0 rgba(47,174,92,0)}}
 .floating{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:9998;display:flex;flex-direction:column;gap:9px;align-items:flex-end}
 .float-btn{border:0;cursor:pointer;box-shadow:var(--bayang);display:flex;align-items:center;justify-content:center;text-decoration:none}
 .wa-btn{width:54px;height:54px;border-radius:50%;background:#25D366;color:#fff}.wa-btn svg{width:26px;height:26px}
-.install-btn{display:none;padding:11px 15px;border:1px solid var(--emas);border-radius:13px;background:var(--panel-strong);color:var(--hijau);font-weight:700;font-size:.82rem}
+.install-btn{display:none;padding:11px 15px;border:1px solid var(--emas);border-radius:13px;background:var(--panel-strong);color:var(--hijau-teks);font-weight:700;font-size:.82rem}
 .top-btn{display:none;width:42px;height:42px;border-radius:12px;background:var(--hijau);color:#fff}
 .top-btn.show{display:flex}
 
@@ -220,7 +225,7 @@ footer strong{color:var(--hijau)}
 .modal-content{width:100%;max-width:390px;background:var(--panel-strong);border:1px solid rgba(255,255,255,.7);border-radius:22px;padding:28px;text-align:center;box-shadow:var(--bayang);animation:pop .25s ease}
 @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
 .modal-icon{width:58px;height:58px;margin:0 auto 14px;border-radius:17px;background:var(--layanan-tint);color:var(--bata);display:grid;place-items:center}.modal-icon svg{width:29px;height:29px}
-.modal-content h2{font-size:1.18rem;color:var(--hijau);margin-bottom:8px}.modal-content p{line-height:1.7;color:var(--teks-muted);font-size:.88rem}
+.modal-content h2{font-size:1.18rem;color:var(--hijau-teks);margin-bottom:8px}.modal-content p{line-height:1.7;color:var(--teks-muted);font-size:.88rem}
 .close-btn{margin-top:20px;padding:11px 24px;min-height:44px;border:0;border-radius:12px;background:var(--hijau);color:#fff;font-weight:700;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);background:var(--hijau-2);color:#fff;padding:10px 15px;border-radius:11px;font-size:.8rem;opacity:0;pointer-events:none;transition:.25s;z-index:10000;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -228,8 +233,8 @@ footer strong{color:var(--hijau)}
 /* Admin panel */
 .admin-content{max-width:560px;text-align:left;max-height:86vh;overflow-y:auto;position:relative}
 .modal-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border:1px solid var(--garis);background:var(--panel-strong);border-radius:10px;cursor:pointer;color:var(--teks);font-size:1.2rem;line-height:1;display:grid;place-items:center}
-.admin-content h2{font-size:1.15rem;color:var(--hijau);margin-bottom:14px;padding-right:30px}
-.admin-content h3{font-size:1rem;color:var(--hijau);margin-bottom:12px}
+.admin-content h2{font-size:1.15rem;color:var(--hijau-teks);margin-bottom:14px;padding-right:30px}
+.admin-content h3{font-size:1rem;color:var(--hijau-teks);margin-bottom:12px}
 .admin-pin-row{display:flex;gap:8px}
 .admin-pin-row input{flex:1;border:1px solid var(--garis);border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel-strong);color:var(--teks)}
 .admin-error{color:var(--bata);font-size:.8rem;margin-top:10px}
@@ -257,8 +262,9 @@ footer strong{color:var(--hijau)}
 .icon-opt .icon-wrap svg{width:18px;height:18px}
 .icon-opt span{font-size:.62rem;color:var(--teks-muted);text-align:center;line-height:1.2}
 .icon-opt.selected{border-color:var(--hijau);background:var(--utama-tint)}
-.admin-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.admin-form-actions .mini-btn{padding:10px 16px}
+.admin-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.admin-form-actions button{min-height:44px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:.86rem;cursor:pointer;margin-top:0}
+.admin-form-actions .mini-btn{background:var(--panel-strong);border:1px solid var(--garis);color:var(--teks)}
 .admin-empty{text-align:center;color:var(--teks-muted);font-size:.85rem;padding:20px 0}
 
 /* Responsive */
@@ -480,7 +486,7 @@ const ICON_GROUPS=[{k:"semua",l:"Semua"},{k:"kesehatan",l:"Kesehatan"},{k:"kepeg
 /* =========================
    KONFIGURASI API (GAS + Google Sheet)
 ========================= */
-const API_URL="https://script.google.com/macros/s/AKfycbxWwzf_YYvyXH_T3vnkgl_s-o9y_IXNciLZ3SktPazHMW0-aEX7Rre_17NHRv87py7llw/exec"; // contoh: https://script.google.com/macros/s/AKfycb.../exec
+const API_URL="https://script.google.com/macros/s/AKfycbxWwzf_YYvyXH_T3vnkgl_s-o9y_IXNciLZ3SktPazHMW0-aEX7Rre_17NHRv87py7llw/exec";
 
 /* =========================
    DAFTAR APLIKASI (fallback bila API belum diatur / gagal dimuat)

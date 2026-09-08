@@ -2,849 +2,856 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>e-Portal Digital | Puskesmas Panjatan I</title>
-
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#2F4A33" id="themeColor">
+<meta name="description" content="Portal Terintegrasi Layanan Digital Puskesmas Panjatan I">
 <link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="e-Portal Digital">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
 <style>
-
 :root{
---primary:#2563eb;
---secondary:#0ea5e9;
---glass:rgba(255,255,255,.12);
---border:rgba(255,255,255,.18);
+  --hijau:#2F4A33;--hijau-2:#22331F;--emas:#C9A227;--emas-terang:#E7C55A;
+  --bata:#A8462F;--teal:#3D7A6B;--sogan:#7A4B23;--krem:#F3F4EE;
+  --kertas:#FFFFFF;--garis:#DCE0D2;--teks:#1D231C;--teks-muted:#5C6357;
+  --panel:rgba(255,255,255,.68);--panel-strong:rgba(255,255,255,.9);
+  --radius:18px;--bayang:0 14px 34px -16px rgba(34,51,31,.35);
+  --utama-accent:var(--hijau);--utama-tint:#E3EAE1;
+  --layanan-accent:var(--bata);--layanan-tint:#F3E2DB;
+  --kepeg-accent:var(--emas);--kepeg-tint:#F6ECD1;
+  --monitor-accent:var(--teal);--monitor-tint:#DEEDE8;
+  --keu-accent:var(--sogan);--keu-tint:#EDE1D0;
 }
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
+[data-theme="dark"]{
+  --krem:#111610;--kertas:#192019;--panel:rgba(25,32,25,.78);
+  --panel-strong:#202a20;--garis:#344034;--teks:#EDF2E9;--teks-muted:#AAB5A7;
+  --utama-tint:#27372A;--layanan-tint:#3A2823;--kepeg-tint:#3B3523;
+  --monitor-tint:#253934;--keu-tint:#382D23;
 }
-
-body{
-min-height:100vh;
-background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);
-color:#fff;
-overflow-x:hidden;
-}
-
-/* Background */
-
-.bg{
-position:fixed;
-inset:0;
-overflow:hidden;
-z-index:-1;
-}
-
-.bubble{
-position:absolute;
-border-radius:50%;
-background:rgba(255,255,255,.06);
-backdrop-filter:blur(20px);
-animation:float 12s infinite ease-in-out;
-}
-
-.b1{
-width:280px;
-height:280px;
-top:-80px;
-left:-80px;
-}
-
-.b2{
-width:220px;
-height:220px;
-bottom:-50px;
-right:-50px;
-animation-delay:3s;
-}
-
-.b3{
-width:150px;
-height:150px;
-top:45%;
-left:75%;
-animation-delay:6s;
-}
-
-@keyframes float{
-50%{
-transform:translateY(-25px);
-}
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{min-height:100vh;width:100%;overflow-x:hidden;background:var(--krem);color:var(--teks);
+font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;position:relative;transition:background .25s,color .25s}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background-image:
+radial-gradient(circle at 8% 12%,rgba(47,74,51,.16) 0%,transparent 26%),
+radial-gradient(circle at 92% 8%,rgba(201,162,39,.15) 0%,transparent 24%),
+radial-gradient(circle at 85% 60%,rgba(61,122,107,.14) 0%,transparent 26%),
+radial-gradient(circle at 10% 70%,rgba(168,70,47,.12) 0%,transparent 24%),
+radial-gradient(circle at 50% 95%,rgba(122,75,35,.10) 0%,transparent 22%);
+animation:drift 26s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1) translate(0,0)}to{transform:scale(1.12) translate(-1.5%,1.5%)}}
+@media(prefers-reduced-motion:reduce){body::before{animation:none}}
+a,button,.card,.pill{touch-action:manipulation}
+button,input{font:inherit}
+h1,h2,h3{font-family:'Sora',sans-serif;letter-spacing:-.01em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--emas-terang);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1180px;margin:auto;padding:0 20px}
 
 /* Header */
+.header{position:relative;overflow:hidden;background:linear-gradient(165deg,var(--hijau),var(--hijau-2));color:#fff;
+padding:calc(38px + env(safe-area-inset-top)) 20px 38px;text-align:center}
+.header::before{content:"";position:absolute;inset:-20%;background-image:
+radial-gradient(circle at 12% 20%,rgba(231,197,90,.35),transparent 32%),
+radial-gradient(circle at 88% 12%,rgba(61,122,107,.32),transparent 28%),
+radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:blur(50px);animation:drift 18s ease-in-out infinite alternate}
+.header::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,253,248,.14) 1px,transparent 1px);background-size:16px 16px;opacity:.5}
+.header-inner{position:relative;z-index:1}
+.top-actions{position:absolute;right:0;top:0;display:flex;gap:8px}
+.icon-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:13px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(8px)}
+.icon-btn svg{width:20px;height:20px}
+.entrance{opacity:0;animation:rise .6s ease both}.entrance-1{animation-delay:.05s}.entrance-2{animation-delay:.16s}.entrance-3{animation-delay:.27s}.entrance-4{animation-delay:.38s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.entrance{animation:none;opacity:1}}
+.logo{width:82px;height:82px;margin:0 auto;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;border:3px solid var(--emas);box-shadow:var(--bayang)}
+.logo img{width:60px;height:60px;object-fit:contain}
+.title{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800;margin-top:16px}
+.subtitle{margin-top:7px;color:#DCE6D9;font-size:.96rem}
+.clock{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:8px 16px;background:rgba(255,253,248,.12);border:1px solid rgba(255,253,248,.25);border-radius:999px;font-size:.82rem;font-variant-numeric:tabular-nums}
 
-.header{
-padding:40px 20px;
-text-align:center;
+/* Notice ticker — berada di bawah search, smooth & seamless */
+.notice{
+  max-width:1140px;
+  margin:14px auto 0;
+  padding:0 20px;
+  position:relative;
+  z-index:1;
+}
+.notice-inner{
+  background:var(--panel);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:12px;
+  padding:9px 14px;
+  overflow:hidden;
+  color:var(--bata);
+  font-weight:600;
+  font-size:.84rem;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  box-shadow:0 8px 24px -18px rgba(0,0,0,.35);
+}
+.notice-inner>svg{width:18px;height:18px;flex:0 0 18px}
+.ticker{
+  overflow:hidden;
+  flex:1;
+  min-width:0;
+  position:relative;
+  mask-image:linear-gradient(to right,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);
+}
+.ticker-track{
+  display:flex;
+  width:max-content;
+  will-change:transform;
+  animation:marqueeSeamless 30s linear infinite;
+}
+.ticker-item{
+  display:inline-flex;
+  align-items:center;
+  white-space:nowrap;
+  padding-right:72px;
+}
+@keyframes marqueeSeamless{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@media(max-width:600px){
+  .notice{margin-top:12px;padding:0 16px}
+  .notice-inner{font-size:.76rem;padding:9px 11px}
+  .notice-inner>svg{width:17px;height:17px;flex-basis:17px}
+  .ticker-item{padding-right:56px}
+  .ticker-track{animation-duration:24s}
+}
+@media(prefers-reduced-motion:reduce){
+  .ticker{overflow:auto;mask-image:none;-webkit-mask-image:none}
+  .ticker-track{animation:none;width:auto}
+  .ticker-item{white-space:normal;padding-right:0}
+  .ticker-item+.ticker-item{display:none}
 }
 
-.logo{
-width:100px;
-height:100px;
-margin:auto;
-border-radius:50%;
-background:rgba(255,255,255,.15);
-backdrop-filter:blur(20px);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:48px;
-border:1px solid rgba(255,255,255,.2);
-}
-
-.title{
-font-size:2rem;
-font-weight:700;
-margin-top:20px;
-}
-
-.subtitle{
-margin-top:10px;
-line-height:1.7;
-color:#dbeafe;
-}
-
-.clock{
-margin-top:15px;
-font-weight:600;
-color:#fff;
-}
-
-/* Stats */
-
-.stats{
-max-width:1200px;
-margin:auto;
-padding:20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
-}
-
-.stat{
-background:var(--glass);
-backdrop-filter:blur(20px);
-border:1px solid var(--border);
-padding:20px;
-border-radius:20px;
-text-align:center;
-}
-
-.stat h2{
-font-size:2rem;
-}
+/* Controls */
+.controls{max-width:1140px;margin:-30px auto 0;padding:0 20px;position:relative;z-index:2}
+.controls-card{background:var(--panel);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.6);border-radius:22px;padding:16px 18px 18px;box-shadow:var(--bayang)}
+.search-box{position:relative;display:flex;align-items:center;gap:10px;background:var(--panel-strong);border:1px solid var(--garis);border-radius:14px;padding:5px 7px 5px 15px;transition:.2s}
+.search-box:focus-within{border-color:var(--hijau);box-shadow:0 0 0 3px rgba(47,74,51,.12)}
+.search-box svg{width:20px;height:20px;color:var(--teks-muted);flex-shrink:0}
+.search-box input{flex:1;border:none;background:transparent;outline:none;font-size:16px;color:var(--teks);padding:12px 0;min-width:0}
+.search-box input::placeholder{color:var(--teks-muted)}
+.search-clear{display:none;border:0;background:var(--krem);color:var(--teks);width:40px;height:40px;border-radius:50%;cursor:pointer;align-items:center;justify-content:center}
+.search-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px;color:var(--teks-muted);font-size:.8rem;min-height:18px}
+.shortcut{border:1px solid var(--garis);padding:2px 7px;border-radius:6px;font-size:.72rem}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pill{border:1px solid var(--garis);background:var(--panel-strong);color:var(--teks);padding:9px 14px;min-height:42px;border-radius:999px;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.2s}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--dot,var(--hijau))}
+.pill.active{background:var(--hijau);border-color:var(--hijau);color:#fff}.pill.active .dot{background:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--panel-strong);border:1px solid var(--garis);border-radius:13px;padding:10px 12px}
+.stat strong{font-family:Sora;font-size:1.15rem;display:block;color:var(--hijau)}
+.stat span{font-size:.72rem;color:var(--teks-muted)}
 
 /* Apps */
-
-.apps{
-max-width:1200px;
-margin:auto;
-padding:20px;
-}
-
-.apps h3{
-text-align:center;
-margin-bottom:20px;
-font-size:1.3rem;
-}
-
-/* Search */
-
-.search-wrap{
-max-width:1200px;
-margin:0 auto 25px;
-padding:0 20px;
-}
-
-.search-box{
-position:relative;
-display:flex;
-align-items:center;
-background:var(--glass);
-backdrop-filter:blur(20px);
-border:1px solid var(--border);
-border-radius:18px;
-padding:4px 4px 4px 18px;
-transition:.25s;
-}
-
-.search-box:focus-within{
-border-color:rgba(255,255,255,.5);
-box-shadow:0 8px 25px rgba(0,0,0,.2);
-}
-
-.search-icon{
-font-size:18px;
-opacity:.8;
-margin-right:10px;
-}
-
-.search-box input{
-flex:1;
-background:transparent;
-border:none;
-outline:none;
-color:#fff;
-font-size:1rem;
-padding:14px 0;
-}
-
-.search-box input::placeholder{
-color:#dbeafe;
-opacity:.75;
-}
-
-.search-clear{
-display:none;
-border:none;
-background:rgba(255,255,255,.15);
-color:#fff;
-width:32px;
-height:32px;
-border-radius:50%;
-font-size:16px;
-cursor:pointer;
-margin-right:6px;
-flex-shrink:0;
-}
-
-.search-count{
-margin-top:10px;
-font-size:.85rem;
-color:#dbeafe;
-opacity:.85;
-padding-left:4px;
-min-height:18px;
-}
-
-.no-result{
-display:none;
-text-align:center;
-padding:40px 20px;
-color:#dbeafe;
-}
-
-.no-result .icon{
-font-size:42px;
-margin-bottom:12px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-}
-
-.card{
-text-decoration:none;
-color:white;
-padding:24px;
-border-radius:25px;
-background:var(--glass);
-backdrop-filter:blur(20px);
-border:1px solid var(--border);
-transition:.3s;
-cursor:pointer;
-}
-
-.card:hover{
-transform:translateY(-8px) scale(1.02);
-
+.apps{max-width:1180px;margin:auto;padding:24px 20px 10px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.section-title{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.section-title::before{content:"";width:5px;height:22px;border-radius:3px;background:linear-gradient(180deg,var(--hijau),var(--emas))}
+.section-tools{display:flex;gap:7px}
+.mini-btn{border:1px solid var(--garis);background:var(--panel-strong);color:var(--teks);border-radius:10px;padding:7px 10px;font-size:.76rem;cursor:pointer}
+.mini-btn.active{background:var(--hijau);color:#fff;border-color:var(--hijau)}
+.subsection{margin-top:24px}.subsection:first-child{margin-top:0}
+.subsection h3{font-size:.94rem;margin-bottom:10px;color:var(--teks-muted);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
+.card{position:relative;text-decoration:none;color:var(--teks);padding:20px;border-radius:var(--radius);background:var(--panel);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.7);border-left:4px solid var(--accent);transition:transform .22s,box-shadow .22s,background .22s;cursor:pointer;display:block;min-height:176px}
+.card:hover{transform:translateY(-5px);background:var(--panel-strong);box-shadow:0 20px 36px -16px var(--glow)}
+.card:active{transform:scale(.985)}
+.card.hidden{display:none}
+.cat-utama{--accent:var(--utama-accent);--tint:var(--utama-tint);--glow:rgba(47,74,51,.4)}
+.cat-layanan{--accent:var(--layanan-accent);--tint:var(--layanan-tint);--glow:rgba(168,70,47,.35)}
+.cat-kepegawaian{--accent:var(--kepeg-accent);--tint:var(--kepeg-tint);--glow:rgba(201,162,39,.4)}
+.cat-monitoring{--accent:var(--monitor-accent);--tint:var(--monitor-tint);--glow:rgba(61,122,107,.38)}
+.cat-keuangan{--accent:var(--keu-accent);--tint:var(--keu-tint);--glow:rgba(122,75,35,.35)}
+.card{perspective:800px}
+.icon-wrap{width:50px;height:50px;border-radius:15px;position:relative;background:linear-gradient(155deg,color-mix(in srgb,var(--tint) 55%,#fff 45%),var(--tint) 70%);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:14px;
 box-shadow:
-0 20px 40px rgba(0,0,0,.25);
+  inset 0 1px 1px rgba(255,255,255,.95),
+  inset 0 -5px 8px rgba(0,0,0,.07),
+  0 10px 16px -9px var(--glow),
+  0 3px 5px -2px rgba(20,26,17,.18);
+transform-style:preserve-3d;transition:transform .3s cubic-bezier(.22,.9,.3,1),box-shadow .3s}
+.icon-wrap::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(165deg,rgba(255,255,255,.6),transparent 58%);pointer-events:none}
+[data-theme="dark"] .icon-wrap{background:linear-gradient(155deg,color-mix(in srgb,var(--tint) 70%,#fff 12%),var(--tint) 80%)}
+[data-theme="dark"] .icon-wrap::after{background:linear-gradient(165deg,rgba(255,255,255,.22),transparent 60%)}
+.card:hover .icon-wrap{transform:translateY(-2px) rotateX(10deg) rotateY(-12deg) scale(1.07);
+box-shadow:
+  inset 0 1px 1px rgba(255,255,255,.95),
+  inset 0 -5px 8px rgba(0,0,0,.07),
+  0 16px 22px -10px var(--glow),
+  0 6px 10px -3px rgba(20,26,17,.22)}
+.icon-wrap svg{width:26px;height:26px;position:relative;z-index:1;filter:drop-shadow(0 2px 2px rgba(20,26,17,.22))}
+.name{font-size:1rem;font-weight:700;margin-bottom:5px;padding-right:24px}.desc{font-size:.83rem;line-height:1.55;color:var(--teks-muted)}
+.badge{position:absolute;right:14px;top:14px;padding:4px 7px;border-radius:999px;font-size:.62rem;font-weight:700;border:1px solid var(--garis);background:var(--panel-strong)}
+.badge.online{color:#247c43}.badge.soon{color:var(--bata)}.badge.maintenance{color:#a56d00}
+.favorite{position:absolute;right:12px;bottom:12px;width:34px;height:34px;border-radius:10px;border:1px solid var(--garis);background:var(--panel-strong);color:var(--teks-muted);cursor:pointer;display:grid;place-items:center}
+.favorite.active{color:var(--emas);border-color:var(--emas);background:var(--kepeg-tint)}
+.favorite svg{width:18px;height:18px}
+mark{background:rgba(201,162,39,.4);color:inherit;border-radius:4px;padding:0 2px}
+.no-result{text-align:center;padding:50px 20px;color:var(--teks-muted);display:none}
+.no-result svg{width:44px;height:44px;margin-bottom:12px}
+
+/* Footer / floating */
+footer{padding:42px 20px calc(110px + env(safe-area-inset-bottom));text-align:center;color:var(--teks-muted);font-size:.82rem;line-height:1.7}
+footer strong{color:var(--hijau)}
+.status-dot{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--hijau)}
+.status-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#2FAE5C;box-shadow:0 0 0 0 rgba(47,174,92,.55);animation:pulse-dot 2s ease-out infinite}
+@keyframes pulse-dot{0%{box-shadow:0 0 0 0 rgba(47,174,92,.55)}70%{box-shadow:0 0 0 8px rgba(47,174,92,0)}100%{box-shadow:0 0 0 0 rgba(47,174,92,0)}}
+.floating{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:9998;display:flex;flex-direction:column;gap:9px;align-items:flex-end}
+.float-btn{border:0;cursor:pointer;box-shadow:var(--bayang);display:flex;align-items:center;justify-content:center;text-decoration:none}
+.wa-btn{width:54px;height:54px;border-radius:50%;background:#25D366;color:#fff}.wa-btn svg{width:26px;height:26px}
+.install-btn{display:none;padding:11px 15px;border:1px solid var(--emas);border-radius:13px;background:var(--panel-strong);color:var(--hijau);font-weight:700;font-size:.82rem}
+.top-btn{display:none;width:42px;height:42px;border-radius:12px;background:var(--hijau);color:#fff}
+.top-btn.show{display:flex}
+
+/* Modal / toast */
+.modal{position:fixed;inset:0;background:rgba(34,51,31,.58);backdrop-filter:blur(5px);display:none;justify-content:center;align-items:center;z-index:9999;padding:20px}
+.modal.show{display:flex}
+.modal-content{width:100%;max-width:390px;background:var(--panel-strong);border:1px solid rgba(255,255,255,.7);border-radius:22px;padding:28px;text-align:center;box-shadow:var(--bayang);animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.modal-icon{width:58px;height:58px;margin:0 auto 14px;border-radius:17px;background:var(--layanan-tint);color:var(--bata);display:grid;place-items:center}.modal-icon svg{width:29px;height:29px}
+.modal-content h2{font-size:1.18rem;color:var(--hijau);margin-bottom:8px}.modal-content p{line-height:1.7;color:var(--teks-muted);font-size:.88rem}
+.close-btn{margin-top:20px;padding:11px 24px;min-height:44px;border:0;border-radius:12px;background:var(--hijau);color:#fff;font-weight:700;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:25px;transform:translate(-50%,20px);background:var(--hijau-2);color:#fff;padding:10px 15px;border-radius:11px;font-size:.8rem;opacity:0;pointer-events:none;transition:.25s;z-index:10000;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Admin panel */
+.admin-content{max-width:560px;text-align:left;max-height:86vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border:1px solid var(--garis);background:var(--panel-strong);border-radius:10px;cursor:pointer;color:var(--teks);font-size:1.2rem;line-height:1;display:grid;place-items:center}
+.admin-content h2{font-size:1.15rem;color:var(--hijau);margin-bottom:14px;padding-right:30px}
+.admin-content h3{font-size:1rem;color:var(--hijau);margin-bottom:12px}
+.admin-pin-row{display:flex;gap:8px}
+.admin-pin-row input{flex:1;border:1px solid var(--garis);border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel-strong);color:var(--teks)}
+.admin-error{color:var(--bata);font-size:.8rem;margin-top:10px}
+.admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.admin-list{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;padding-right:2px}
+.admin-item{display:flex;align-items:center;gap:10px;border:1px solid var(--garis);background:var(--panel-strong);border-radius:12px;padding:8px 10px}
+.admin-item .icon-wrap{width:36px;height:36px;margin-bottom:0;border-radius:11px;flex-shrink:0}
+.admin-item .icon-wrap svg{width:19px;height:19px}
+.admin-item-info{flex:1;min-width:0}
+.admin-item-info .n{font-weight:700;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-item-info .c{font-size:.72rem;color:var(--teks-muted)}
+.admin-item-actions{display:flex;gap:6px;flex-shrink:0}
+.admin-item-actions button{width:32px;height:32px;border-radius:9px;border:1px solid var(--garis);background:var(--kertas);color:var(--teks);cursor:pointer;display:grid;place-items:center}
+.admin-item-actions button.danger{color:var(--bata);border-color:rgba(168,70,47,.4)}
+.admin-form label{display:block;font-size:.8rem;font-weight:700;color:var(--teks-muted);margin:12px 0 5px}
+.admin-form input[type=text],.admin-form input[type=password],.admin-form textarea,.admin-form select{width:100%;border:1px solid var(--garis);border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel-strong);color:var(--teks);resize:vertical}
+.icon-picker{margin-top:6px}
+.picker-toolbar{margin-bottom:8px}
+.picker-toolbar input{width:100%;border:1px solid var(--garis);border-radius:10px;padding:9px 12px;font-size:.85rem;background:var(--panel-strong);color:var(--teks);margin-bottom:8px}
+.picker-pills{display:flex;flex-wrap:wrap;gap:6px}
+.picker-pill{padding:6px 11px;font-size:.72rem}
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;max-height:220px;overflow-y:auto;padding:4px 2px}
+.icon-opt{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid transparent;background:var(--panel-strong);border-radius:12px;padding:8px 4px;cursor:pointer}
+.icon-opt .icon-wrap{margin-bottom:0;width:34px;height:34px;border-radius:10px}
+.icon-opt .icon-wrap svg{width:18px;height:18px}
+.icon-opt span{font-size:.62rem;color:var(--teks-muted);text-align:center;line-height:1.2}
+.icon-opt.selected{border-color:var(--hijau);background:var(--utama-tint)}
+.admin-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.admin-form-actions .mini-btn{padding:10px 16px}
+.admin-empty{text-align:center;color:var(--teks-muted);font-size:.85rem;padding:20px 0}
+
+/* Responsive */
+@media(max-width:700px){
+  .notice{margin-top:12px}
+  .top-actions{right:-2px}.header{padding-top:32px}.top-actions{top:-2px}
+  .controls{margin:-24px auto 0}.stats{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:16px;min-height:170px}
+  .icon-wrap{width:46px;height:46px;margin-bottom:11px}.icon-wrap svg{width:24px;height:24px}.name{font-size:.92rem}.desc{font-size:.76rem}
 }
-
-.card.hidden{
-display:none;
+@media(max-width:450px){
+  .grid{grid-template-columns:1fr 1fr}.pills{gap:6px}.pill{padding:8px 10px;font-size:.75rem}
+  .shortcut{display:none}.title{font-size:1.65rem}.subtitle{font-size:.82rem}.clock{font-size:.74rem}
 }
-
-.icon{
-font-size:42px;
-margin-bottom:15px;
-}
-
-.name{
-font-size:1.1rem;
-font-weight:700;
-margin-bottom:10px;
-}
-
-.desc{
-font-size:.9rem;
-line-height:1.6;
-color:#dbeafe;
-}
-
-mark{
-background:rgba(250,204,21,.55);
-color:#fff;
-border-radius:4px;
-padding:0 2px;
-}
-
-/* Footer */
-
-footer{
-padding:40px 20px;
-text-align:center;
-color:#dbeafe;
-}
-
-/* Coming Soon Modal */
-
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.5);
-backdrop-filter:blur(8px);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:9999;
-padding:20px;
-}
-
-.modal-content{
-width:100%;
-max-width:360px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.2);
-border-radius:24px;
-padding:30px;
-text-align:center;
-animation:pop .3s ease;
-}
-
-@keyframes pop{
-from{
-transform:scale(.8);
-opacity:0;
-}
-to{
-transform:scale(1);
-opacity:1;
-}
-}
-
-.modal h2{
-margin-bottom:10px;
-}
-
-.modal p{
-line-height:1.7;
-color:#dbeafe;
-}
-
-.close-btn{
-margin-top:20px;
-padding:12px 25px;
-border:none;
-border-radius:12px;
-background:#fff;
-color:#2563eb;
-font-weight:700;
-cursor:pointer;
-}
-
-@media(max-width:768px){
-
-.title{
-font-size:1.6rem;
-}
-
-.logo{
-width:80px;
-height:80px;
-font-size:40px;
-}
-
-}
-/* Running Text */
-
-.notice{
-margin:20px;
-padding:12px;
-border-radius:15px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(10px);
-overflow:hidden;
-}
-
-.notice span{
-display:inline-block;
-white-space:nowrap;
-animation:marquee 20s linear infinite;
-}
-
-@keyframes marquee{
-0%{transform:translateX(100%)}
-100%{transform:translateX(-100%)}
-}
-
-/* Install App */
-
-.install-btn{
-position:fixed;
-right:20px;
-bottom:20px;
-z-index:9999;
-
-padding:12px 18px;
-
-border:none;
-border-radius:14px;
-
-font-weight:700;
-cursor:pointer;
-
-background:white;
-color:#2563eb;
-
-display:none;
-
-box-shadow:0 10px 25px rgba(0,0,0,.25);
-}
-
-/* WhatsApp */
-
-.wa-btn{
-position:fixed;
-
-right:20px;
-bottom:85px;
-
-width:55px;
-height:55px;
-
-border-radius:50%;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-text-decoration:none;
-
-font-size:28px;
-
-background:#25D366;
-color:white;
-
-box-shadow:0 10px 25px rgba(0,0,0,.25);
-
-z-index:9999;
-}
-
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.status-dot::before{animation:none}.modal-content{animation:none}}
 </style>
 </head>
 
 <body>
+<header class="header">
+  <div class="header-inner wrap">
+    <div class="top-actions">
+      <button class="icon-btn" id="adminBtn" aria-label="Kelola aplikasi" title="Kelola aplikasi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.6V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.6 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.6 1z"/></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" aria-label="Ganti tema" title="Ganti tema">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+      </button>
+    </div>
+    <div class="logo entrance entrance-1">
+      <img src="logo.png" alt="Logo Puskesmas Panjatan I" onerror="this.style.display='none';this.parentNode.innerHTML='🏥'">
+    </div>
+    <h1 class="title entrance entrance-2">e-Portal Digital</h1>
+    <p class="subtitle entrance entrance-3">Portal Terintegrasi Layanan Digital — Puskesmas Panjatan I</p>
+    <div class="clock entrance entrance-4" id="clock"></div>
+  </div>
+</header>
 
-<div class="bg">
-<div class="bubble b1"></div>
-<div class="bubble b2"></div>
-<div class="bubble b3"></div>
-</div>
 
-<div class="header">
 
-<div class="logo">
-<img
-src="logo.png"
-alt="Logo"
-style="width:70px;height:70px;object-fit:contain"
-onerror="this.style.display='none';this.parentNode.innerHTML='🏥';">
-</div>
+<div class="controls">
+  <div class="controls-card">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="appSearch" type="text" placeholder="Cari aplikasi... (mis. cuti, keuangan, absensi)" autocomplete="off">
+      <button class="search-clear" id="searchClear" aria-label="Hapus pencarian">✕</button>
+    </div>
+    <div class="search-meta"><span id="searchCount"></span><span class="shortcut">Tekan / untuk mencari</span></div>
 
-<div class="title">
-e-Portal Digital
-</div>
+    <div class="pills" id="filterPills">
+      <button class="pill active" data-cat="semua" style="--dot:var(--hijau)"><span class="dot"></span>Semua</button>
+      <button class="pill" data-cat="utama" style="--dot:var(--utama-accent)"><span class="dot"></span>Utama</button>
+      <button class="pill" data-cat="layanan" style="--dot:var(--layanan-accent)"><span class="dot"></span>Layanan Publik</button>
+      <button class="pill" data-cat="kepegawaian" style="--dot:var(--kepeg-accent)"><span class="dot"></span>Kepegawaian</button>
+      <button class="pill" data-cat="monitoring" style="--dot:var(--monitor-accent)"><span class="dot"></span>Monitoring & Evaluasi</button>
+      <button class="pill" data-cat="keuangan" style="--dot:var(--keu-accent)"><span class="dot"></span>Keuangan</button>
+    </div>
 
-<div class="subtitle">
-Portal Terintegrasi Layanan Digital
-<br>
-Puskesmas Panjatan I
-</div>
-
-<div class="clock" id="clock"></div>
-
+    <div class="stats">
+      <div class="stat"><strong id="statApps">0</strong><span>Total Aplikasi</span></div>
+      <div class="stat"><strong id="statOnline">0</strong><span>Aplikasi Aktif</span></div>
+      <div class="stat"><strong id="statFav">0</strong><span>Aplikasi Favorit</span></div>
+      <div class="stat"><strong id="statCat">5</strong><span>Kategori</span></div>
+    </div>
+  </div>
 </div>
 
 <div class="notice">
-<span>
-📢 Selamat Datang di e-Portal Digital Puskesmas Panjatan I • Satu Portal • Semua Layanan • Terintegrasi Digital • Versi 2026
-</span>
+  <div class="notice-inner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h3l6 4V6l-6 4H3z"/><path d="M17 9a4 4 0 010 6M19.5 7a7 7 0 010 10"/></svg>
+    <div class="ticker" aria-label="Informasi berjalan">
+      <div class="ticker-track">
+        <span class="ticker-item">Selamat datang di e-Portal Digital Puskesmas Panjatan I • Satu portal, semua layanan, terintegrasi digital • Versi 2026</span>
+        <span class="ticker-item" aria-hidden="true">Selamat datang di e-Portal Digital Puskesmas Panjatan I • Satu portal, semua layanan, terintegrasi digital • Versi 2026</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="apps">
+<main class="apps">
+  <div class="section-head">
+    <div class="section-title">Aplikasi Digital</div>
+    <div class="section-tools">
+      <button class="mini-btn" id="allViewBtn">Semua</button>
+      <button class="mini-btn" id="favViewBtn">★ Favorit</button>
+    </div>
+  </div>
 
-<h3>Aplikasi Digital</h3>
+  <section class="subsection" id="favoriteSection" style="display:none">
+    <h3>★ Aplikasi Favorit</h3>
+    <div class="grid" id="favoriteGrid"></div>
+  </section>
 
-<div class="search-wrap">
-<div class="search-box">
-<span class="search-icon">🔍</span>
-<input
-type="text"
-id="appSearch"
-placeholder="Cari aplikasi... (mis. cuti, keuangan, absensi)"
-autocomplete="off">
-<button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
-</div>
-<div class="search-count" id="searchCount"></div>
-</div>
+  <section class="subsection">
+    <div class="grid" id="appGrid"></div>
+  </section>
 
-<div class="grid" id="appGrid">
-
-<a class="card" href="./ePortalDigital/" data-name="e-Portal Digital" data-desc="Portal Terintegrasi Layanan Digital" target="_blank" rel="noopener">
-<div class="icon">🖥️</div>
-<div class="name">e-Portal Digital</div>
-<div class="desc">
-Portal Terintegrasi Layanan Digital
-</div>
-</a>
-
-<a class="card" href="./sigap/" data-name="SIGAP" data-desc="Sistem Informasi Presensi Pegawai" target="_blank" rel="noopener">
-<div class="icon">🕒</div>
-<div class="name">SIGAP</div>
-<div class="desc">
-Sistem Informasi Presensi Pegawai
-</div>
-</a>
-
-<a class="card" href="./pamanpanji/" data-name="PAMAN PANJI" data-desc="Sistem Manajemen dan Perencanaan" target="_blank" rel="noopener">
-<div class="icon">🎯</div>
-<div class="name">PAMAN PANJI</div>
-<div class="desc">
-Sistem Manajemen dan Perencanaan
-</div>
-</a>
-
-<a class="card" href="./e Cuti/" data-name="e Cuti Puspansa" data-desc="Pengajuan dan Approval Cuti" target="_blank" rel="noopener">
-<div class="icon">📅</div>
-<div class="name">e Cuti Puspansa</div>
-<div class="desc">
-Pengajuan dan Approval Cuti
-</div>
-</a>
-
-<div class="card" onclick="comingSoon('PKG')" data-name="PKG" data-desc="Pemeriksaan Kesehatan Gratis">
-<div class="icon">🩺</div>
-<div class="name">PKG</div>
-<div class="desc">
-Pemeriksaan Kesehatan Gratis
-</div>
-</div>
-
-<div class="card" onclick="comingSoon('Dashboard')" data-name="Dashboard" data-desc="Monitoring dan Evaluasi Program">
-<div class="icon">📊</div>
-<div class="name">Dashboard</div>
-<div class="desc">
-Monitoring dan Evaluasi Program
-</div>
-</div>
-
-<a class="card" href="./DashboardCKGPuspansa/" data-name="Dashboard CKG" data-desc="Monitoring & Evaluasi Cek Kesehatan Gratis" target="_blank" rel="noopener">
-<div class="icon">📈</div>
-<div class="name">Dashboard CKG</div>
-<div class="desc">
-Monitoring & Evaluasi<br>
-Cek Kesehatan Gratis
-</div>
-</a>
-
-<a class="card" href="./GeoLocReport/" data-name="Geo Location Report" data-desc="Pelaporan berbasis lokasi real-time Monitoring kunjungan aktivitas lapangan" target="_blank" rel="noopener">
-<div class="icon">🧭</div>
-<div class="name">Geo Location Report</div>
-<div class="desc">
-Pelaporan berbasis lokasi real-time<br>
-Monitoring kunjungan & aktivitas lapangan
-</div>
-</a>
-
-<a class="card" href="./StrukturOrganisasiPuspansa/" data-name="Struktur Organisasi" data-desc="Susunan organisasi dan tata kerja Puskesmas Menampilkan jabatan unit koordinasi pelayanan" target="_blank" rel="noopener">
-<div class="icon">🏢</div>
-<div class="name">Struktur Organisasi</div>
-<div class="desc">
-Susunan organisasi dan tata kerja Puskesmas<br>
-Menampilkan jabatan, unit, dan koordinasi pelayanan
-</div>
-</a>
-
-<a class="card" href="./TarifLayananBLUD/" data-name="Tarif Layanan" data-desc="Informasi tarif layanan BLUD Puskesmas Transparansi biaya pelayanan kesehatan" target="_blank" rel="noopener">
-<div class="icon">💰</div>
-<div class="name">Tarif Layanan</div>
-<div class="desc">
-Informasi tarif layanan BLUD Puskesmas<br>
-Transparansi biaya pelayanan kesehatan
-</div>
-</a>
-
-<a class="card" href="./SikepBudi/" data-name="Keuangan" data-desc="Pendapatan dan Belanja BLUD" target="_blank" rel="noopener">
-<div class="icon">💰</div>
-<div class="name">Keuangan</div>
-<div class="desc">
-Pendapatan dan Belanja BLUD
-</div>
-</a>
-
-<a class="card" href="./monev-sigap/" data-name="Monev SIGAP ILP" data-desc="Monitoring Evaluasi Integrasi Layanan Primer" target="_blank" rel="noopener">
-<div class="icon">📋✅</div>
-<div class="name">Monev SIGAP ILP</div>
-<div class="desc">
-Monitoring & Evaluasi Integrasi Layanan Primer 
-</div> 
-</a>
-
-<a class="card" href="./GeneratorSurat/" data-name="Surat Menyurat" data-desc="Administrasi Generator Persuratan Digital" target="_blank" rel="noopener">
-<div class="icon">📄</div>
-<div class="name">Surat Menyurat</div>
-<div class="desc">
-Administrasi Generator Persuratan Digital
-</div>
-</a>
-
-<a class="card" href="./SapaPanji/" data-name="Sapa Panji" data-desc="Sarana Aspirasi Pengaduan Puskesmas Panjatan Siji" target="_blank" rel="noopener">
-<div class="icon">📢</div>
-<div class="name">Sapa Panji</div>
-<div class="desc">
-(S)arana (A)spirasi & (P)eng(A)duan Puskesmas (PAN)jatan Si(JI) 
-</div>
-</a>
-
-<a class="card" href="./eJadwal/" data-name="Jadwal Pegawai" data-desc="Jadwal Dinas dan Shift Pegawai" target="_blank" rel="noopener">
-<div class="icon">📆</div>
-<div class="name">Jadwal Pegawai</div>
-<div class="desc">
-Jadwal Dinas dan Shift Pegawai
-</div>
-</a>
-
-</div>
-
-<div class="no-result" id="noResult">
-<div class="icon">🔎</div>
-<div>Tidak ada aplikasi yang cocok dengan pencarian Anda.</div>
-</div>
-
-</div>
+  <div class="no-result" id="noResult">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <div>Tidak ada aplikasi yang cocok dengan pencarian Anda.</div>
+  </div>
+</main>
 
 <footer>
-© 2026 Puskesmas Panjatan I
-<br>
-Dinas Kesehatan Kabupaten Kulon Progo
-<br><br>
-Portal Digital v2.0
-<br>
-🟢 Sistem Online
+  <strong>Puskesmas Panjatan I</strong> · Dinas Kesehatan Kabupaten Kulon Progo<br>
+  Portal Digital v3.1 · <span class="status-dot">Sistem Online</span>
 </footer>
 
-<!-- Modal -->
-
-<div class="modal" id="modal">
-
-<div class="modal-content">
-
-<h2>🚧 COMING SOON</h2>
-
-<p id="modalText"></p>
-
-<button class="close-btn" onclick="closeModal()">
-Tutup
-</button>
-
+<div class="floating">
+  <button class="float-btn top-btn" id="topBtn" aria-label="Kembali ke atas">
+    <svg viewBox="0 0 24 24" width="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+  <button id="installBtn" class="float-btn install-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;margin-right:6px"><path d="M12 4v11m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>Install App
+  </button>
+  <a class="float-btn wa-btn" href="https://wa.me/6285113268066" target="_blank" rel="noopener" aria-label="Hubungi via WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.7 14.3c-.2.7-1.4 1.3-2 1.4-.5.1-1.1.1-1.8-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.7 1.8.8 1.9.1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1.2-.2.7-.8.9-1 .2-.3.4-.2.6-.1l1.7.8c.2.1.4.2.4.3.1.2.1.7-.1 1.4z"/></svg>
+  </a>
 </div>
 
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-content">
+    <div class="modal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+    <h2 id="modalTitle">Segera Hadir</h2>
+    <p id="modalText"></p>
+    <button class="close-btn" id="closeModal">Tutup</button>
+  </div>
+</div>
+<div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="modal-content admin-content">
+    <button class="modal-close" id="adminClose" aria-label="Tutup">×</button>
+    <h2 id="adminTitle">Kelola Aplikasi</h2>
+
+    <div id="adminGate">
+      <p style="font-size:.85rem;color:var(--teks-muted);margin-bottom:12px">Masuk sebagai admin untuk mengelola aplikasi.</p>
+      <label style="display:block;font-size:.76rem;font-weight:700;color:var(--teks-muted);margin-bottom:5px">Username</label>
+      <input type="text" id="loginUser" placeholder="Username admin" autocomplete="off" style="width:100%;border:1px solid var(--garis);border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel-strong);color:var(--teks)">
+      <label style="display:block;font-size:.76rem;font-weight:700;color:var(--teks-muted);margin:12px 0 5px">Password</label>
+      <input type="password" id="loginPass" placeholder="Password admin" autocomplete="off" style="width:100%;border:1px solid var(--garis);border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel-strong);color:var(--teks)">
+      <p id="loginError" class="admin-error" style="display:none"></p>
+      <div class="admin-form-actions">
+        <button id="loginBtn" class="close-btn" style="width:100%">Masuk</button>
+      </div>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <div class="admin-toolbar">
+        <button id="adminAddBtn" class="mini-btn active">+ Tambah Aplikasi</button>
+        <button id="logoutBtn" class="mini-btn">Keluar</button>
+      </div>
+      <div id="adminList" class="admin-list"></div>
+    </div>
+
+    <div id="adminForm" class="admin-form" style="display:none">
+      <h3 id="adminFormTitle">Tambah Aplikasi</h3>
+      <label>Nama Aplikasi</label>
+      <input type="text" id="fName" placeholder="Contoh: e-Rekam Medis">
+      <label>Deskripsi</label>
+      <textarea id="fDesc" rows="2" placeholder="Deskripsi singkat aplikasi"></textarea>
+      <label>Kategori</label>
+      <select id="fCategory">
+        <option value="utama">Utama</option>
+        <option value="layanan">Layanan</option>
+        <option value="kepegawaian">Kepegawaian</option>
+        <option value="monitoring">Monitoring</option>
+        <option value="keuangan">Keuangan</option>
+      </select>
+      <label>Status</label>
+      <select id="fStatus">
+        <option value="online">Online</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="soon">Segera Hadir</option>
+      </select>
+      <label>Link / Folder (href)</label>
+      <input type="text" id="fHref" placeholder="./NamaFolder/">
+      <label>Pilih Ikon</label>
+      <div id="iconPicker" class="icon-picker"></div>
+      <p id="adminFormError" class="admin-error" style="display:none"></p>
+      <div class="admin-form-actions">
+        <button id="fCancel" class="mini-btn">Batal</button>
+        <button id="fSave" class="close-btn">Simpan</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<a
-class="wa-btn"
-href="https://wa.me/6285113268066"
-target="_blank">
-💬
-</a>
-
-<button
-id="installBtn"
-class="install-btn">
-📲 Install App
-</button>
+<div class="toast" id="toast"></div>
 
 <script>
+/* =========================
+   IKON — memakai library Lucide (ratusan ikon), dirender via <i data-lucide="...">
+========================= */
+// Alias untuk kompatibilitas dengan data lama yang masih memakai nama ikon versi awal
+const OLD_ICON_ALIAS={grid:"layout-grid",clock:"clock",target:"target",calendarCheck:"calendar-check",heart:"heart-pulse",barChart:"bar-chart-3",trendUp:"trending-up",mapPin:"map-pin",orgChart:"network",tag:"tag",coins:"coins",clipboardCheck:"clipboard-check",mail:"mail",megaphone:"megaphone",calendarDays:"calendar-days"};
+function iconName(key){return OLD_ICON_ALIAS[key]||key||"layout-grid";}
+function renderIcons(){if(window.lucide)lucide.createIcons();}
 
+// Daftar pilihan ikon untuk panel admin, dikelompokkan per kategori, dengan label Bahasa Indonesia
+const ICON_CHOICES=[
+// Kesehatan & Medis
+{n:"stethoscope",l:"Stetoskop",g:"kesehatan"},{n:"heart-pulse",l:"Detak Jantung",g:"kesehatan"},{n:"syringe",l:"Suntikan",g:"kesehatan"},{n:"pill",l:"Obat",g:"kesehatan"},{n:"thermometer",l:"Termometer",g:"kesehatan"},{n:"activity",l:"Aktivitas/EKG",g:"kesehatan"},{n:"hospital",l:"Rumah Sakit",g:"kesehatan"},{n:"ambulance",l:"Ambulans",g:"kesehatan"},{n:"bandage",l:"Perban",g:"kesehatan"},{n:"brain",l:"Otak",g:"kesehatan"},{n:"bone",l:"Tulang",g:"kesehatan"},{n:"microscope",l:"Mikroskop",g:"kesehatan"},{n:"test-tube",l:"Tabung Uji",g:"kesehatan"},{n:"test-tubes",l:"Tabung Uji (set)",g:"kesehatan"},{n:"flask-conical",l:"Labu Lab",g:"kesehatan"},{n:"dna",l:"DNA",g:"kesehatan"},{n:"shield-plus",l:"Perlindungan Kesehatan",g:"kesehatan"},{n:"cross",l:"Palang Medis",g:"kesehatan"},{n:"baby",l:"Bayi/KIA",g:"kesehatan"},{n:"accessibility",l:"Disabilitas",g:"kesehatan"},{n:"hand-heart",l:"Peduli/Kasih",g:"kesehatan"},{n:"heart",l:"Hati",g:"kesehatan"},{n:"ear",l:"Telinga",g:"kesehatan"},{n:"eye",l:"Mata",g:"kesehatan"},{n:"droplet",l:"Tetes Darah",g:"kesehatan"},{n:"droplets",l:"Cairan",g:"kesehatan"},{n:"scale",l:"Timbangan",g:"kesehatan"},{n:"weight",l:"Berat Badan",g:"kesehatan"},{n:"footprints",l:"Jejak Kaki",g:"kesehatan"},{n:"venus",l:"Perempuan",g:"kesehatan"},{n:"mars",l:"Laki-laki",g:"kesehatan"},{n:"biohazard",l:"Biohazard",g:"kesehatan"},
+// Kepegawaian & SDM
+{n:"users",l:"Pegawai",g:"kepegawaian"},{n:"user",l:"Pengguna",g:"kepegawaian"},{n:"user-check",l:"Verifikasi Pegawai",g:"kepegawaian"},{n:"user-plus",l:"Tambah Pegawai",g:"kepegawaian"},{n:"user-minus",l:"Kurangi Pegawai",g:"kepegawaian"},{n:"user-cog",l:"Pengaturan Pegawai",g:"kepegawaian"},{n:"id-card",l:"Kartu Identitas",g:"kepegawaian"},{n:"badge-check",l:"Verifikasi/Lencana",g:"kepegawaian"},{n:"contact",l:"Kontak",g:"kepegawaian"},{n:"contact-round",l:"Kontak Pegawai",g:"kepegawaian"},{n:"briefcase",l:"Pekerjaan",g:"kepegawaian"},{n:"clock",l:"Presensi/Jam",g:"kepegawaian"},{n:"calendar-check",l:"Kalender Disetujui",g:"kepegawaian"},{n:"calendar-days",l:"Jadwal Harian",g:"kepegawaian"},{n:"calendar-clock",l:"Jadwal Waktu",g:"kepegawaian"},{n:"calendar-x",l:"Kalender Batal",g:"kepegawaian"},{n:"calendar-plus",l:"Tambah Jadwal",g:"kepegawaian"},{n:"timer",l:"Pengatur Waktu",g:"kepegawaian"},{n:"hourglass",l:"Jam Pasir",g:"kepegawaian"},{n:"fingerprint",l:"Sidik Jari",g:"kepegawaian"},{n:"key",l:"Kunci Akses",g:"kepegawaian"},{n:"shield-check",l:"Keamanan Terverifikasi",g:"kepegawaian"},{n:"award",l:"Penghargaan",g:"kepegawaian"},{n:"medal",l:"Medali",g:"kepegawaian"},{n:"trophy",l:"Piala",g:"kepegawaian"},{n:"graduation-cap",l:"Pendidikan",g:"kepegawaian"},{n:"book-user",l:"Data Pegawai",g:"kepegawaian"},{n:"users-round",l:"Kelompok Pegawai",g:"kepegawaian"},{n:"handshake",l:"Kerja Sama",g:"kepegawaian"},{n:"target",l:"Target/Rencana",g:"kepegawaian"},{n:"list-checks",l:"Daftar Tercentang",g:"kepegawaian"},
+// Keuangan
+{n:"coins",l:"Koin/Keuangan",g:"keuangan"},{n:"wallet",l:"Dompet",g:"keuangan"},{n:"credit-card",l:"Kartu Pembayaran",g:"keuangan"},{n:"banknote",l:"Uang Kertas",g:"keuangan"},{n:"piggy-bank",l:"Tabungan",g:"keuangan"},{n:"receipt",l:"Kuitansi",g:"keuangan"},{n:"calculator",l:"Kalkulator",g:"keuangan"},{n:"bar-chart-2",l:"Grafik Batang",g:"keuangan"},{n:"line-chart",l:"Grafik Garis",g:"keuangan"},{n:"pie-chart",l:"Grafik Lingkaran",g:"keuangan"},{n:"landmark",l:"Instansi/Bank",g:"keuangan"},{n:"hand-coins",l:"Pembayaran",g:"keuangan"},{n:"circle-dollar-sign",l:"Nilai Uang",g:"keuangan"},{n:"wallet-cards",l:"Dompet Kartu",g:"keuangan"},{n:"gem",l:"Aset Berharga",g:"keuangan"},{n:"percent",l:"Persentase",g:"keuangan"},{n:"arrow-up-right",l:"Naik",g:"keuangan"},{n:"arrow-down-right",l:"Turun",g:"keuangan"},
+// Dokumen & Administrasi
+{n:"file-text",l:"Dokumen",g:"dokumen"},{n:"file",l:"Berkas",g:"dokumen"},{n:"file-check",l:"Berkas Disetujui",g:"dokumen"},{n:"file-plus",l:"Tambah Berkas",g:"dokumen"},{n:"file-search",l:"Cari Berkas",g:"dokumen"},{n:"file-signature",l:"Tanda Tangan",g:"dokumen"},{n:"folder",l:"Folder",g:"dokumen"},{n:"folder-open",l:"Folder Terbuka",g:"dokumen"},{n:"folders",l:"Kumpulan Folder",g:"dokumen"},{n:"clipboard",l:"Papan Klip",g:"dokumen"},{n:"clipboard-check",l:"Checklist",g:"dokumen"},{n:"clipboard-list",l:"Daftar Tugas",g:"dokumen"},{n:"clipboard-copy",l:"Salin Dokumen",g:"dokumen"},{n:"book",l:"Buku",g:"dokumen"},{n:"book-open",l:"Buku Terbuka",g:"dokumen"},{n:"notebook",l:"Buku Catatan",g:"dokumen"},{n:"sticky-note",l:"Catatan Tempel",g:"dokumen"},{n:"printer",l:"Printer",g:"dokumen"},{n:"mail",l:"Surat",g:"dokumen"},{n:"mail-open",l:"Surat Terbuka",g:"dokumen"},{n:"send",l:"Kirim",g:"dokumen"},{n:"inbox",l:"Kotak Masuk",g:"dokumen"},{n:"archive",l:"Arsip",g:"dokumen"},{n:"stamp",l:"Stempel",g:"dokumen"},{n:"pen-line",l:"Tanda Tangan Garis",g:"dokumen"},{n:"edit",l:"Sunting",g:"dokumen"},{n:"list",l:"Daftar",g:"dokumen"},{n:"list-ordered",l:"Daftar Bernomor",g:"dokumen"},{n:"table",l:"Tabel",g:"dokumen"},
+// Monitoring & Data
+{n:"bar-chart-3",l:"Grafik Batang Naik",g:"monitoring"},{n:"trending-up",l:"Tren Naik",g:"monitoring"},{n:"trending-down",l:"Tren Turun",g:"monitoring"},{n:"gauge",l:"Meteran/Indikator",g:"monitoring"},{n:"radar",l:"Radar",g:"monitoring"},{n:"monitor",l:"Layar Monitor",g:"monitoring"},{n:"monitor-check",l:"Monitor Tervalidasi",g:"monitoring"},{n:"database",l:"Basis Data",g:"monitoring"},{n:"server",l:"Server",g:"monitoring"},{n:"layout-dashboard",l:"Dasbor",g:"monitoring"},{n:"map",l:"Peta",g:"monitoring"},{n:"compass",l:"Kompas",g:"monitoring"},{n:"satellite",l:"Satelit",g:"monitoring"},{n:"satellite-dish",l:"Antena Satelit",g:"monitoring"},{n:"wifi",l:"Wifi",g:"monitoring"},{n:"signal",l:"Sinyal",g:"monitoring"},{n:"search",l:"Cari",g:"monitoring"},{n:"filter",l:"Filter",g:"monitoring"},{n:"refresh-cw",l:"Perbarui",g:"monitoring"},{n:"history",l:"Riwayat",g:"monitoring"},{n:"crosshair",l:"Target Bidik",g:"monitoring"},{n:"binoculars",l:"Teropong",g:"monitoring"},
+// Komunikasi
+{n:"megaphone",l:"Pengumuman",g:"komunikasi"},{n:"message-circle",l:"Pesan Bulat",g:"komunikasi"},{n:"message-square",l:"Pesan Kotak",g:"komunikasi"},{n:"phone",l:"Telepon",g:"komunikasi"},{n:"phone-call",l:"Panggilan Telepon",g:"komunikasi"},{n:"bell",l:"Notifikasi",g:"komunikasi"},{n:"bell-ring",l:"Notifikasi Aktif",g:"komunikasi"},{n:"radio",l:"Radio",g:"komunikasi"},{n:"rss",l:"Umpan Berita",g:"komunikasi"},{n:"share-2",l:"Bagikan",g:"komunikasi"},{n:"at-sign",l:"Alamat Email",g:"komunikasi"},{n:"hash",l:"Tagar",g:"komunikasi"},{n:"mic",l:"Mikrofon",g:"komunikasi"},{n:"volume-2",l:"Suara",g:"komunikasi"},
+// Lokasi & Lapangan
+{n:"map-pin",l:"Titik Lokasi",g:"lokasi"},{n:"navigation",l:"Navigasi",g:"lokasi"},{n:"navigation-2",l:"Navigasi Arah",g:"lokasi"},{n:"route",l:"Rute",g:"lokasi"},{n:"car",l:"Mobil",g:"lokasi"},{n:"truck",l:"Truk",g:"lokasi"},{n:"bus",l:"Bus",g:"lokasi"},{n:"bike",l:"Sepeda",g:"lokasi"},{n:"tent",l:"Tenda/Posko",g:"lokasi"},{n:"mountain",l:"Gunung/Wilayah",g:"lokasi"},{n:"tree-pine",l:"Pohon",g:"lokasi"},{n:"home",l:"Rumah",g:"lokasi"},{n:"building",l:"Gedung",g:"lokasi"},{n:"building-2",l:"Gedung Instansi",g:"lokasi"},{n:"warehouse",l:"Gudang",g:"lokasi"},{n:"store",l:"Toko/Layanan",g:"lokasi"},{n:"flag",l:"Bendera",g:"lokasi"},{n:"globe",l:"Wilayah/Global",g:"lokasi"},
+// Umum
+{n:"layout-grid",l:"Grid/Portal",g:"umum"},{n:"grid-3x3",l:"Grid Kotak",g:"umum"},{n:"settings",l:"Pengaturan",g:"umum"},{n:"sliders-horizontal",l:"Pengatur",g:"umum"},{n:"cog",l:"Roda Gigi",g:"umum"},{n:"wrench",l:"Kunci Pas",g:"umum"},{n:"star",l:"Bintang",g:"umum"},{n:"thumbs-up",l:"Suka",g:"umum"},{n:"check-circle",l:"Centang",g:"umum"},{n:"alert-circle",l:"Peringatan",g:"umum"},{n:"info",l:"Informasi",g:"umum"},{n:"help-circle",l:"Bantuan",g:"umum"},{n:"lock",l:"Terkunci",g:"umum"},{n:"unlock",l:"Terbuka",g:"umum"},{n:"shield",l:"Perisai",g:"umum"},{n:"gift",l:"Hadiah",g:"umum"},{n:"sparkles",l:"Kilau",g:"umum"},{n:"lightbulb",l:"Ide/Inovasi",g:"umum"},{n:"rocket",l:"Roket/Peluncuran",g:"umum"},{n:"bookmark",l:"Penanda",g:"umum"},{n:"tag",l:"Label/Tarif",g:"umum"},{n:"tags",l:"Label (banyak)",g:"umum"},{n:"package",l:"Paket",g:"umum"},{n:"box",l:"Kotak",g:"umum"},{n:"layers",l:"Lapisan",g:"umum"},{n:"puzzle",l:"Puzzle/Integrasi",g:"umum"},{n:"link-2",l:"Tautan",g:"umum"},{n:"external-link",l:"Tautan Keluar",g:"umum"},{n:"cloud",l:"Awan/Online",g:"umum"},{n:"sun",l:"Matahari",g:"umum"},{n:"moon",l:"Bulan",g:"umum"},{n:"zap",l:"Cepat/Instan",g:"umum"},{n:"network",l:"Struktur/Jaringan",g:"umum"}
+];
+const ICON_GROUPS=[{k:"semua",l:"Semua"},{k:"kesehatan",l:"Kesehatan"},{k:"kepegawaian",l:"Kepegawaian"},{k:"keuangan",l:"Keuangan"},{k:"dokumen",l:"Dokumen"},{k:"monitoring",l:"Monitoring"},{k:"komunikasi",l:"Komunikasi"},{k:"lokasi",l:"Lokasi"},{k:"umum",l:"Umum"}];
+
+/* =========================
+   KONFIGURASI API (GAS + Google Sheet)
+========================= */
+const API_URL="https://script.google.com/macros/s/AKfycbxWwzf_YYvyXH_T3vnkgl_s-o9y_IXNciLZ3SktPazHMW0-aEX7Rre_17NHRv87py7llw/exec"; // contoh: https://script.google.com/macros/s/AKfycb.../exec
+
+/* =========================
+   DAFTAR APLIKASI (fallback bila API belum diatur / gagal dimuat)
+   status: online | maintenance | soon
+========================= */
+const DEFAULT_APPS=[
+{name:"e-Portal Digital",desc:"Portal Terintegrasi Layanan Digital",icon:"layout-grid",category:"utama",href:"./ePortalDigital/",status:"online"},
+{name:"SIGAP",desc:"Sistem Informasi Presensi Pegawai",icon:"clock",category:"kepegawaian",href:"./sigap/",status:"online"},
+{name:"PAMAN PANJI",desc:"Sistem Manajemen dan Perencanaan",icon:"target",category:"kepegawaian",href:"./pamanpanji/",status:"online"},
+{name:"e Cuti Puspansa",desc:"Pengajuan dan Approval Cuti",icon:"calendar-check",category:"kepegawaian",href:"./e Cuti/",status:"online"},
+{name:"PKG",desc:"Pemeriksaan Kesehatan Gratis",icon:"heart-pulse",category:"layanan",status:"soon"},
+{name:"Dashboard",desc:"Monitoring dan Evaluasi Program",icon:"bar-chart-3",category:"monitoring",status:"soon"},
+{name:"Dashboard CKG",desc:"Monitoring & Evaluasi Cek Kesehatan Gratis",icon:"trending-up",category:"layanan",href:"./DashboardCKGPuspansa/",status:"online"},
+{name:"Geo Location Report",desc:"Pelaporan berbasis lokasi real-time Monitoring kunjungan & aktivitas lapangan",icon:"map-pin",category:"monitoring",href:"./GeoLocReport/",status:"online"},
+{name:"Struktur Organisasi",desc:"Susunan organisasi dan tata kerja Puskesmas Menampilkan jabatan, unit, dan koordinasi pelayanan",icon:"network",category:"layanan",href:"./StrukturOrganisasiPuspansa/",status:"online"},
+{name:"Tarif Layanan",desc:"Informasi tarif layanan BLUD Puskesmas Transparansi biaya pelayanan kesehatan",icon:"tag",category:"layanan",href:"./TarifLayananBLUD/",status:"online"},
+{name:"Keuangan",desc:"Pendapatan dan Belanja BLUD",icon:"coins",category:"keuangan",href:"./SikepBudi/",status:"online"},
+{name:"Monev SIGAP ILP",desc:"Monitoring Evaluasi Integrasi Layanan Primer",icon:"clipboard-check",category:"monitoring",href:"./monev-sigap/",status:"online"},
+{name:"Surat Menyurat",desc:"Administrasi Generator Persuratan Digital",icon:"mail",category:"kepegawaian",href:"./GeneratorSurat/",status:"online"},
+{name:"Sapa Panji",desc:"Sarana Aspirasi Pengaduan Puskesmas Panjatan Siji",icon:"megaphone",category:"layanan",href:"./SapaPanji/",status:"online"},
+{name:"Jadwal Pegawai",desc:"Jadwal Dinas dan Shift Pegawai",icon:"calendar-days",category:"kepegawaian",href:"./eJadwal/",status:"online"}
+];
+
+let APPS=[];
+
+const CATEGORY_CLASS={utama:"cat-utama",layanan:"cat-layanan",kepegawaian:"cat-kepegawaian",monitoring:"cat-monitoring",keuangan:"cat-keuangan"};
+const STATUS_TEXT={online:"Online",maintenance:"Maintenance",soon:"Segera Hadir"};
+const FAV_KEY="puspansa_eportal_favorites_v3";
+const THEME_KEY="puspansa_eportal_theme_v3";
+
+let favorites=new Set(JSON.parse(localStorage.getItem(FAV_KEY)||"[]"));
+let currentCat="semua";
+let favoritesOnly=false;
+
+const $=id=>document.getElementById(id);
+const appGrid=$("appGrid"),favoriteGrid=$("favoriteGrid");
+
+function esc(s){
+ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function cardHTML(app){
+ const fav=favorites.has(app.name);
+ const status=app.status||"online";
+ const action=status==="soon"
+   ? `href="#" data-soon="${esc(app.name)}"`
+   : `href="${esc(app.href)}" target="_blank" rel="noopener"`;
+ return `<a class="card ${CATEGORY_CLASS[app.category]||""}" data-name="${esc(app.name)}" data-desc="${esc(app.desc)}" data-category="${esc(app.category)}" data-status="${status}" ${action}>
+   <span class="badge ${status}">${STATUS_TEXT[status]}</span>
+   <div class="icon-wrap"><i data-lucide="${esc(iconName(app.icon))}"></i></div>
+   <div class="name">${esc(app.name)}</div>
+   <div class="desc">${esc(app.desc)}</div>
+   <button class="favorite ${fav?"active":""}" type="button" data-fav="${esc(app.name)}" aria-label="${fav?"Hapus dari":"Tambah ke"} favorit">
+     <svg viewBox="0 0 24 24" fill="${fav?"currentColor":"none"}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"/></svg>
+   </button>
+ </a>`;
+}
+
+function render(){
+ const q=$("appSearch").value.trim().toLowerCase();
+ const filtered=APPS.filter(a=>{
+   const text=!q || (a.name+" "+a.desc+" "+a.category).toLowerCase().includes(q);
+   const cat=currentCat==="semua" || a.category===currentCat;
+   const fav=!favoritesOnly || favorites.has(a.name);
+   return text&&cat&&fav;
+ });
+ appGrid.innerHTML=filtered.map(cardHTML).join("");
+ const favs=APPS.filter(a=>favorites.has(a.name));
+ favoriteGrid.innerHTML=favs.map(cardHTML).join("");
+ $("favoriteSection").style.display=(favs.length&&!favoritesOnly)?"block":"none";
+ $("noResult").style.display=filtered.length?"none":"block";
+ $("searchClear").style.display=q?"flex":"none";
+ $("searchCount").textContent=q?`${filtered.length} aplikasi ditemukan untuk "${$("appSearch").value.trim()}"`:"";
+ $("statApps").textContent=APPS.length;
+ $("statOnline").textContent=APPS.filter(a=>a.status==="online").length;
+ $("statFav").textContent=favs.length;
+ bindCardEvents();
+ renderIcons();
+}
+function bindCardEvents(){
+ document.querySelectorAll("[data-fav]").forEach(btn=>{
+  btn.addEventListener("click",e=>{
+   e.preventDefault();e.stopPropagation();
+   const name=btn.dataset.fav;
+   favorites.has(name)?favorites.delete(name):favorites.add(name);
+   localStorage.setItem(FAV_KEY,JSON.stringify([...favorites]));
+   render();toast(favorites.has(name)?"Ditambahkan ke favorit":"Dihapus dari favorit");
+  });
+ });
+ document.querySelectorAll("[data-soon]").forEach(card=>{
+  card.addEventListener("click",e=>{
+   e.preventDefault();
+   $("modalTitle").textContent="Segera Hadir";
+   $("modalText").innerHTML=`<b>${esc(card.dataset.soon)}</b><br><br>Masih dalam pengembangan dan akan segera hadir di e-Portal Digital Puskesmas Panjatan I.`;
+   $("modal").classList.add("show");$("closeModal").focus();
+  });
+ });
+}
+function setCategory(cat){
+ currentCat=cat;favoritesOnly=false;
+ document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active",p.dataset.cat===cat));
+ $("allViewBtn").classList.add("active");$("favViewBtn").classList.remove("active");render();
+}
+document.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>setCategory(p.dataset.cat)));
+$("allViewBtn").addEventListener("click",()=>setCategory("semua"));
+$("favViewBtn").addEventListener("click",()=>{
+ favoritesOnly=true;currentCat="semua";
+ document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active",p.dataset.cat==="semua"));
+ $("allViewBtn").classList.remove("active");$("favViewBtn").classList.add("active");render();
+});
+$("appSearch").addEventListener("input",render);
+$("searchClear").addEventListener("click",()=>{$("appSearch").value="";render();$("appSearch").focus()});
+document.addEventListener("keydown",e=>{
+ if(e.key==="/"&&document.activeElement!==$("appSearch")){e.preventDefault();$("appSearch").focus()}
+ if(e.key==="Escape"){$("modal").classList.remove("show")}
+});
+$("closeModal").addEventListener("click",()=>$("modal").classList.remove("show"));
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))$("modal").classList.remove("show")});
+
+/* Clock */
 function updateClock(){
+ const now=new Date();
+ $("clock").textContent=now.toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+" • "+now.toLocaleTimeString("id-ID");
+}
+updateClock();setInterval(updateClock,1000);
 
-const now=new Date();
+/* Theme */
+function applyTheme(theme){
+ document.documentElement.dataset.theme=theme;
+ localStorage.setItem(THEME_KEY,theme);
+ $("themeIcon").innerHTML=theme==="dark"
+ ? `<path d="M21 12.8A8.5 8.5 0 1111.2 3 6.5 6.5 0 0021 12.8z"/>`
+ : `<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>`;
+ $("themeColor").content=theme==="dark"?"#111610":"#2F4A33";
+}
+const savedTheme=localStorage.getItem(THEME_KEY);
+applyTheme(savedTheme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+$("themeBtn").addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 
-document.getElementById('clock').innerHTML=
-now.toLocaleDateString('id-ID',{
-weekday:'long',
-day:'numeric',
-month:'long',
-year:'numeric'
-})
-+' • '+
-now.toLocaleTimeString('id-ID');
+/* Top button */
+window.addEventListener("scroll",()=>$("topBtn").classList.toggle("show",scrollY>450),{passive:true});
+$("topBtn").addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
 
+/* Toast */
+let toastTimer;
+function toast(msg){
+ clearTimeout(toastTimer);$("toast").textContent=msg;$("toast").classList.add("show");
+ toastTimer=setTimeout(()=>$("toast").classList.remove("show"),1800);
 }
 
-setInterval(updateClock,1000);
-updateClock();
-
-function comingSoon(app){
-
-document.getElementById('modalText').innerHTML=
-'<b>'+app+'</b><br><br>Masih dalam pengembangan dan akan segera hadir di e-Portal Digital Puskesmas Panjatan I.';
-
-document.getElementById('modal').style.display='flex';
-
-}
-
-function closeModal(){
-
-document.getElementById('modal').style.display='none';
-
-}
-
-window.onclick=function(e){
-
-const modal=document.getElementById('modal');
-
-if(e.target===modal){
-
-modal.style.display='none';
-
-}
-
-}
-
+/* PWA */
 let deferredPrompt;
-
-window.addEventListener(
-'beforeinstallprompt',
-(e)=>{
-
-e.preventDefault();
-
-deferredPrompt=e;
-
-document
-.getElementById('installBtn')
-.style.display='block';
-
+window.addEventListener("beforeinstallprompt",e=>{
+ e.preventDefault();deferredPrompt=e;$("installBtn").style.display="flex";
 });
-
-document
-.getElementById('installBtn')
-.addEventListener(
-'click',
-async()=>{
-
-if(!deferredPrompt) return;
-
-deferredPrompt.prompt();
-
-await deferredPrompt.userChoice;
-
+$("installBtn").addEventListener("click",async()=>{
+ if(!deferredPrompt)return;
+ deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").style.display="none";
 });
+window.addEventListener("appinstalled",()=>{$("installBtn").style.display="none";toast("e-Portal berhasil dipasang")});
+if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
 
-if('serviceWorker' in navigator){
-
-navigator.serviceWorker
-.register('./sw.js')
-.catch(console.error);
-
+/* Load data aplikasi dari GAS + Google Sheet (fallback ke DEFAULT_APPS bila gagal) */
+async function loadApps(){
+ if(!API_URL || API_URL.indexOf("GANTI_DENGAN")===0){
+  APPS=DEFAULT_APPS.slice();render();return;
+ }
+ try{
+  const res=await fetch(API_URL+"?action=list");
+  const data=await res.json();
+  if(data&&data.ok&&Array.isArray(data.apps)){
+   APPS=data.apps.map(a=>({id:a.id,name:a.name,desc:a.desc,icon:a.icon||"grid",category:a.category||"layanan",href:a.href||"",status:a.status||"online",order:Number(a.order)||0}))
+    .sort((a,b)=>a.order-b.order);
+  }else{
+   APPS=DEFAULT_APPS.slice();
+  }
+ }catch(err){
+  APPS=DEFAULT_APPS.slice();
+  toast("Gagal memuat data aplikasi, menampilkan data cadangan");
+ }
+ render();
 }
 
-/* ===== Pencarian Aplikasi ===== */
-
-const appSearch = document.getElementById('appSearch');
-const searchClear = document.getElementById('searchClear');
-const searchCount = document.getElementById('searchCount');
-const noResult = document.getElementById('noResult');
-const cards = Array.from(document.querySelectorAll('#appGrid .card'));
-
-const originalNameHTML = new Map();
-const originalDescHTML = new Map();
-cards.forEach(card=>{
-const nameEl = card.querySelector('.name');
-const descEl = card.querySelector('.desc');
-originalNameHTML.set(card, nameEl.innerHTML);
-originalDescHTML.set(card, descEl.innerHTML);
+/* =========================
+   ADMIN: kelola aplikasi
+========================= */
+let editingId=null;
+let selectedIconValue="layout-grid";
+let auth={username:null,password:null};
+function isAuthed(){return !!(auth.username&&auth.password);}
+function apiCall(payload){
+ return fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}).then(r=>r.json());
+}
+async function doLogin(){
+ const username=$("loginUser").value.trim();
+ const password=$("loginPass").value;
+ const errEl=$("loginError");
+ errEl.style.display="none";
+ if(!username||!password){errEl.textContent="Isi username dan password.";errEl.style.display="block";return;}
+ if(!API_URL||API_URL.indexOf("GANTI_DENGAN")===0){errEl.textContent="API_URL belum diatur di kode.";errEl.style.display="block";return;}
+ $("loginBtn").disabled=true;
+ try{
+  const res=await apiCall({action:"login",username,password});
+  if(res&&res.ok){
+   auth={username,password};
+   $("loginPass").value="";
+   $("adminGate").style.display="none";
+   $("adminPanel").style.display="block";
+   renderAdminList();
+  }else{
+   errEl.textContent=(res&&res.error)||"Username atau password salah.";errEl.style.display="block";
+  }
+ }catch(err){
+  errEl.textContent="Gagal menghubungi server.";errEl.style.display="block";
+ }
+ $("loginBtn").disabled=false;
+}
+function doLogout(){
+ auth={username:null,password:null};
+ $("adminForm").style.display="none";
+ $("adminPanel").style.display="none";
+ $("loginUser").value="";$("loginPass").value="";
+ $("loginError").style.display="none";
+ $("adminGate").style.display="block";
+}
+function renderAdminList(){
+ const list=$("adminList");
+ if(!APPS.length){list.innerHTML=`<div class="admin-empty">Belum ada aplikasi.</div>`;return;}
+ list.innerHTML=APPS.map(a=>`
+  <div class="admin-item">
+   <div class="icon-wrap"><i data-lucide="${esc(iconName(a.icon))}"></i></div>
+   <div class="admin-item-info"><div class="n">${esc(a.name)}</div><div class="c">${esc(a.category)} • ${STATUS_TEXT[a.status]||a.status}</div></div>
+   <div class="admin-item-actions">
+    <button type="button" data-edit="${esc(a.id||"")}" aria-label="Edit"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+    <button type="button" class="danger" data-del="${esc(a.id||"")}" aria-label="Hapus"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+   </div>
+  </div>`).join("");
+ list.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>openForm(b.dataset.edit)));
+ list.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>deleteApp(b.dataset.del)));
+ renderIcons();
+}
+let pickerCategory="semua";
+let pickerQuery="";
+function renderIconPicker(selected){
+ selectedIconValue=iconName(selected);
+ $("iconPicker").innerHTML=`
+  <div class="picker-toolbar">
+   <input type="text" id="iconSearch" placeholder="Cari ikon… (mis: suntik, dokumen, mobil)">
+   <div class="picker-pills">${ICON_GROUPS.map(g=>`<button type="button" class="mini-btn picker-pill${g.k===pickerCategory?" active":""}" data-grp="${g.k}">${esc(g.l)}</button>`).join("")}</div>
+  </div>
+  <div class="icon-grid" id="iconGrid"></div>
+  <div class="admin-empty" id="iconEmpty" style="display:none">Ikon tidak ditemukan.</div>`;
+ $("iconSearch").value=pickerQuery;
+ $("iconSearch").addEventListener("input",e=>{pickerQuery=e.target.value.toLowerCase();paintIconGrid();});
+ $("iconPicker").querySelectorAll("[data-grp]").forEach(b=>b.addEventListener("click",()=>{pickerCategory=b.dataset.grp;renderPickerPills();paintIconGrid();}));
+ paintIconGrid();
+}
+function renderPickerPills(){
+ $("iconPicker").querySelectorAll(".picker-pill").forEach(b=>b.classList.toggle("active",b.dataset.grp===pickerCategory));
+}
+function paintIconGrid(){
+ const q=pickerQuery.trim();
+ const list=ICON_CHOICES.filter(ic=>{
+  const catOk=pickerCategory==="semua"||ic.g===pickerCategory;
+  const qOk=!q||ic.n.includes(q)||ic.l.toLowerCase().includes(q);
+  return catOk&&qOk;
+ });
+ // pastikan ikon yang sedang dipilih tetap muncul walau di luar filter, agar tidak hilang dari tampilan
+ const grid=$("iconGrid");
+ $("iconEmpty").style.display=list.length?"none":"block";
+ grid.innerHTML=list.map(ic=>`
+  <div class="icon-opt${ic.n===selectedIconValue?" selected":""}" data-icon="${ic.n}" title="${esc(ic.l)}">
+   <div class="icon-wrap"><i data-lucide="${ic.n}"></i></div>
+   <span>${esc(ic.l)}</span>
+  </div>`).join("");
+ grid.querySelectorAll("[data-icon]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   selectedIconValue=el.dataset.icon;
+   grid.querySelectorAll(".icon-opt").forEach(o=>o.classList.remove("selected"));
+   el.classList.add("selected");
+  });
+ });
+ renderIcons();
+}
+function openForm(id){
+ editingId=id||null;
+ const app=id?APPS.find(a=>String(a.id)===String(id)):null;
+ $("adminFormTitle").textContent=app?"Edit Aplikasi":"Tambah Aplikasi";
+ $("fName").value=app?app.name:"";
+ $("fDesc").value=app?app.desc:"";
+ $("fCategory").value=app?app.category:"layanan";
+ $("fStatus").value=app?app.status:"online";
+ $("fHref").value=app?app.href:"";
+ $("adminFormError").style.display="none";
+ renderIconPicker(app?app.icon:"layout-grid");
+ $("adminPanel").style.display="none";
+ $("adminForm").style.display="block";
+}
+function closeForm(){
+ editingId=null;
+ $("adminForm").style.display="none";
+ $("adminPanel").style.display="block";
+}
+async function saveForm(){
+ const name=$("fName").value.trim();
+ const desc=$("fDesc").value.trim();
+ const category=$("fCategory").value;
+ const status=$("fStatus").value;
+ const href=$("fHref").value.trim();
+ const icon=selectedIconValue||"layout-grid";
+ const errEl=$("adminFormError");
+ if(!name){errEl.textContent="Nama aplikasi wajib diisi.";errEl.style.display="block";return;}
+ if(!isAuthed()){errEl.textContent="Sesi admin berakhir, silakan masuk lagi.";errEl.style.display="block";return;}
+ if(!API_URL||API_URL.indexOf("GANTI_DENGAN")===0){errEl.textContent="API_URL belum diatur di kode.";errEl.style.display="block";return;}
+ const data={name,desc,category,status,href,icon};
+ $("fSave").disabled=true;
+ try{
+  const res=editingId
+   ?await apiCall({username:auth.username,password:auth.password,action:"update",id:editingId,data})
+   :await apiCall({username:auth.username,password:auth.password,action:"add",data});
+  if(res&&res.ok){
+   toast(editingId?"Aplikasi diperbarui":"Aplikasi ditambahkan");
+   closeForm();
+   await loadApps();
+   renderAdminList();
+  }else{
+   errEl.textContent=(res&&res.error)||"Gagal menyimpan.";errEl.style.display="block";
+  }
+ }catch(err){
+  errEl.textContent="Gagal menghubungi server.";errEl.style.display="block";
+ }
+ $("fSave").disabled=false;
+}
+async function deleteApp(id){
+ if(!id)return;
+ if(!isAuthed()){toast("Sesi admin berakhir, silakan masuk lagi");doLogout();return;}
+ if(!confirm("Hapus aplikasi ini?"))return;
+ try{
+  const res=await apiCall({username:auth.username,password:auth.password,action:"delete",id});
+  if(res&&res.ok){toast("Aplikasi dihapus");await loadApps();renderAdminList();}
+  else{toast((res&&res.error)||"Gagal menghapus.");}
+ }catch(err){toast("Gagal menghubungi server.");}
+}
+$("adminBtn").addEventListener("click",()=>{
+ $("adminModal").classList.add("show");
+ $("adminForm").style.display="none";
+ if(isAuthed()){
+  $("adminGate").style.display="none";
+  $("adminPanel").style.display="block";
+  renderAdminList();
+ }else{
+  $("adminPanel").style.display="none";
+  $("adminGate").style.display="block";
+ }
 });
+$("adminClose").addEventListener("click",()=>$("adminModal").classList.remove("show"));
+$("adminModal").addEventListener("click",e=>{if(e.target===$("adminModal"))$("adminModal").classList.remove("show")});
+$("adminAddBtn").addEventListener("click",()=>openForm(null));
+$("loginBtn").addEventListener("click",doLogin);
+$("loginPass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+$("logoutBtn").addEventListener("click",doLogout);
+$("fCancel").addEventListener("click",closeForm);
+$("fSave").addEventListener("click",saveForm);
 
-function escapeRegExp(str){
-return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-}
-
-function highlight(html, query){
-if(!query) return html;
-const re = new RegExp('('+escapeRegExp(query)+')','ig');
-return html.replace(re,'<mark>$1</mark>');
-}
-
-function filterApps(){
-
-const query = appSearch.value.trim().toLowerCase();
-searchClear.style.display = query ? 'flex' : 'none';
-
-let visibleCount = 0;
-
-cards.forEach(card=>{
-
-const name = (card.dataset.name || '').toLowerCase();
-const desc = (card.dataset.desc || '').toLowerCase();
-const match = !query || name.includes(query) || desc.includes(query);
-
-card.classList.toggle('hidden', !match);
-
-if(match) visibleCount++;
-
-const nameEl = card.querySelector('.name');
-const descEl = card.querySelector('.desc');
-
-nameEl.innerHTML = highlight(originalNameHTML.get(card), appSearch.value.trim());
-descEl.innerHTML = highlight(originalDescHTML.get(card), appSearch.value.trim());
-
-});
-
-noResult.style.display = visibleCount===0 ? 'block' : 'none';
-
-searchCount.textContent = query
-? (visibleCount+' aplikasi ditemukan untuk "'+appSearch.value.trim()+'"')
-: '';
-
-}
-
-function clearSearch(){
-appSearch.value='';
-filterApps();
-appSearch.focus();
-}
-
-appSearch.addEventListener('input', filterApps);
-
-document.addEventListener('keydown', function(e){
-if(e.key==='/' && document.activeElement!==appSearch){
-e.preventDefault();
-appSearch.focus();
-}
-if(e.key==='Escape' && document.activeElement===appSearch){
-clearSearch();
-}
-});
-
+/* Initial load */
+loadApps();
 </script>
-
 </body>
 </html>

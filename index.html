@@ -166,7 +166,7 @@ radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:bl
 .subsection{margin-top:24px}.subsection:first-child{margin-top:0}
 .subsection h3{font-size:.94rem;margin-bottom:10px;color:var(--teks-muted);font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px}
-.card{position:relative;text-decoration:none;color:var(--teks);padding:20px;border-radius:var(--radius);background:var(--panel);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.7);border-left:4px solid var(--accent);transition:transform .22s,box-shadow .22s,background .22s;cursor:pointer;display:block;min-height:176px}
+.card{position:relative;text-decoration:none;color:var(--teks);padding:20px 20px 52px;border-radius:var(--radius);background:var(--panel);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.7);border-left:4px solid var(--accent);transition:transform .22s,box-shadow .22s,background .22s;cursor:pointer;display:block;min-height:176px}
 .card:hover{transform:translateY(-5px);background:var(--panel-strong);box-shadow:0 20px 36px -16px var(--glow)}
 .card:active{transform:scale(.985)}
 .card.hidden{display:none}
@@ -272,11 +272,20 @@ footer strong{color:var(--hijau-teks)}
   .notice{margin-top:12px}
   .top-actions{right:-2px}.header{padding-top:32px}.top-actions{top:-2px}
   .controls{margin:-24px auto 0}.stats{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{padding:16px;min-height:170px}
-  .icon-wrap{width:46px;height:46px;margin-bottom:11px}.icon-wrap svg{width:24px;height:24px}.name{font-size:.92rem}.desc{font-size:.76rem}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr;gap:10px}
+  .card{display:flex;flex-direction:row;align-items:center;gap:13px;padding:13px 46px 13px 13px;min-height:0;border-radius:14px}
+  .icon-wrap{width:46px;height:46px;margin-bottom:0;flex-shrink:0}
+  .icon-wrap svg{width:23px;height:23px}
+  .card-text{flex:1;min-width:0}
+  .name{font-size:.9rem;margin-bottom:2px;padding-right:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .desc{font-size:.74rem;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .badge{font-size:0;width:9px;height:9px;min-width:0;padding:0;border:0;top:13px;right:13px;background:currentColor}
+  .favorite{top:50%;bottom:auto;right:10px;transform:translateY(-50%);width:30px;height:30px}
 }
 @media(max-width:450px){
-  .grid{grid-template-columns:1fr 1fr}.pills{gap:6px}.pill{padding:8px 10px;font-size:.75rem}
+  .pills{gap:6px}.pill{padding:8px 10px;font-size:.75rem}
   .shortcut{display:none}.title{font-size:1.65rem}.subtitle{font-size:.82rem}.clock{font-size:.74rem}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.status-dot::before{animation:none}.modal-content{animation:none}}
@@ -536,8 +545,10 @@ function cardHTML(app){
  return `<a class="card ${CATEGORY_CLASS[app.category]||""}" data-name="${esc(app.name)}" data-desc="${esc(app.desc)}" data-category="${esc(app.category)}" data-status="${status}" ${action}>
    <span class="badge ${status}">${STATUS_TEXT[status]}</span>
    <div class="icon-wrap"><i data-lucide="${esc(iconName(app.icon))}"></i></div>
-   <div class="name">${esc(app.name)}</div>
-   <div class="desc">${esc(app.desc)}</div>
+   <div class="card-text">
+     <div class="name">${esc(app.name)}</div>
+     <div class="desc">${esc(app.desc)}</div>
+   </div>
    <button class="favorite ${fav?"active":""}" type="button" data-fav="${esc(app.name)}" aria-label="${fav?"Hapus dari":"Tambah ke"} favorit">
      <svg viewBox="0 0 24 24" fill="${fav?"currentColor":"none"}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"/></svg>
    </button>

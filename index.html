@@ -274,6 +274,9 @@ footer strong{color:var(--hijau-teks)}
   .controls{margin:-24px auto 0}.stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:560px){
+  .search-box{padding:4px 6px 4px 13px}
+  .search-box svg{width:18px;height:18px}
+  .search-box input{padding:10px 0}
   .grid{grid-template-columns:1fr;gap:10px}
   .card{display:flex;flex-direction:row;align-items:center;gap:13px;padding:13px 46px 13px 13px;min-height:0;border-radius:14px}
   .icon-wrap{width:46px;height:46px;margin-bottom:0;flex-shrink:0}
@@ -318,7 +321,7 @@ footer strong{color:var(--hijau-teks)}
   <div class="controls-card">
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="appSearch" type="text" placeholder="Cari aplikasi... (mis. cuti, keuangan, absensi)" autocomplete="off">
+      <input id="appSearch" type="text" placeholder="Cari aplikasi..." autocomplete="off">
       <button class="search-clear" id="searchClear" aria-label="Hapus pencarian">✕</button>
     </div>
     <div class="search-meta"><span id="searchCount"></span><span class="shortcut">Tekan / untuk mencari</span></div>

@@ -170,11 +170,8 @@ radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:bl
 .card:hover{transform:translateY(-5px);background:var(--panel-strong);box-shadow:0 20px 36px -16px var(--glow)}
 .card:active{transform:scale(.985)}
 .card.hidden{display:none}
-.cat-utama{--accent:var(--utama-accent);--tint:var(--utama-tint);--glow:rgba(47,74,51,.4)}
-.cat-layanan{--accent:var(--layanan-accent);--tint:var(--layanan-tint);--glow:rgba(168,70,47,.35)}
-.cat-kepegawaian{--accent:var(--kepeg-accent);--tint:var(--kepeg-tint);--glow:rgba(201,162,39,.4)}
-.cat-monitoring{--accent:var(--monitor-accent);--tint:var(--monitor-tint);--glow:rgba(61,122,107,.38)}
-.cat-keuangan{--accent:var(--keu-accent);--tint:var(--keu-tint);--glow:rgba(122,75,35,.35)}
+.card{--tint:color-mix(in srgb,var(--accent,#2F4A33) 16%,#ffffff 84%);--glow:color-mix(in srgb,var(--accent,#2F4A33) 55%,transparent)}
+[data-theme="dark"] .card{--tint:color-mix(in srgb,var(--accent,#2F4A33) 32%,#1a2419 68%)}
 .card{perspective:800px}
 .icon-wrap{width:50px;height:50px;border-radius:15px;position:relative;background:linear-gradient(155deg,color-mix(in srgb,var(--tint) 55%,#fff 45%),var(--tint) 70%);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:14px;
 box-shadow:
@@ -266,6 +263,7 @@ footer strong{color:var(--hijau-teks)}
 .admin-form-actions button{min-height:44px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:.86rem;cursor:pointer;margin-top:0}
 .admin-form-actions .mini-btn{background:var(--panel-strong);border:1px solid var(--garis);color:var(--teks)}
 .admin-empty{text-align:center;color:var(--teks-muted);font-size:.85rem;padding:20px 0}
+.cat-swatch{width:28px;height:28px;border-radius:9px;flex-shrink:0;border:1px solid rgba(0,0,0,.15)}
 
 /* Responsive */
 @media(max-width:700px){
@@ -328,11 +326,6 @@ footer strong{color:var(--hijau-teks)}
 
     <div class="pills" id="filterPills">
       <button class="pill active" data-cat="semua" style="--dot:var(--hijau)"><span class="dot"></span>Semua</button>
-      <button class="pill" data-cat="utama" style="--dot:var(--utama-accent)"><span class="dot"></span>Utama</button>
-      <button class="pill" data-cat="layanan" style="--dot:var(--layanan-accent)"><span class="dot"></span>Layanan Publik</button>
-      <button class="pill" data-cat="kepegawaian" style="--dot:var(--kepeg-accent)"><span class="dot"></span>Kepegawaian</button>
-      <button class="pill" data-cat="monitoring" style="--dot:var(--monitor-accent)"><span class="dot"></span>Monitoring & Evaluasi</button>
-      <button class="pill" data-cat="keuangan" style="--dot:var(--keu-accent)"><span class="dot"></span>Keuangan</button>
     </div>
 
     <div class="stats">
@@ -425,6 +418,7 @@ footer strong{color:var(--hijau-teks)}
     <div id="adminPanel" style="display:none">
       <div class="admin-toolbar">
         <button id="adminAddBtn" class="mini-btn active">+ Tambah Aplikasi</button>
+        <button id="manageCatBtn" class="mini-btn">Kelola Kategori</button>
         <button id="logoutBtn" class="mini-btn">Keluar</button>
       </div>
       <div id="adminList" class="admin-list"></div>
@@ -437,13 +431,7 @@ footer strong{color:var(--hijau-teks)}
       <label>Deskripsi</label>
       <textarea id="fDesc" rows="2" placeholder="Deskripsi singkat aplikasi"></textarea>
       <label>Kategori</label>
-      <select id="fCategory">
-        <option value="utama">Utama</option>
-        <option value="layanan">Layanan</option>
-        <option value="kepegawaian">Kepegawaian</option>
-        <option value="monitoring">Monitoring</option>
-        <option value="keuangan">Keuangan</option>
-      </select>
+      <select id="fCategory"></select>
       <label>Status</label>
       <select id="fStatus">
         <option value="online">Online</option>
@@ -458,6 +446,30 @@ footer strong{color:var(--hijau-teks)}
       <div class="admin-form-actions">
         <button id="fCancel" class="mini-btn">Batal</button>
         <button id="fSave" class="close-btn">Simpan</button>
+      </div>
+    </div>
+
+    <div id="categoryPanel" style="display:none">
+      <div class="admin-toolbar">
+        <button id="catAddBtn" class="mini-btn active">+ Tambah Kategori</button>
+        <button id="catBackBtn" class="mini-btn">‹ Kembali</button>
+      </div>
+      <div id="categoryList" class="admin-list"></div>
+    </div>
+
+    <div id="categoryForm" class="admin-form" style="display:none">
+      <h3 id="catFormTitle">Tambah Kategori</h3>
+      <label>Nama Kategori</label>
+      <input type="text" id="catLabel" placeholder="Contoh: Layanan Publik">
+      <label>Warna</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <input type="color" id="catColor" value="#2F4A33" style="width:52px;height:40px;border:1px solid var(--garis);border-radius:8px;background:var(--panel-strong);cursor:pointer;padding:2px">
+        <span style="font-size:.78rem;color:var(--teks-muted)">Warna aksen kartu & pill filter untuk kategori ini</span>
+      </div>
+      <p id="catFormError" class="admin-error" style="display:none"></p>
+      <div class="admin-form-actions">
+        <button id="catCancel" class="mini-btn">Batal</button>
+        <button id="catSave" class="close-btn">Simpan</button>
       </div>
     </div>
   </div>
@@ -524,7 +536,19 @@ const DEFAULT_APPS=[
 
 let APPS=[];
 
-const CATEGORY_CLASS={utama:"cat-utama",layanan:"cat-layanan",kepegawaian:"cat-kepegawaian",monitoring:"cat-monitoring",keuangan:"cat-keuangan"};
+const DEFAULT_CATEGORIES=[
+ {key:"utama",label:"Utama",color:"#2F4A33",order:0},
+ {key:"layanan",label:"Layanan Publik",color:"#A8462F",order:1},
+ {key:"kepegawaian",label:"Kepegawaian",color:"#C9A227",order:2},
+ {key:"monitoring",label:"Monitoring & Evaluasi",color:"#3D7A6B",order:3},
+ {key:"keuangan",label:"Keuangan",color:"#7A4B23",order:4}
+];
+let CATEGORIES=[];
+let categoryMap={};
+function rebuildCategoryMap(){
+ categoryMap={};
+ CATEGORIES.forEach(c=>{categoryMap[c.key]=c;});
+}
 const STATUS_TEXT={online:"Online",maintenance:"Maintenance",soon:"Segera Hadir"};
 const FAV_KEY="puspansa_eportal_favorites_v3";
 const THEME_KEY="puspansa_eportal_theme_v3";
@@ -542,10 +566,12 @@ function esc(s){
 function cardHTML(app){
  const fav=favorites.has(app.name);
  const status=app.status||"online";
+ const cat=categoryMap[app.category];
+ const accent=cat?cat.color:"#8A8F84";
  const action=status==="soon"
    ? `href="#" data-soon="${esc(app.name)}"`
    : `href="${esc(app.href)}" target="_blank" rel="noopener"`;
- return `<a class="card ${CATEGORY_CLASS[app.category]||""}" data-name="${esc(app.name)}" data-desc="${esc(app.desc)}" data-category="${esc(app.category)}" data-status="${status}" ${action}>
+ return `<a class="card" style="--accent:${accent}" data-name="${esc(app.name)}" data-desc="${esc(app.desc)}" data-category="${esc(app.category)}" data-status="${status}" ${action}>
    <span class="badge ${status}">${STATUS_TEXT[status]}</span>
    <div class="icon-wrap"><i data-lucide="${esc(iconName(app.icon))}"></i></div>
    <div class="card-text">
@@ -556,6 +582,17 @@ function cardHTML(app){
      <svg viewBox="0 0 24 24" fill="${fav?"currentColor":"none"}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 8.8c0 5-8.8 10-8.8 10s-8.8-5-8.8-10A4.8 4.8 0 0112 6a4.8 4.8 0 018.8 2.8z"/></svg>
    </button>
  </a>`;
+}
+
+function renderPills(){
+ const wrap=$("filterPills");
+ wrap.innerHTML=`<button class="pill${currentCat==="semua"?" active":""}" data-cat="semua" style="--dot:var(--hijau)"><span class="dot"></span>Semua</button>`
+  + CATEGORIES.map(c=>`<button class="pill${currentCat===c.key?" active":""}" data-cat="${esc(c.key)}" style="--dot:${esc(c.color)}"><span class="dot"></span>${esc(c.label)}</button>`).join("");
+ wrap.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>setCategory(p.dataset.cat)));
+ $("statCat").textContent=CATEGORIES.length;
+}
+function renderCategoryOptions(){
+ $("fCategory").innerHTML=CATEGORIES.map(c=>`<option value="${esc(c.key)}">${esc(c.label)}</option>`).join("");
 }
 
 function render(){
@@ -603,7 +640,6 @@ function setCategory(cat){
  document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active",p.dataset.cat===cat));
  $("allViewBtn").classList.add("active");$("favViewBtn").classList.remove("active");render();
 }
-document.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>setCategory(p.dataset.cat)));
 $("allViewBtn").addEventListener("click",()=>setCategory("semua"));
 $("favViewBtn").addEventListener("click",()=>{
  favoritesOnly=true;currentCat="semua";
@@ -661,6 +697,29 @@ $("installBtn").addEventListener("click",async()=>{
 });
 window.addEventListener("appinstalled",()=>{$("installBtn").style.display="none";toast("e-Portal berhasil dipasang")});
 if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
+
+/* Load data kategori dari GAS + Google Sheet (fallback ke DEFAULT_CATEGORIES bila gagal) */
+async function loadCategories(){
+ if(!API_URL || API_URL.indexOf("GANTI_DENGAN")===0){
+  CATEGORIES=DEFAULT_CATEGORIES.slice();
+ }else{
+  try{
+   const res=await fetch(API_URL+"?action=categories");
+   const data=await res.json();
+   if(data&&data.ok&&Array.isArray(data.categories)&&data.categories.length){
+    CATEGORIES=data.categories.map(c=>({key:c.key,label:c.label,color:c.color||"#2F4A33",order:Number(c.order)||0}))
+     .sort((a,b)=>a.order-b.order);
+   }else{
+    CATEGORIES=DEFAULT_CATEGORIES.slice();
+   }
+  }catch(err){
+   CATEGORIES=DEFAULT_CATEGORIES.slice();
+  }
+ }
+ rebuildCategoryMap();
+ renderPills();
+ renderCategoryOptions();
+}
 
 /* Load data aplikasi dari GAS + Google Sheet (fallback ke DEFAULT_APPS bila gagal) */
 async function loadApps(){
@@ -721,6 +780,8 @@ function doLogout(){
  auth={username:null,password:null};
  $("adminForm").style.display="none";
  $("adminPanel").style.display="none";
+ $("categoryPanel").style.display="none";
+ $("categoryForm").style.display="none";
  $("loginUser").value="";$("loginPass").value="";
  $("loginError").style.display="none";
  $("adminGate").style.display="block";
@@ -843,9 +904,108 @@ async function deleteApp(id){
   else{toast((res&&res.error)||"Gagal menghapus.");}
  }catch(err){toast("Gagal menghubungi server.");}
 }
+
+/* =========================
+   ADMIN: kelola kategori
+========================= */
+let editingCatKey=null;
+function slugifyCat(label){
+ return String(label).toLowerCase().trim()
+  .replace(/[^a-z0-9\s-]/g,"")
+  .replace(/\s+/g,"-")
+  .replace(/-+/g,"-")
+  .slice(0,40) || ("kat-"+Date.now());
+}
+function renderCategoryList(){
+ const list=$("categoryList");
+ if(!CATEGORIES.length){list.innerHTML=`<div class="admin-empty">Belum ada kategori.</div>`;return;}
+ list.innerHTML=CATEGORIES.map(c=>`
+  <div class="admin-item">
+   <div class="cat-swatch" style="background:${esc(c.color)}"></div>
+   <div class="admin-item-info"><div class="n">${esc(c.label)}</div><div class="c">${esc(c.key)}</div></div>
+   <div class="admin-item-actions">
+    <button type="button" data-catedit="${esc(c.key)}" aria-label="Edit"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+    <button type="button" class="danger" data-catdel="${esc(c.key)}" aria-label="Hapus"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+   </div>
+  </div>`).join("");
+ list.querySelectorAll("[data-catedit]").forEach(b=>b.addEventListener("click",()=>openCategoryForm(b.dataset.catedit)));
+ list.querySelectorAll("[data-catdel]").forEach(b=>b.addEventListener("click",()=>deleteCategory(b.dataset.catdel)));
+}
+function openCategoryPanel(){
+ $("adminPanel").style.display="none";
+ $("categoryForm").style.display="none";
+ $("categoryPanel").style.display="block";
+ renderCategoryList();
+}
+function closeCategoryPanel(){
+ $("categoryPanel").style.display="none";
+ $("adminPanel").style.display="block";
+}
+function openCategoryForm(key){
+ editingCatKey=key||null;
+ const cat=key?categoryMap[key]:null;
+ $("catFormTitle").textContent=cat?"Edit Kategori":"Tambah Kategori";
+ $("catLabel").value=cat?cat.label:"";
+ $("catColor").value=cat?cat.color:"#2F4A33";
+ $("catFormError").style.display="none";
+ $("categoryPanel").style.display="none";
+ $("categoryForm").style.display="block";
+}
+function closeCategoryForm(){
+ editingCatKey=null;
+ $("categoryForm").style.display="none";
+ $("categoryPanel").style.display="block";
+}
+async function saveCategoryForm(){
+ const label=$("catLabel").value.trim();
+ const color=$("catColor").value;
+ const errEl=$("catFormError");
+ if(!label){errEl.textContent="Nama kategori wajib diisi.";errEl.style.display="block";return;}
+ if(!isAuthed()){errEl.textContent="Sesi admin berakhir, silakan masuk lagi.";errEl.style.display="block";return;}
+ if(!API_URL||API_URL.indexOf("GANTI_DENGAN")===0){errEl.textContent="API_URL belum diatur di kode.";errEl.style.display="block";return;}
+ $("catSave").disabled=true;
+ try{
+  let res;
+  if(editingCatKey){
+   res=await apiCall({username:auth.username,password:auth.password,action:"update-category",key:editingCatKey,data:{label,color}});
+  }else{
+   const key=slugifyCat(label);
+   if(categoryMap[key]){errEl.textContent="Kategori dengan nama serupa sudah ada.";errEl.style.display="block";$("catSave").disabled=false;return;}
+   res=await apiCall({username:auth.username,password:auth.password,action:"add-category",data:{key,label,color}});
+  }
+  if(res&&res.ok){
+   toast(editingCatKey?"Kategori diperbarui":"Kategori ditambahkan");
+   closeCategoryForm();
+   await loadCategories();
+   renderCategoryList();
+  }else{
+   errEl.textContent=(res&&res.error)||"Gagal menyimpan.";errEl.style.display="block";
+  }
+ }catch(err){
+  errEl.textContent="Gagal menghubungi server.";errEl.style.display="block";
+ }
+ $("catSave").disabled=false;
+}
+async function deleteCategory(key){
+ if(!key)return;
+ if(!isAuthed()){toast("Sesi admin berakhir, silakan masuk lagi");doLogout();return;}
+ if(!confirm("Hapus kategori ini? Aplikasi yang memakainya tidak akan terhapus, tapi perlu diganti kategorinya."))return;
+ try{
+  const res=await apiCall({username:auth.username,password:auth.password,action:"delete-category",key});
+  if(res&&res.ok){toast("Kategori dihapus");await loadCategories();renderCategoryList();}
+  else{toast((res&&res.error)||"Gagal menghapus.");}
+ }catch(err){toast("Gagal menghubungi server.");}
+}
+$("manageCatBtn").addEventListener("click",openCategoryPanel);
+$("catBackBtn").addEventListener("click",closeCategoryPanel);
+$("catAddBtn").addEventListener("click",()=>openCategoryForm(null));
+$("catCancel").addEventListener("click",closeCategoryForm);
+$("catSave").addEventListener("click",saveCategoryForm);
 $("adminBtn").addEventListener("click",()=>{
  $("adminModal").classList.add("show");
  $("adminForm").style.display="none";
+ $("categoryPanel").style.display="none";
+ $("categoryForm").style.display="none";
  if(isAuthed()){
   $("adminGate").style.display="none";
   $("adminPanel").style.display="block";
@@ -865,7 +1025,7 @@ $("fCancel").addEventListener("click",closeForm);
 $("fSave").addEventListener("click",saveForm);
 
 /* Initial load */
-loadApps();
+loadCategories().then(loadApps);
 </script>
 </body>
 </html>

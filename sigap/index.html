@@ -208,34 +208,20 @@ animation:load 1.2s infinite;
 100%{transform:translateX(300%)}
 }
 
-</style>
-
-</head>
-
-<body>
-<!-- BACK HOME -->
-
-<a 
-href="https://puskesmaspanjatansatu.github.io/portal-digital/"
-class="back-home"
-title="Kembali ke Portal Digital">
-
-🏠
-
-</a>
-
-<style>
+/* ========================= */
+/* BACK HOME BUTTON */
+/* ========================= */
 
 .back-home{
 
 position:fixed;
 
-right:20px;
-bottom:20px;
+right:calc(18px + env(safe-area-inset-right,0px));
+bottom:calc(18px + env(safe-area-inset-bottom,0px));
 
 
-width:58px;
-height:58px;
+width:48px;
+height:48px;
 
 
 display:flex;
@@ -246,12 +232,10 @@ justify-content:center;
 border-radius:50%;
 
 
-background:
-linear-gradient(
-135deg,
-#2563eb,
-#0ea5e9
-);
+background:rgba(2,6,23,.55);
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,.18);
 
 
 color:white;
@@ -259,32 +243,32 @@ color:white;
 text-decoration:none;
 
 
-font-size:26px;
-
-
 z-index:99999;
 
 
 box-shadow:
-0 12px 30px rgba(0,0,0,.35);
+0 8px 24px rgba(0,0,0,.28);
 
 
-transition:.3s;
-
+transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+cursor:pointer;
 
 }
+
+.back-home svg{width:20px;height:20px;fill:#fff;opacity:.9}
 
 
 .back-home:hover{
 
 
 transform:
-translateY(-6px)
-scale(1.1);
+translateY(-3px);
 
+
+background:rgba(37,99,235,.85);
 
 box-shadow:
-0 15px 35px rgba(0,0,0,.5);
+0 12px 28px rgba(37,99,235,.4);
 
 
 }
@@ -298,24 +282,26 @@ box-shadow:
 .back-home{
 
 
-right:15px;
-bottom:15px;
+right:calc(14px + env(safe-area-inset-right,0px));
+bottom:calc(14px + env(safe-area-inset-bottom,0px));
 
 
-width:52px;
-height:52px;
-
-
-font-size:22px;
+width:44px;
+height:44px;
 
 
 }
+.back-home svg{width:18px;height:18px}
 
 
 }
 
 
 </style>
+
+</head>
+
+<body>
 
 <!-- GOOGLE APPS SCRIPT WEB APP -->
 
@@ -383,6 +369,33 @@ if("serviceWorker" in navigator){
 navigator.serviceWorker.register("sw.js");
 }
 
+</script>
+
+<!-- ========================= -->
+<!-- BACK HOME BUTTON -->
+<!-- ========================= -->
+
+<a 
+href="https://puskesmaspanjatansatu.github.io/portal-digital/"
+class="back-home"
+id="backHomeBtn"
+title="Kembali ke Portal Digital"
+aria-label="Kembali ke Portal Digital">
+  <svg viewBox="0 0 24 24"><path d="M12 3.1 2.6 11a1 1 0 0 0 .64 1.77H5v7.13a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-7.13h1.76A1 1 0 0 0 21.4 11L12 3.1z"/></svg>
+</a>
+
+<script>
+document.getElementById("backHomeBtn").addEventListener("click", function(e){
+  e.preventDefault();
+  var fallbackUrl = this.href;
+  // coba tutup tab ini dulu, supaya kembali ke tab e-Portal Digital yang sudah terbuka
+  window.close();
+  // kalau browser tidak mengizinkan tab ditutup (bukan tab hasil buka baru / ada riwayat lain),
+  // baru pindah ke portal di tab ini sebagai cadangan
+  setTimeout(function(){
+    location.href = fallbackUrl;
+  }, 300);
+});
 </script>
 
 </body>

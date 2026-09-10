@@ -145,6 +145,7 @@ iframe{
   z-index:99999;
   box-shadow:0 8px 24px rgba(0,0,0,.28);
   transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+  cursor:pointer;
 }
 .back-home svg{width:20px;height:20px;fill:#fff;opacity:.9}
 .back-home:hover{
@@ -208,6 +209,7 @@ iframe{
 <a
 href="https://puskesmaspanjatansatu.github.io/portal-digital/"
 class="back-home"
+id="backHomeBtn"
 title="Kembali ke Portal Digital"
 aria-label="Kembali ke Portal Digital">
   <svg viewBox="0 0 24 24"><path d="M12 3.1 2.6 11a1 1 0 0 0 .64 1.77H5v7.13a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-7.13h1.76A1 1 0 0 0 21.4 11L12 3.1z"/></svg>
@@ -231,6 +233,20 @@ setTimeout(function(){
 
 // Failsafe 15 detik: jangan biarkan pengguna terkunci di splash
 setTimeout(hideLoader, 15000);
+
+/* TOMBOL KEMBALI: coba tutup tab ini dulu (kembali ke tab e-Portal Digital
+   yang sudah terbuka sebelumnya, karena aplikasi dibuka via target="_blank"
+   dari portal). Kalau browser tidak mengizinkan tab ditutup (mis. dibuka
+   langsung lewat bookmark/ketik URL, bukan dari portal), baru pindah ke
+   portal di tab ini sebagai cadangan. */
+document.getElementById('backHomeBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  var fallbackUrl = this.href;
+  window.close();
+  setTimeout(function(){
+    location.href = fallbackUrl;
+  }, 300);
+});
 
 /* JEMBATAN LINK EKSTERNAL (Fix Firefox NS_ERROR_DOM_COOP_FAILED)
    Portal GAS di dalam iframe mengirim permintaan buka-link ke halaman ini.
@@ -267,7 +283,7 @@ window.addEventListener('message', function(ev){
 
 });
 
-if ('serviceWorkear' in navigator) {
+if ('serviceWorker' in navigator) {
 
 window.addEventListener('load', () => {
 

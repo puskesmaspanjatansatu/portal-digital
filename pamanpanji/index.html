@@ -292,11 +292,26 @@ navigator.serviceWorker.register("sw.js");
 <a 
 href="https://puskesmaspanjatansatu.github.io/portal-digital/"
 class="back-home"
+id="backHomeBtn"
 title="Kembali ke Portal Digital">
 
 🏠
 
 </a>
+
+<script>
+document.getElementById("backHomeBtn").addEventListener("click", function(e){
+  e.preventDefault();
+  var fallbackUrl = this.href;
+  // coba tutup tab ini dulu, supaya kembali ke tab e-Portal Digital yang sudah terbuka
+  window.close();
+  // kalau browser tidak mengizinkan tab ditutup (bukan tab hasil buka baru / ada riwayat lain),
+  // baru pindah ke portal di tab ini sebagai cadangan
+  setTimeout(function(){
+    location.href = fallbackUrl;
+  }, 300);
+});
+</script>
 
 </body>
 </html>

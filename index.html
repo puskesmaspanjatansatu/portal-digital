@@ -18,36 +18,33 @@
 
 <style>
 :root{
-  --hijau:#2F4A33;--hijau-2:#22331F;--emas:#C9A227;--emas-terang:#E7C55A;
-  --bata:#A8462F;--teal:#3D7A6B;--sogan:#7A4B23;--krem:#F3F4EE;
-  --kertas:#FFFFFF;--garis:#DCE0D2;--teks:#1D231C;--teks-muted:#5C6357;
+  --hijau:#2563EB;--hijau-2:#1E3A8A;--emas:#6366F1;--emas-terang:#A5B4FC;
+  --bata:#0EA5E9;--teal:#0D9488;--sogan:#64748B;--krem:#F1F5F9;
+  --kertas:#FFFFFF;--garis:#E2E8F0;--teks:#1E293B;--teks-muted:#64748B;
   --panel:rgba(255,255,255,.68);--panel-strong:rgba(255,255,255,.9);
-  --radius:18px;--bayang:0 14px 34px -16px rgba(34,51,31,.35);
-  --utama-accent:var(--hijau);--utama-tint:#E3EAE1;
-  --layanan-accent:var(--bata);--layanan-tint:#F3E2DB;
-  --kepeg-accent:var(--emas);--kepeg-tint:#F6ECD1;
-  --monitor-accent:var(--teal);--monitor-tint:#DEEDE8;
-  --keu-accent:var(--sogan);--keu-tint:#EDE1D0;
+  --radius:18px;--bayang:0 14px 34px -16px rgba(30,41,59,.28);
+  --utama-accent:var(--hijau);--utama-tint:#DBE6FD;
+  --layanan-accent:var(--bata);--layanan-tint:#D8F0FC;
+  --kepeg-accent:var(--emas);--kepeg-tint:#E1E1FC;
+  --monitor-accent:var(--teal);--monitor-tint:#D5EEE9;
+  --keu-accent:var(--sogan);--keu-tint:#E4E9EE;
   --hijau-teks:var(--hijau);
 }
 [data-theme="dark"]{
-  --krem:#111610;--kertas:#192019;--panel:rgba(25,32,25,.78);
-  --panel-strong:#202a20;--garis:#344034;--teks:#EDF2E9;--teks-muted:#AAB5A7;
-  --utama-tint:#27372A;--layanan-tint:#3A2823;--kepeg-tint:#3B3523;
-  --monitor-tint:#253934;--keu-tint:#382D23;
-  --hijau-teks:#8FD79B;
+  --krem:#0F172A;--kertas:#1E293B;--panel:rgba(30,41,59,.78);
+  --panel-strong:#1E293B;--garis:#334155;--teks:#F1F5F9;--teks-muted:#94A3B8;
+  --utama-tint:#1E2A47;--layanan-tint:#173241;--kepeg-tint:#26244A;
+  --monitor-tint:#153733;--keu-tint:#2A3138;
+  --hijau-teks:#93C5FD;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{min-height:100vh;width:100%;overflow-x:hidden;background:var(--krem);color:var(--teks);
 font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;position:relative;transition:background .25s,color .25s}
 body::before{content:"";position:fixed;inset:0;z-index:-1;background-image:
-radial-gradient(circle at 8% 12%,rgba(47,74,51,.16) 0%,transparent 26%),
-radial-gradient(circle at 92% 8%,rgba(201,162,39,.15) 0%,transparent 24%),
-radial-gradient(circle at 85% 60%,rgba(61,122,107,.14) 0%,transparent 26%),
-radial-gradient(circle at 10% 70%,rgba(168,70,47,.12) 0%,transparent 24%),
-radial-gradient(circle at 50% 95%,rgba(122,75,35,.10) 0%,transparent 22%);
-animation:drift 26s ease-in-out infinite alternate}
+radial-gradient(circle at 10% 15%,rgba(37,99,235,.07) 0%,transparent 30%),
+radial-gradient(circle at 90% 85%,rgba(99,102,241,.08) 0%,transparent 32%);
+animation:drift 30s ease-in-out infinite alternate}
 @keyframes drift{from{transform:scale(1) translate(0,0)}to{transform:scale(1.12) translate(-1.5%,1.5%)}}
 @media(prefers-reduced-motion:reduce){body::before{animation:none}}
 a,button,.card,.pill{touch-action:manipulation}
@@ -58,25 +55,38 @@ a{color:inherit}
 .wrap{max-width:1180px;margin:auto;padding:0 20px}
 
 /* Header */
-.header{position:relative;overflow:hidden;background:linear-gradient(165deg,var(--hijau),var(--hijau-2));color:#fff;
-padding:calc(38px + env(safe-area-inset-top)) 20px 38px;text-align:center}
+/* Bar identitas instansi — kesan resmi/institusional */
+.gov-bar{background:var(--hijau-2);color:#CBD5E1;font-size:.7rem;letter-spacing:.3px}
+.gov-bar-inner{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 20px;flex-wrap:wrap;text-align:center}
+.gov-sep{opacity:.45}
+
+/* Topbar — selalu tampil, sticky, cuma judul + ikon (seperti referensi) */
+.topbar{position:sticky;top:0;z-index:40;background:linear-gradient(120deg,var(--hijau),var(--hijau-2));color:#fff;
+box-shadow:0 8px 24px -12px rgba(15,23,42,.35)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;
+padding:calc(14px + env(safe-area-inset-top)) 20px 14px}
+.topbar-title{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Hero foto — konten biasa, ikut scroll (bukan sticky) */
+.header{position:relative;overflow:hidden;background:linear-gradient(165deg,rgba(37,99,235,.72),rgba(30,58,138,.85)),url('puskesmas-hero.jpg') center 65%/cover no-repeat #1E3A8A;color:#fff;
+padding:30px 20px 34px;text-align:center}
 .header::before{content:"";position:absolute;inset:-20%;background-image:
-radial-gradient(circle at 12% 20%,rgba(231,197,90,.35),transparent 32%),
-radial-gradient(circle at 88% 12%,rgba(61,122,107,.32),transparent 28%),
-radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:blur(50px);animation:drift 18s ease-in-out infinite alternate}
+radial-gradient(circle at 15% 20%,rgba(147,197,253,.28),transparent 34%),
+radial-gradient(circle at 85% 85%,rgba(99,102,241,.22),transparent 34%);filter:blur(55px);animation:drift 20s ease-in-out infinite alternate}
 .header::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,253,248,.14) 1px,transparent 1px);background-size:16px 16px;opacity:.5}
 .header-inner{position:relative;z-index:1}
-.top-actions{position:absolute;right:0;top:0;display:flex;gap:8px}
-.icon-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:13px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(8px)}
+.icon-btn{width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:13px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(8px);flex-shrink:0}
 .icon-btn svg{width:20px;height:20px}
+.top-actions{display:flex;gap:8px;flex-shrink:0}
 .entrance{opacity:0;animation:rise .6s ease both}.entrance-1{animation-delay:.05s}.entrance-2{animation-delay:.16s}.entrance-3{animation-delay:.27s}.entrance-4{animation-delay:.38s}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.entrance{animation:none;opacity:1}}
-.logo{width:82px;height:82px;margin:0 auto;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;border:3px solid var(--emas);box-shadow:var(--bayang)}
-.logo img{width:60px;height:60px;object-fit:contain}
-.title{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800;margin-top:16px}
-.subtitle{margin-top:7px;color:#DCE6D9;font-size:.96rem}
+.masthead{display:flex;align-items:center;justify-content:center;gap:18px;text-align:left}
+.logo{width:64px;height:64px;flex-shrink:0;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;border:3px solid var(--emas);box-shadow:var(--bayang)}
+.logo img{width:46px;height:46px;object-fit:contain}
+.subtitle{font-size:.92rem;color:#E2E8F0}
 .clock{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:8px 16px;background:rgba(255,253,248,.12);border:1px solid rgba(255,253,248,.25);border-radius:999px;font-size:.82rem;font-variant-numeric:tabular-nums}
+@media(max-width:560px){.masthead{text-align:center;flex-direction:column;gap:10px}.logo{width:56px;height:56px}.logo img{width:40px;height:40px}}
 
 /* Notice ticker — berada di bawah search, smooth & seamless */
 .notice{
@@ -156,6 +166,25 @@ radial-gradient(circle at 60% 90%,rgba(168,70,47,.22),transparent 30%);filter:bl
 .stat span{font-size:.72rem;color:var(--teks-muted)}
 
 /* Apps */
+/* Carousel — galeri gambar berjalan */
+.carousel{position:relative;margin-top:20px}
+.carousel-viewport{position:relative;overflow:hidden;border-radius:var(--radius);box-shadow:var(--bayang);background:var(--kertas);aspect-ratio:16/7}
+.carousel-track{display:flex;width:100%;height:100%;transition:transform .55s cubic-bezier(.65,0,.35,1)}
+.carousel-track img{width:100%;height:100%;object-fit:cover;flex:0 0 100%;display:block}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(15,23,42,.4);backdrop-filter:blur(6px);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .2s}
+.carousel-arrow:hover{background:rgba(15,23,42,.65);transform:translateY(-50%) scale(1.08)}
+.carousel-arrow svg{width:19px;height:19px}
+.carousel-arrow.prev{left:12px}
+.carousel-arrow.next{right:12px}
+.carousel-dots{display:flex;justify-content:center;gap:7px;margin-top:12px}
+.carousel-dots button{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:var(--garis);cursor:pointer;transition:background .2s,width .2s}
+.carousel-dots button.active{background:var(--hijau);width:22px}
+@media(max-width:700px){
+  .carousel-viewport{aspect-ratio:16/10;border-radius:14px}
+  .carousel-arrow{width:32px;height:32px}
+  .carousel-arrow svg{width:16px;height:16px}
+}
+
 .apps{max-width:1180px;margin:auto;padding:24px 20px 10px}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .section-title{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:10px}
@@ -183,7 +212,7 @@ transform-style:preserve-3d;transition:transform .3s cubic-bezier(.22,.9,.3,1),b
 .icon-wrap::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(165deg,rgba(255,255,255,.6),transparent 58%);pointer-events:none}
 [data-theme="dark"] .icon-wrap{background:linear-gradient(155deg,color-mix(in srgb,var(--tint) 70%,#fff 12%),var(--tint) 80%)}
 [data-theme="dark"] .icon-wrap::after{background:linear-gradient(165deg,rgba(255,255,255,.22),transparent 60%)}
-.card:hover .icon-wrap{transform:translateY(-2px) rotateX(10deg) rotateY(-12deg) scale(1.07);
+.card:hover .icon-wrap{transform:translateY(-2px) rotateX(4deg) rotateY(-5deg) scale(1.04);
 box-shadow:
   inset 0 1px 1px rgba(255,255,255,.95),
   inset 0 -5px 8px rgba(0,0,0,.07),
@@ -204,7 +233,7 @@ mark{background:rgba(201,162,39,.4);color:inherit;border-radius:4px;padding:0 2p
 .no-result svg{width:44px;height:44px;margin-bottom:12px}
 
 /* Footer / floating */
-footer{padding:42px 20px calc(110px + env(safe-area-inset-bottom));text-align:center;color:var(--teks-muted);font-size:.82rem;line-height:1.7}
+footer{padding:42px 20px calc(110px + env(safe-area-inset-bottom));text-align:center;color:var(--teks-muted);font-size:.82rem;line-height:1.7;border-top:1px solid var(--garis);margin-top:8px}
 footer strong{color:var(--hijau-teks)}
 .status-dot{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--hijau-teks)}
 .status-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:#2FAE5C;box-shadow:0 0 0 0 rgba(47,174,92,.55);animation:pulse-dot 2s ease-out infinite}
@@ -287,15 +316,25 @@ footer strong{color:var(--hijau-teks)}
 }
 @media(max-width:450px){
   .pills{gap:6px}.pill{padding:8px 10px;font-size:.75rem}
-  .shortcut{display:none}.title{font-size:1.65rem}.subtitle{font-size:.82rem}.clock{font-size:.74rem}
+  .shortcut{display:none}.topbar-title{font-size:.94rem}.subtitle{font-size:.82rem}.clock{font-size:.74rem}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.status-dot::before{animation:none}.modal-content{animation:none}}
 </style>
 </head>
 
 <body>
-<header class="header">
-  <div class="header-inner wrap">
+<div class="gov-bar">
+  <div class="wrap gov-bar-inner">
+    <span>Pemerintah Kabupaten Kulon Progo</span>
+    <span class="gov-sep">•</span>
+    <span>Dinas Kesehatan</span>
+    <span class="gov-sep">•</span>
+    <span>UPT Puskesmas Panjatan I</span>
+  </div>
+</div>
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <h1 class="topbar-title">e-Portal Digital</h1>
     <div class="top-actions">
       <button class="icon-btn" id="adminBtn" aria-label="Kelola aplikasi" title="Kelola aplikasi">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.6V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.6 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.6 1z"/></svg>
@@ -304,14 +343,23 @@ footer strong{color:var(--hijau-teks)}
         <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
       </button>
     </div>
-    <div class="logo entrance entrance-1">
-      <img src="logo.png" alt="Logo Puskesmas Panjatan I" onerror="this.style.display='none';this.parentNode.innerHTML='🏥'">
+  </div>
+</div>
+
+<header class="header">
+  <div class="header-inner wrap">
+    <div class="masthead">
+      <div class="logo entrance entrance-1">
+        <img src="logo.png" alt="Logo Puskesmas Panjatan I" onerror="this.style.display='none';this.parentNode.innerHTML='🏥'">
+      </div>
+      <div class="masthead-text">
+        <p class="subtitle entrance entrance-3">Portal Terintegrasi Layanan Digital — Puskesmas Panjatan I</p>
+      </div>
     </div>
-    <h1 class="title entrance entrance-2">e-Portal Digital</h1>
-    <p class="subtitle entrance entrance-3">Portal Terintegrasi Layanan Digital — Puskesmas Panjatan I</p>
     <div class="clock entrance entrance-4" id="clock"></div>
   </div>
 </header>
+
 
 
 
@@ -347,6 +395,26 @@ footer strong{color:var(--hijau-teks)}
       </div>
     </div>
   </div>
+</div>
+
+<div class="carousel wrap" id="carousel" aria-roledescription="carousel" aria-label="Galeri Puskesmas Panjatan I">
+  <div class="carousel-viewport">
+    <div class="carousel-track" id="carouselTrack">
+      <img src="carousel-0-gedung.jpg" alt="Puskesmas Panjatan I — Pelayanan Prima untuk Masyarakat Sehat" loading="eager">
+      <img src="carousel-1-manajemen.jpg" alt="Klaster 1 — Manajemen: Perencanaan, Pelaksanaan dan Pengawasan" loading="lazy">
+      <img src="carousel-2-ibu-anak.jpg" alt="Klaster 2 — Ibu dan Anak: Sehat Ibu, Kuat Anak" loading="lazy">
+      <img src="carousel-3-usia-dewasa-lansia.jpg" alt="Klaster 3 — Usia Dewasa dan Lanjut Usia" loading="lazy">
+      <img src="carousel-4-penyakit-menular.jpg" alt="Klaster 4 — Penanggulangan Penyakit Menular" loading="lazy">
+      <img src="carousel-5-lintas-klaster.jpg" alt="Klaster 5 — Lintas Klaster: Layanan Terpadu" loading="lazy">
+    </div>
+  </div>
+  <button class="carousel-arrow prev" id="carouselPrev" aria-label="Sebelumnya">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="carousel-arrow next" id="carouselNext" aria-label="Berikutnya">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <div class="carousel-dots" id="carouselDots"></div>
 </div>
 
 <main class="apps">
@@ -537,11 +605,11 @@ const DEFAULT_APPS=[
 let APPS=[];
 
 const DEFAULT_CATEGORIES=[
- {key:"utama",label:"Utama",color:"#2F4A33",order:0},
- {key:"layanan",label:"Layanan Publik",color:"#A8462F",order:1},
- {key:"kepegawaian",label:"Kepegawaian",color:"#C9A227",order:2},
- {key:"monitoring",label:"Monitoring & Evaluasi",color:"#3D7A6B",order:3},
- {key:"keuangan",label:"Keuangan",color:"#7A4B23",order:4}
+ {key:"utama",label:"Utama",color:"#2563EB",order:0},
+ {key:"layanan",label:"Layanan Publik",color:"#0EA5E9",order:1},
+ {key:"kepegawaian",label:"Kepegawaian",color:"#6366F1",order:2},
+ {key:"monitoring",label:"Monitoring & Evaluasi",color:"#0D9488",order:3},
+ {key:"keuangan",label:"Keuangan",color:"#64748B",order:4}
 ];
 let CATEGORIES=[];
 let categoryMap={};
@@ -654,6 +722,39 @@ document.addEventListener("keydown",e=>{
 });
 $("closeModal").addEventListener("click",()=>$("modal").classList.remove("show"));
 $("modal").addEventListener("click",e=>{if(e.target===$("modal"))$("modal").classList.remove("show")});
+
+/* Carousel — galeri gambar berjalan */
+(function(){
+ const track=$("carouselTrack");
+ const dotsWrap=$("carouselDots");
+ if(!track)return;
+ const slides=track.children.length;
+ let idx=0,timer=null;
+ for(let i=0;i<slides;i++){
+  const b=document.createElement("button");
+  if(i===0)b.classList.add("active");
+  b.setAttribute("aria-label","Slide "+(i+1));
+  b.addEventListener("click",()=>goTo(i));
+  dotsWrap.appendChild(b);
+ }
+ function goTo(i){
+  idx=(i+slides)%slides;
+  track.style.transform=`translateX(-${idx*100}%)`;
+  dotsWrap.querySelectorAll("button").forEach((b,n)=>b.classList.toggle("active",n===idx));
+ }
+ function next(){goTo(idx+1)}
+ function prev(){goTo(idx-1)}
+ function play(){timer=setInterval(next,5000)}
+ function pause(){clearInterval(timer)}
+ $("carouselNext").addEventListener("click",()=>{next();pause();play()});
+ $("carouselPrev").addEventListener("click",()=>{prev();pause();play()});
+ const carouselEl=$("carousel");
+ carouselEl.addEventListener("mouseenter",pause);
+ carouselEl.addEventListener("mouseleave",play);
+ carouselEl.addEventListener("touchstart",pause,{passive:true});
+ carouselEl.addEventListener("touchend",play,{passive:true});
+ play();
+})();
 
 /* Clock */
 function updateClock(){

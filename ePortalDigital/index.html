@@ -234,18 +234,32 @@ setTimeout(function(){
 // Failsafe 15 detik: jangan biarkan pengguna terkunci di splash
 setTimeout(hideLoader, 15000);
 
-/* TOMBOL KEMBALI: coba tutup tab ini dulu (kembali ke tab e-Portal Digital
-   yang sudah terbuka sebelumnya, karena aplikasi dibuka via target="_blank"
-   dari portal). Kalau browser tidak mengizinkan tab ditutup (mis. dibuka
-   langsung lewat bookmark/ketik URL, bukan dari portal), baru pindah ke
-   portal di tab ini sebagai cadangan. */
+/* TOMBOL KEMBALI: NAVIGASI adalah aksi utama, bukan cadangan.
+   window.close() dulunya dicoba lebih dulu lalu location.href sebagai
+   fallback lewat setTimeout — masalahnya, kalau close() BERHASIL (mis.
+   karena halaman ini dianggap browser sebagai "dibuka oleh script", atau
+   berjalan sebagai PWA standalone di HP), seluruh halaman langsung hancur
+   SEBELUM setTimeout sempat jalan. Akibatnya layar cuma menutup dan tidak
+   pernah sampai ke Portal Digital.
+   Sekarang: close() hanya dicoba kalau memang ada tab pemanggil
+   (window.opener) DAN bukan berjalan sebagai PWA standalone — dan
+   navigasi ke Portal Digital selalu dijalankan langsung, bukan menunggu
+   hasil close(). Kalau close() berhasil, halaman ini toh sudah hilang;
+   kalau gagal atau tidak dicoba sama sekali, pengguna tetap dibawa ke
+   Portal Digital. */
 document.getElementById('backHomeBtn').addEventListener('click', function(e){
   e.preventDefault();
   var fallbackUrl = this.href;
-  window.close();
-  setTimeout(function(){
-    location.href = fallbackUrl;
-  }, 300);
+
+  var isStandalone =
+    (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+    window.navigator.standalone === true;
+
+  if (window.opener && !isStandalone) {
+    try { window.close(); } catch (err) {}
+  }
+
+  location.href = fallbackUrl;
 });
 
 /* JEMBATAN LINK EKSTERNAL (Fix Firefox NS_ERROR_DOM_COOP_FAILED)

@@ -13,8 +13,9 @@
 <meta name="apple-mobile-web-app-title" content="e-Portal Digital">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js"></script>
 
 <style>
 :root{
@@ -799,10 +800,22 @@ $("installBtn").addEventListener("click",async()=>{
 window.addEventListener("appinstalled",()=>{$("installBtn").style.display="none";toast("e-Portal berhasil dipasang")});
 if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
 
-/* Load data kategori dari GAS + Google Sheet (fallback ke DEFAULT_CATEGORIES bila gagal) */
+/* =========================
+   PEMUATAN DATA — cepat: tampil instan dari cache/cadangan,
+   lalu kategori & aplikasi diambil BERSAMAAN (paralel), bukan berurutan.
+========================= */
+const CACHE_KEY_APPS="puspansa_eportal_apps_cache_v1";
+const CACHE_KEY_CATS="puspansa_eportal_cats_cache_v1";
+function readCache(key){
+ try{const raw=sessionStorage.getItem(key);return raw?JSON.parse(raw):null;}catch(e){return null;}
+}
+function writeCache(key,data){
+ try{sessionStorage.setItem(key,JSON.stringify(data));}catch(e){}
+}
+
 async function loadCategories(){
  if(!API_URL || API_URL.indexOf("GANTI_DENGAN")===0){
-  CATEGORIES=DEFAULT_CATEGORIES.slice();
+  if(!CATEGORIES.length)CATEGORIES=DEFAULT_CATEGORIES.slice();
  }else{
   try{
    const res=await fetch(API_URL+"?action=categories");
@@ -810,11 +823,12 @@ async function loadCategories(){
    if(data&&data.ok&&Array.isArray(data.categories)&&data.categories.length){
     CATEGORIES=data.categories.map(c=>({key:c.key,label:c.label,color:c.color||"#2F4A33",order:Number(c.order)||0}))
      .sort((a,b)=>a.order-b.order);
-   }else{
+    writeCache(CACHE_KEY_CATS,CATEGORIES);
+   }else if(!CATEGORIES.length){
     CATEGORIES=DEFAULT_CATEGORIES.slice();
    }
   }catch(err){
-   CATEGORIES=DEFAULT_CATEGORIES.slice();
+   if(!CATEGORIES.length)CATEGORIES=DEFAULT_CATEGORIES.slice();
   }
  }
  rebuildCategoryMap();
@@ -822,7 +836,27 @@ async function loadCategories(){
  renderCategoryOptions();
 }
 
-/* Load data aplikasi dari GAS + Google Sheet (fallback ke DEFAULT_APPS bila gagal) */
+/* Ambil kategori + aplikasi dalam SATU permintaan (action=init) supaya cuma
+   1 kali round-trip ke Apps Script, bukan 2. Mengembalikan null kalau
+   backend belum mendukung action=init (belum di-deploy ulang) atau gagal,
+   supaya pemanggil bisa jatuh balik ke cara lama (loadCategories + loadApps). */
+async function fetchInitFromAPI(){
+ if(!API_URL||API_URL.indexOf("GANTI_DENGAN")===0)return null;
+ const res=await fetch(API_URL+"?action=init");
+ const data=await res.json();
+ if(!data||!data.ok)return null;
+ var result={cats:null,apps:null};
+ if(Array.isArray(data.categories)&&data.categories.length){
+  result.cats=data.categories.map(c=>({key:c.key,label:c.label,color:c.color||"#2F4A33",order:Number(c.order)||0}))
+   .sort((a,b)=>a.order-b.order);
+ }
+ if(Array.isArray(data.apps)){
+  result.apps=data.apps.map(a=>({id:a.id,name:a.name,desc:a.desc,icon:a.icon||"grid",category:a.category||"layanan",href:a.href||"",status:a.status||"online",order:Number(a.order)||0}))
+   .sort((a,b)=>a.order-b.order);
+ }
+ return result;
+}
+
 async function loadApps(){
  if(!API_URL || API_URL.indexOf("GANTI_DENGAN")===0){
   APPS=DEFAULT_APPS.slice();render();return;
@@ -833,15 +867,52 @@ async function loadApps(){
   if(data&&data.ok&&Array.isArray(data.apps)){
    APPS=data.apps.map(a=>({id:a.id,name:a.name,desc:a.desc,icon:a.icon||"grid",category:a.category||"layanan",href:a.href||"",status:a.status||"online",order:Number(a.order)||0}))
     .sort((a,b)=>a.order-b.order);
-  }else{
+   writeCache(CACHE_KEY_APPS,APPS);
+  }else if(!APPS.length){
    APPS=DEFAULT_APPS.slice();
   }
  }catch(err){
-  APPS=DEFAULT_APPS.slice();
-  toast("Gagal memuat data aplikasi, menampilkan data cadangan");
+  if(!APPS.length){
+   APPS=DEFAULT_APPS.slice();
+   toast("Gagal memuat data aplikasi, menampilkan data cadangan");
+  }
  }
  render();
 }
+
+/* Tampil instan dari cache sesi sebelumnya (atau data cadangan) tanpa menunggu
+   jaringan sama sekali, supaya kartu langsung terlihat saat halaman dibuka. */
+function paintInstant(){
+ const cachedCats=readCache(CACHE_KEY_CATS);
+ const cachedApps=readCache(CACHE_KEY_APPS);
+ CATEGORIES=(cachedCats&&cachedCats.length)?cachedCats:DEFAULT_CATEGORIES.slice();
+ rebuildCategoryMap();renderPills();renderCategoryOptions();
+ APPS=(cachedApps&&cachedApps.length)?cachedApps:DEFAULT_APPS.slice();
+ render();
+}
+paintInstant();
+/* Muat data terbaru dari server. Coba dulu 1 permintaan gabungan (action=init) —
+   ini yang paling cepat karena cuma 1 kali round-trip ke Apps Script.
+   Kalau backend belum di-deploy ulang dengan action=init (atau gagal),
+   jatuh balik ke kategori & aplikasi diambil SECARA PARALEL (bukan berurutan
+   seperti sebelumnya), yang tetap jauh lebih cepat dari versi lama. */
+(async function initLoad(){
+ try{
+  const result=await fetchInitFromAPI();
+  if(result){
+   if(result.cats){
+    CATEGORIES=result.cats;rebuildCategoryMap();renderPills();renderCategoryOptions();
+    writeCache(CACHE_KEY_CATS,CATEGORIES);
+   }
+   if(result.apps){
+    APPS=result.apps;writeCache(CACHE_KEY_APPS,APPS);
+   }
+   render();
+   return;
+  }
+ }catch(err){/* backend belum dukung action=init, lanjut ke fallback di bawah */}
+ Promise.all([loadCategories(),loadApps()]);
+})();
 
 /* =========================
    ADMIN: kelola aplikasi
@@ -1124,9 +1195,6 @@ $("loginPass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
 $("logoutBtn").addEventListener("click",doLogout);
 $("fCancel").addEventListener("click",closeForm);
 $("fSave").addEventListener("click",saveForm);
-
-/* Initial load */
-loadCategories().then(loadApps);
 </script>
 </body>
 </html>

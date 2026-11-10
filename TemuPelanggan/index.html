@@ -1,323 +1,300 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f5faf8">
-<title>Temu Pelanggan Puskesmas Panjatan I</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Temu Pelanggan | Puskesmas Panjatan I</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+width:100%;height:100%;overflow:hidden;
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#020617;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #f5faf8;
-}
-
-/* APLIKASI */
-#app {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: white;
-  opacity: 0;
-  transition: opacity .55s ease;
-}
-
-#app.show {
-  opacity: 1;
+iframe{
+position:fixed;inset:0;
+width:100%;height:100%;
+border:0;background:#fff;
 }
 
 /* LOADER */
-#loader {
-  position: fixed;
-  inset: 0;
-  z-index: 99;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background:
-    radial-gradient(circle at 12% 12%,
-      rgba(27, 130, 91, .10), transparent 35%),
-    radial-gradient(circle at 88% 88%,
-      rgba(35, 151, 174, .08), transparent 32%),
-    #f8fbfa;
-  transition: opacity .6s ease, visibility .6s ease;
+#loader{
+position:fixed;inset:0;z-index:9999;
+display:flex;align-items:center;justify-content:center;
+background:radial-gradient(circle at center,
+#064e3b 0%,#022c22 40%,#020617 85%);
+transition:opacity .7s ease,visibility .7s ease;
 }
 
-#loader.hide {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+.hide{opacity:0;visibility:hidden}
+
+/* AMBIENT */
+#loader::before{
+content:"";position:absolute;
+width:320px;height:320px;border-radius:50%;
+background:rgba(16,185,129,.18);
+filter:blur(80px);
+animation:ambient 5s infinite ease-in-out;
 }
 
-.content {
-  width: min(100%, 390px);
-  text-align: center;
-  color: #194633;
-  animation: appear .7s ease both;
+@keyframes ambient{
+0%,100%{transform:scale(.9);opacity:.5}
+50%{transform:scale(1.15);opacity:1}
 }
 
-/* ANIMASI KOMUNIKASI */
-.visual {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 28px;
-  display: grid;
-  place-items: center;
+/* CARD */
+.card{
+position:relative;z-index:2;
+width:92%;max-width:400px;
+padding:30px 25px;border-radius:30px;
+background:rgba(15,23,42,.88);
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+border:1px solid rgba(110,231,183,.25);
+color:#fff;text-align:center;
+box-shadow:0 25px 70px rgba(0,0,0,.7);
 }
 
-.orbit {
-  position: absolute;
-  inset: 0;
-  border: 1px solid #dcebe3;
-  border-radius: 32px;
-  animation: breathe 3s ease-in-out infinite;
+/* HEADER */
+.header{
+display:flex;align-items:center;
+justify-content:space-between;margin-bottom:8px;
 }
 
-.orbit::after {
-  content: "";
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #d4ad45;
-  box-shadow: 0 0 0 5px #f5efdf;
+.label{
+font-size:11px;font-weight:800;
+letter-spacing:2px;color:#a7f3d0;
 }
 
-.symbol {
-  width: 76px;
-  height: 76px;
-  display: grid;
-  place-items: center;
-  border-radius: 24px;
-  color: white;
-  background: linear-gradient(145deg, #2a9670, #176344);
-  box-shadow: 0 12px 28px rgba(29, 104, 60, .20);
-  animation: float 3s ease-in-out infinite;
+.status{
+width:10px;height:10px;border-radius:50%;
+background:#34d399;box-shadow:0 0 15px #34d399;
+animation:statusPulse 1.8s infinite;
 }
 
-.symbol svg {
-  width: 42px;
-  height: 42px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.65;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+@keyframes statusPulse{
+0%,100%{transform:scale(1);opacity:1}
+50%{transform:scale(1.6);opacity:.45}
 }
 
-/* HEART */
-.heart {
-  position: absolute;
-  right: -5px;
-  bottom: 8px;
-  width: 31px;
-  height: 31px;
-  display: grid;
-  place-items: center;
-  border: 3px solid #f8fbfa;
-  border-radius: 50%;
-  color: #df5361;
-  background: #fbe9eb;
-  animation: heartbeat 2s ease-in-out infinite;
+/* TITLE */
+.title{
+font-size:23px;font-weight:800;
+letter-spacing:.5px;color:#fff;margin-top:7px;
 }
 
-.heart svg {
-  width: 17px;
-  height: 17px;
-  fill: currentColor;
-  stroke: currentColor;
-  stroke-width: 1.4;
+.subtitle{
+font-size:13px;font-weight:500;
+color:#d1fae5;margin-top:7px;line-height:1.65;
 }
 
-.eyebrow {
-  margin-bottom: 10px;
-  color: #54866a;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+/* CUSTOMER ANIMATION */
+.mind{
+position:relative;height:165px;
+margin:20px 0 15px;
 }
 
-h1 {
-  margin-bottom: 12px;
-  font-size: clamp(25px, 5vw, 31px);
-  font-weight: 750;
-  line-height: 1.2;
-  letter-spacing: -.7px;
+/* ORBIT */
+.orbit{
+position:absolute;left:50%;top:50%;
+width:130px;height:130px;
+transform:translate(-50%,-50%);
+border:1px solid rgba(52,211,153,.35);
+border-radius:50%;
+animation:rotate 8s linear infinite;
 }
 
-.subtitle {
-  color: #78887d;
-  font-size: 13px;
-  line-height: 1.7;
+.orbit::before,.orbit::after{
+content:"";position:absolute;border-radius:50%;
+background:#6ee7b7;box-shadow:0 0 15px #34d399;
+}
+
+.orbit::before{
+width:8px;height:8px;top:12px;left:28px;
+}
+
+.orbit::after{
+width:6px;height:6px;bottom:20px;right:18px;
+}
+
+@keyframes rotate{
+from{transform:translate(-50%,-50%) rotate(0deg)}
+to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+
+/* CORE */
+.mind-core{
+position:absolute;left:50%;top:50%;
+transform:translate(-50%,-50%);
+width:82px;height:82px;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,
+#d1fae5,#34d399 55%,#059669);
+display:flex;align-items:center;justify-content:center;
+font-size:39px;
+box-shadow:0 0 35px rgba(52,211,153,.65);
+animation:corePulse 2.5s infinite ease-in-out;
+}
+
+@keyframes corePulse{
+0%,100%{transform:translate(-50%,-50%) scale(1)}
+50%{transform:translate(-50%,-50%) scale(1.08)}
+}
+
+/* RIPPLE */
+.ring{
+position:absolute;left:50%;top:50%;
+border:2px solid rgba(110,231,183,.35);
+border-radius:50%;transform:translate(-50%,-50%);
+animation:ripple 2.8s infinite;
+}
+
+.ring:nth-child(1){width:95px;height:95px}
+.ring:nth-child(2){width:125px;height:125px;animation-delay:.7s}
+.ring:nth-child(3){width:155px;height:155px;animation-delay:1.4s}
+
+@keyframes ripple{
+0%{opacity:.7;transform:translate(-50%,-50%) scale(.75)}
+100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}
+}
+
+/* WAVE */
+.wave{
+position:absolute;left:50%;bottom:3px;
+transform:translateX(-50%);
+width:180px;height:25px;
+display:flex;align-items:center;justify-content:center;gap:5px;
+}
+
+.wave span{
+width:4px;border-radius:10px;
+background:linear-gradient(to bottom,#a7f3d0,#10b981);
+animation:wave 1.2s infinite ease-in-out;
+}
+
+.wave span:nth-child(1){height:10px;animation-delay:.1s}
+.wave span:nth-child(2){height:18px;animation-delay:.2s}
+.wave span:nth-child(3){height:25px;animation-delay:.3s}
+.wave span:nth-child(4){height:15px;animation-delay:.4s}
+.wave span:nth-child(5){height:30px;animation-delay:.5s}
+.wave span:nth-child(6){height:15px;animation-delay:.6s}
+.wave span:nth-child(7){height:24px;animation-delay:.7s}
+.wave span:nth-child(8){height:12px;animation-delay:.8s}
+
+@keyframes wave{
+0%,100%{transform:scaleY(.6);opacity:.6}
+50%{transform:scaleY(1);opacity:1}
+}
+
+/* TEXT */
+.loading-text{
+font-size:14px;font-weight:700;color:#fff;margin-top:8px;
+}
+
+.description{
+font-size:12px;line-height:1.7;
+color:#d1fae5;margin-top:7px;
 }
 
 /* PROGRESS */
-.loading {
-  width: 220px;
-  max-width: 100%;
-  margin: 30px auto 0;
+.progress{
+margin-top:20px;height:6px;border-radius:20px;
+background:#111827;overflow:hidden;
+border:1px solid rgba(110,231,183,.15);
 }
 
-.track {
-  height: 3px;
-  overflow: hidden;
-  border-radius: 10px;
-  background: #e0eae3;
+.bar{
+height:100%;width:38%;border-radius:20px;
+background:linear-gradient(90deg,#10b981,#d1fae5,#10b981);
+animation:loading 1.5s infinite;
 }
 
-#bar {
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #27885d, #62b88b);
-  transition: width .25s ease;
+@keyframes loading{
+0%{transform:translateX(-130%)}
+100%{transform:translateX(330%)}
 }
 
-#status {
-  margin-top: 12px;
-  color: #89978c;
-  font-size: 11px;
-  letter-spacing: .3px;
+/* MOBILE */
+@media(max-width:480px){
+.card{padding:27px 20px}
+.title{font-size:20px}
+.mind{height:155px}
 }
 
-/* MOTION */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); opacity: .75; }
-  50% { transform: scale(1.055); opacity: 1; }
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.09); }
-}
-
-@keyframes appear {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:3s!important}
 }
 </style>
 </head>
 
 <body>
 
-<div id="loader">
-  <main class="content">
-
-    <div class="visual">
-      <div class="orbit"></div>
-
-      <div class="symbol">
-        <!-- Ikon komunikasi / percakapan -->
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l1.8-3A7.5 7.5 0 1 1 20 11.5Z"/>
-          <path d="M8 11.5h.01"/>
-          <path d="M12 11.5h.01"/>
-          <path d="M16 11.5h.01"/>
-        </svg>
-      </div>
-
-      <div class="heart">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
-        </svg>
-      </div>
-    </div>
-
-    <div class="eyebrow">Puskesmas Panjatan I</div>
-
-    <h1>Temu Pelanggan</h1>
-
-    <p class="subtitle">
-      Mendengar, memahami, dan meningkatkan mutu pelayanan
-    </p>
-
-    <div class="loading">
-      <div class="track">
-        <div id="bar"></div>
-      </div>
-      <div id="status">Menyiapkan aplikasi...</div>
-    </div>
-
-  </main>
-</div>
-
-<!-- GOOGLE APPS SCRIPT -->
+<!-- WEB APP -->
 <iframe
-  id="app"
-  title="Temu Pelanggan Puskesmas Panjatan I"
-  src="https://script.google.com/macros/s/AKfycbwNm9wWxwV6S-H7ZqYcwxT-VseU_o8A9juYYvnjQkwwEOpneVW3rE_viGQnllz_DOhRjQ/exec"
-  allow="camera; microphone; geolocation"
-  loading="eager">
+id="app"
+src="https://script.google.com/macros/s/AKfycbwNm9wWxwV6S-H7ZqYcwxT-VseU_o8A9juYYvnjQkwwEOpneVW3rE_viGQnllz_DOhRjQ/exec">
 </iframe>
 
+<!-- LOADER -->
+<div id="loader">
+<div class="card">
+
+<div class="header">
+<div class="label">CUSTOMER EXPERIENCE</div>
+<div class="status"></div>
+</div>
+
+<div class="title">TEMU PELANGGAN</div>
+
+<div class="subtitle">
+Puskesmas Panjatan I<br>
+Mendengar • Memahami • Melayani
+</div>
+
+<div class="mind">
+<div class="orbit"></div>
+
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+
+<div class="mind-core">💬</div>
+
+<div class="wave">
+<span></span><span></span><span></span><span></span>
+<span></span><span></span><span></span><span></span>
+</div>
+</div>
+
+<div class="loading-text">Menyiapkan layanan...</div>
+
+<div class="description">
+Membangun komunikasi dan meningkatkan<br>
+mutu pelayanan kesehatan
+</div>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+</div>
+</div>
+
 <script>
-const app = document.getElementById("app");
-const loader = document.getElementById("loader");
-const bar = document.getElementById("bar");
-const status = document.getElementById("status");
+const loader=document.getElementById("loader");
+const app=document.getElementById("app");
 
-let progress = 0;
-let completed = false;
-
-const timer = setInterval(() => {
-  if (completed) {
-    clearInterval(timer);
-    return;
-  }
-
-  progress = Math.min(progress + Math.random() * 5, 90);
-  bar.style.width = progress + "%";
-}, 180);
-
-function finishLoading() {
-  if (completed) return;
-
-  completed = true;
-  clearInterval(timer);
-
-  bar.style.width = "100%";
-  status.textContent = "Membuka aplikasi...";
-
-  setTimeout(() => {
-    app.classList.add("show");
-    loader.classList.add("hide");
-  }, 400);
+function hideLoader(){
+loader.classList.add("hide");
 }
 
-app.addEventListener("load", finishLoading);
+app.onload=function(){
+setTimeout(hideLoader,500);
+};
 
-// Pengaman jika iframe lambat
-setTimeout(() => {
-  if (!completed) finishLoading();
-}, 10000);
+setTimeout(hideLoader,10000);
 </script>
 
 </body>

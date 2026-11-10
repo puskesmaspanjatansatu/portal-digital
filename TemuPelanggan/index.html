@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5faf8">
+<title>Temu Pelanggan Puskesmas Panjatan I</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f5faf8;
+}
+
+/* APLIKASI */
+#app {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+  opacity: 0;
+  transition: opacity .55s ease;
+}
+
+#app.show {
+  opacity: 1;
+}
+
+/* LOADER */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 12% 12%,
+      rgba(27, 130, 91, .10), transparent 35%),
+    radial-gradient(circle at 88% 88%,
+      rgba(35, 151, 174, .08), transparent 32%),
+    #f8fbfa;
+  transition: opacity .6s ease, visibility .6s ease;
+}
+
+#loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.content {
+  width: min(100%, 390px);
+  text-align: center;
+  color: #194633;
+  animation: appear .7s ease both;
+}
+
+/* ANIMASI KOMUNIKASI */
+.visual {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 28px;
+  display: grid;
+  place-items: center;
+}
+
+.orbit {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #dcebe3;
+  border-radius: 32px;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.orbit::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d4ad45;
+  box-shadow: 0 0 0 5px #f5efdf;
+}
+
+.symbol {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  color: white;
+  background: linear-gradient(145deg, #2a9670, #176344);
+  box-shadow: 0 12px 28px rgba(29, 104, 60, .20);
+  animation: float 3s ease-in-out infinite;
+}
+
+.symbol svg {
+  width: 42px;
+  height: 42px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.65;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* HEART */
+.heart {
+  position: absolute;
+  right: -5px;
+  bottom: 8px;
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #f8fbfa;
+  border-radius: 50%;
+  color: #df5361;
+  background: #fbe9eb;
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.heart svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.eyebrow {
+  margin-bottom: 10px;
+  color: #54866a;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(25px, 5vw, 31px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.7px;
+}
+
+.subtitle {
+  color: #78887d;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* PROGRESS */
+.loading {
+  width: 220px;
+  max-width: 100%;
+  margin: 30px auto 0;
+}
+
+.track {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e0eae3;
+}
+
+#bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #27885d, #62b88b);
+  transition: width .25s ease;
+}
+
+#status {
+  margin-top: 12px;
+  color: #89978c;
+  font-size: 11px;
+  letter-spacing: .3px;
+}
+
+/* MOTION */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: .75; }
+  50% { transform: scale(1.055); opacity: 1; }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.09); }
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+  <main class="content">
+
+    <div class="visual">
+      <div class="orbit"></div>
+
+      <div class="symbol">
+        <!-- Ikon komunikasi / percakapan -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l1.8-3A7.5 7.5 0 1 1 20 11.5Z"/>
+          <path d="M8 11.5h.01"/>
+          <path d="M12 11.5h.01"/>
+          <path d="M16 11.5h.01"/>
+        </svg>
+      </div>
+
+      <div class="heart">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="eyebrow">Puskesmas Panjatan I</div>
+
+    <h1>Temu Pelanggan</h1>
+
+    <p class="subtitle">
+      Mendengar, memahami, dan meningkatkan mutu pelayanan
+    </p>
+
+    <div class="loading">
+      <div class="track">
+        <div id="bar"></div>
+      </div>
+      <div id="status">Menyiapkan aplikasi...</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- GOOGLE APPS SCRIPT -->
+<iframe
+  id="app"
+  title="Temu Pelanggan Puskesmas Panjatan I"
+  src="https://script.google.com/macros/s/AKfycbwNm9wWxwV6S-H7ZqYcwxT-VseU_o8A9juYYvnjQkwwEOpneVW3rE_viGQnllz_DOhRjQ/exec"
+  allow="camera; microphone; geolocation"
+  loading="eager">
+</iframe>
+
+<script>
+const app = document.getElementById("app");
+const loader = document.getElementById("loader");
+const bar = document.getElementById("bar");
+const status = document.getElementById("status");
+
+let progress = 0;
+let completed = false;
+
+const timer = setInterval(() => {
+  if (completed) {
+    clearInterval(timer);
+    return;
+  }
+
+  progress = Math.min(progress + Math.random() * 5, 90);
+  bar.style.width = progress + "%";
+}, 180);
+
+function finishLoading() {
+  if (completed) return;
+
+  completed = true;
+  clearInterval(timer);
+
+  bar.style.width = "100%";
+  status.textContent = "Membuka aplikasi...";
+
+  setTimeout(() => {
+    app.classList.add("show");
+    loader.classList.add("hide");
+  }, 400);
+}
+
+app.addEventListener("load", finishLoading);
+
+// Pengaman jika iframe lambat
+setTimeout(() => {
+  if (!completed) finishLoading();
+}, 10000);
+</script>
+
+</body>
+</html>

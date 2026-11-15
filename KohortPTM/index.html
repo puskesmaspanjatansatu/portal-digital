@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kohort PTM | Puskesmas Panjatan I</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+width:100%;height:100%;overflow:hidden;
+font-family:'Segoe UI',system-ui,sans-serif;
+background:#18030a;
+}
+
+iframe{
+position:fixed;inset:0;
+width:100%;height:100%;
+border:0;background:#fff;
+}
+
+/* LOADER */
+#loader{
+position:fixed;inset:0;z-index:9999;
+display:flex;align-items:center;justify-content:center;
+background:radial-gradient(circle at center,
+#881337 0%,#4c0519 40%,#18030a 85%);
+transition:opacity .7s ease,visibility .7s ease;
+}
+
+.hide{opacity:0;visibility:hidden}
+
+/* AMBIENT */
+#loader::before{
+content:"";position:absolute;
+width:320px;height:320px;border-radius:50%;
+background:rgba(251,113,133,.18);
+filter:blur(80px);
+animation:ambient 5s infinite ease-in-out;
+}
+
+@keyframes ambient{
+0%,100%{transform:scale(.9);opacity:.5}
+50%{transform:scale(1.15);opacity:1}
+}
+
+/* CARD */
+.card{
+position:relative;z-index:2;
+width:92%;max-width:400px;
+padding:30px 25px;border-radius:30px;
+background:rgba(30,10,20,.88);
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+border:1px solid rgba(251,113,133,.28);
+color:#fff;text-align:center;
+box-shadow:0 25px 70px rgba(0,0,0,.7);
+}
+
+/* HEADER */
+.header{
+display:flex;align-items:center;
+justify-content:space-between;margin-bottom:8px;
+}
+
+.label{
+font-size:11px;font-weight:800;
+letter-spacing:2px;color:#fecdd3;
+}
+
+.status{
+width:10px;height:10px;border-radius:50%;
+background:#fb7185;box-shadow:0 0 15px #fb7185;
+animation:statusPulse 1.8s infinite;
+}
+
+@keyframes statusPulse{
+0%,100%{transform:scale(1);opacity:1}
+50%{transform:scale(1.6);opacity:.45}
+}
+
+/* TITLE */
+.title{
+font-size:24px;font-weight:800;
+letter-spacing:1px;color:#fff;margin-top:7px;
+}
+
+.subtitle{
+font-size:13px;font-weight:500;
+color:#ffe4e6;margin-top:7px;line-height:1.65;
+}
+
+/* PTM ANIMATION */
+.mind{
+position:relative;height:165px;
+margin:20px 0 15px;
+}
+
+/* ORBIT */
+.orbit{
+position:absolute;left:50%;top:50%;
+width:130px;height:130px;
+transform:translate(-50%,-50%);
+border:1px solid rgba(251,113,133,.35);
+border-radius:50%;
+animation:rotate 8s linear infinite;
+}
+
+.orbit::before,.orbit::after{
+content:"";position:absolute;border-radius:50%;
+background:#fda4af;box-shadow:0 0 15px #fb7185;
+}
+
+.orbit::before{
+width:8px;height:8px;top:12px;left:28px;
+}
+
+.orbit::after{
+width:6px;height:6px;bottom:20px;right:18px;
+}
+
+@keyframes rotate{
+from{transform:translate(-50%,-50%) rotate(0deg)}
+to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+
+/* CORE */
+.mind-core{
+position:absolute;left:50%;top:50%;
+transform:translate(-50%,-50%);
+width:82px;height:82px;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,
+#ffe4e6,#fb7185 55%,#e11d48);
+display:flex;align-items:center;justify-content:center;
+font-size:40px;
+box-shadow:0 0 35px rgba(251,113,133,.65);
+animation:corePulse 2.5s infinite ease-in-out;
+}
+
+@keyframes corePulse{
+0%,100%{transform:translate(-50%,-50%) scale(1)}
+50%{transform:translate(-50%,-50%) scale(1.08)}
+}
+
+/* RIPPLE */
+.ring{
+position:absolute;left:50%;top:50%;
+border:2px solid rgba(251,113,133,.35);
+border-radius:50%;transform:translate(-50%,-50%);
+animation:ripple 2.8s infinite;
+}
+
+.ring:nth-child(1){width:95px;height:95px}
+.ring:nth-child(2){width:125px;height:125px;animation-delay:.7s}
+.ring:nth-child(3){width:155px;height:155px;animation-delay:1.4s}
+
+@keyframes ripple{
+0%{opacity:.7;transform:translate(-50%,-50%) scale(.75)}
+100%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}
+}
+
+/* WAVE */
+.wave{
+position:absolute;left:50%;bottom:3px;
+transform:translateX(-50%);
+width:180px;height:25px;
+display:flex;align-items:center;justify-content:center;gap:5px;
+}
+
+.wave span{
+width:4px;border-radius:10px;
+background:linear-gradient(to bottom,#ffe4e6,#f43f5e);
+animation:wave 1.2s infinite ease-in-out;
+}
+
+.wave span:nth-child(1){height:10px;animation-delay:.1s}
+.wave span:nth-child(2){height:18px;animation-delay:.2s}
+.wave span:nth-child(3){height:25px;animation-delay:.3s}
+.wave span:nth-child(4){height:15px;animation-delay:.4s}
+.wave span:nth-child(5){height:30px;animation-delay:.5s}
+.wave span:nth-child(6){height:15px;animation-delay:.6s}
+.wave span:nth-child(7){height:24px;animation-delay:.7s}
+.wave span:nth-child(8){height:12px;animation-delay:.8s}
+
+@keyframes wave{
+0%,100%{transform:scaleY(.6);opacity:.6}
+50%{transform:scaleY(1);opacity:1}
+}
+
+/* TEXT */
+.loading-text{
+font-size:14px;font-weight:700;color:#fff;margin-top:8px;
+}
+
+.description{
+font-size:12px;line-height:1.7;
+color:#ffe4e6;margin-top:7px;
+}
+
+/* PROGRESS */
+.progress{
+margin-top:20px;height:6px;border-radius:20px;
+background:#111827;overflow:hidden;
+border:1px solid rgba(251,113,133,.15);
+}
+
+.bar{
+height:100%;width:38%;border-radius:20px;
+background:linear-gradient(90deg,#e11d48,#ffe4e6,#e11d48);
+animation:loading 1.5s infinite;
+}
+
+@keyframes loading{
+0%{transform:translateX(-130%)}
+100%{transform:translateX(330%)}
+}
+
+/* MOBILE */
+@media(max-width:480px){
+.card{padding:27px 20px}
+.title{font-size:21px}
+.mind{height:155px}
+}
+
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:3s!important}
+}
+</style>
+</head>
+
+<body>
+
+<!-- WEB APP -->
+<iframe
+id="app"
+src="https://script.google.com/macros/s/AKfycby8q_3-C8RyCxRSKQw_4WonB5AWwaOEIjK1VwOF0SH_pKhMKzAHPHZomYp9FlXtsppX/exec">
+</iframe>
+
+<!-- LOADER -->
+<div id="loader">
+<div class="card">
+
+<div class="header">
+<div class="label">NON-COMMUNICABLE DISEASE</div>
+<div class="status"></div>
+</div>
+
+<div class="title">KOHORT PTM</div>
+
+<div class="subtitle">
+Puskesmas Panjatan I<br>
+Deteksi Dini • Pemantauan • Pengendalian
+</div>
+
+<div class="mind">
+<div class="orbit"></div>
+
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+
+<div class="mind-core">❤️</div>
+
+<div class="wave">
+<span></span><span></span><span></span><span></span>
+<span></span><span></span><span></span><span></span>
+</div>
+</div>
+
+<div class="loading-text">Menyiapkan data kohort...</div>
+
+<div class="description">
+Pemantauan dan pengelolaan penyakit<br>
+tidak menular secara berkelanjutan
+</div>
+
+<div class="progress">
+<div class="bar"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+const loader=document.getElementById("loader");
+const app=document.getElementById("app");
+
+function hideLoader(){
+loader.classList.add("hide");
+}
+
+app.onload=function(){
+setTimeout(hideLoader,500);
+};
+
+setTimeout(hideLoader,10000);
+</script>
+
+</body>
+</html>

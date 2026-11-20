@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BINWAS SDMK</title>
+
+<style>
+:root {
+  --primary: #087f8c;
+  --secondary: #19c6bd;
+  --accent: #8ce8d9;
+  --dark: #062c3b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4fbfc;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(25,198,189,.28), transparent 35%),
+    radial-gradient(circle at 80% 80%, rgba(8,127,140,.35), transparent 35%),
+    linear-gradient(135deg, #041e2b, #075765 55%, #062c3b);
+  transition: opacity .7s ease, visibility .7s ease;
+}
+
+#loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.glow {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: var(--secondary);
+  filter: blur(110px);
+  opacity: .17;
+  animation: glowMove 6s ease-in-out infinite alternate;
+}
+
+.card {
+  position: relative;
+  width: min(90%, 390px);
+  padding: 38px 28px 32px;
+  border: 1px solid rgba(255,255,255,.17);
+  border-radius: 28px;
+  background: rgba(255,255,255,.09);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 25px 70px rgba(0,0,0,.3);
+  text-align: center;
+  color: white;
+  animation: cardIn .9s ease both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 30px;
+  background: rgba(255,255,255,.1);
+  color: #b9f5ec;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 23px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #63f5c9;
+  box-shadow: 0 0 12px #63f5c9;
+  animation: blink 1.2s infinite;
+}
+
+.visual {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.core {
+  width: 94px;
+  height: 94px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 42px;
+  background: linear-gradient(145deg, #1bd4c1, #087f8c);
+  box-shadow: 0 0 35px rgba(25,198,189,.45),
+              inset 0 2px 10px rgba(255,255,255,.35);
+  animation: pulse 2s ease-in-out infinite;
+  z-index: 2;
+}
+
+.orbit {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(140,232,217,.4);
+  border-radius: 50%;
+  animation: rotate 8s linear infinite;
+}
+
+.orbit::before,
+.orbit::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8ce8d9;
+  box-shadow: 0 0 15px #8ce8d9;
+}
+
+.orbit::before {
+  top: 17px;
+  left: 20px;
+}
+
+.orbit::after {
+  bottom: 15px;
+  right: 17px;
+  width: 7px;
+  height: 7px;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(140,232,217,.2);
+  border-radius: 50%;
+  animation: ripple 3s ease-out infinite;
+}
+
+.ring:nth-child(2) { animation-delay: 1s; }
+.ring:nth-child(3) { animation-delay: 2s; }
+
+h1 {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 9px;
+}
+
+.subtitle {
+  color: #b8e8e5;
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: .5px;
+}
+
+.wave {
+  height: 28px;
+  margin: 24px auto 19px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.wave span {
+  width: 4px;
+  height: 9px;
+  border-radius: 5px;
+  background: #63e6d2;
+  animation: wave 1s ease-in-out infinite;
+}
+
+.wave span:nth-child(2n) { animation-delay: .15s; }
+.wave span:nth-child(3n) { animation-delay: .3s; }
+.wave span:nth-child(4n) { animation-delay: .45s; }
+
+.loading-text {
+  font-size: 11px;
+  color: #d2f5f0;
+  letter-spacing: 1px;
+  margin-bottom: 13px;
+}
+
+.progress {
+  width: 100%;
+  height: 4px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,.15);
+}
+
+.progress-bar {
+  width: 35%;
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #19c6bd, #b1fff0);
+  box-shadow: 0 0 12px #19c6bd;
+  animation: progress 2s ease-in-out infinite;
+}
+
+.footer {
+  margin-top: 22px;
+  font-size: 9px;
+  color: rgba(255,255,255,.55);
+  letter-spacing: 1.5px;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.09); }
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ripple {
+  0% { transform: scale(.65); opacity: .7; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes wave {
+  0%,100% { height: 7px; }
+  50% { height: 25px; }
+}
+
+@keyframes progress {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(310%); }
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+@keyframes glowMove {
+  from { transform: translate(-80px,-40px); }
+  to { transform: translate(80px,50px); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(25px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 32px 23px 27px; }
+  h1 { font-size: 24px; }
+  .visual { transform: scale(.92); margin-bottom: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<iframe id="app"
+  src="https://script.google.com/macros/s/AKfycbwBm2CUicNE0iYZft0ezf34LT92Cnp98G15Zx-3P8I1wfAFTURJhPPcfS13kJ8xMcSgoA/exec"
+  allow="clipboard-read; clipboard-write; geolocation">
+</iframe>
+
+<div id="loader">
+  <div class="glow"></div>
+
+  <div class="card">
+    <div class="eyebrow">
+      <span class="status-dot"></span>
+      HUMAN RESOURCE DEVELOPMENT
+    </div>
+
+    <div class="visual">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="orbit"></div>
+      <div class="core">🩺</div>
+    </div>
+
+    <h1>BINWAS SDMK</h1>
+
+    <p class="subtitle">
+      Pembinaan dan Pengawasan<br>
+      Sumber Daya Manusia Kesehatan
+    </p>
+
+    <div class="wave">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span>
+    </div>
+
+    <div class="loading-text">
+      Mempersiapkan sistem...
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar"></div>
+    </div>
+
+    <div class="footer">
+      DIGITAL HEALTH SERVICE SYSTEM
+    </div>
+  </div>
+</div>
+
+<script>
+const app = document.getElementById("app");
+const loader = document.getElementById("loader");
+
+function hideLoader() {
+  loader.classList.add("hide");
+}
+
+app.addEventListener("load", function() {
+  setTimeout(hideLoader, 500);
+});
+
+// Pengaman jika iframe membutuhkan waktu lama
+setTimeout(hideLoader, 10000);
+</script>
+
+</body>
+</html>
